@@ -14,13 +14,14 @@ export async function getStaticPaths() {
 
 const { post, previous, next } = Astro.props;
 const { Content } = await render(post);
+const base = import.meta.env.BASE_URL;
 const formatDate = (date: Date) => date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
 ---
 <SiteLayout title={`${post.data.title} · 未命名技术博客`} description={post.data.title}>
   <div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div>
   <article class="article-shell">
     <header class="article-header">
-      <a class="back-link" href="/">← 返回文章列表</a>
+      <a class="back-link" href={base}>← 返回文章列表</a>
       <h1>{post.data.title}</h1>
       <div class="meta">
         <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
@@ -36,8 +37,8 @@ const formatDate = (date: Date) => date.toLocaleDateString('zh-CN', { year: 'num
       </aside>
     </div>
     <nav class="post-nav" aria-label="文章导航">
-      {previous ? <a class="post-nav-item" href={`/posts/${previous.data.slug}/`}><span>上一篇</span><strong>← {previous.data.title}</strong></a> : <span></span>}
-      {next ? <a class="post-nav-item next" href={`/posts/${next.data.slug}/`}><span>下一篇</span><strong>{next.data.title} →</strong></a> : <span></span>}
+      {previous ? <a class="post-nav-item" href={`${base}posts/${previous.data.slug}/`}><span>上一篇</span><strong>← {previous.data.title}</strong></a> : <span></span>}
+      {next ? <a class="post-nav-item next" href={`${base}posts/${next.data.slug}/`}><span>下一篇</span><strong>{next.data.title} →</strong></a> : <span></span>}
     </nav>
   </article>
   <script>

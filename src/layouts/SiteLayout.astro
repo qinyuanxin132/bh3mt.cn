@@ -2,6 +2,7 @@
 import '../styles/global.css';
 interface Props { title?: string; description?: string; }
 const { title = '未命名技术博客', description = '记录逆向、CTF、Linux 与编程学习。' } = Astro.props;
+const base = import.meta.env.BASE_URL;
 ---
 <!doctype html>
 <html lang="zh-CN">
@@ -15,13 +16,13 @@ const { title = '未命名技术博客', description = '记录逆向、CTF、Lin
   <body>
     <header class="site-header">
       <div class="shell nav">
-        <a class="brand" href="/">
+        <a class="brand" href={base}>
           <span class="brand-mark">&gt;_</span>
           <span>未命名技术博客</span>
         </a>
         <nav class="nav-links" aria-label="主导航">
-          <a href="/">文章</a>
-          <a href="/#about">关于</a>
+          <a href={base}>文章</a>
+          <a href={`${base}#about`}>关于</a>
         </nav>
       </div>
     </header>
@@ -29,5 +30,10 @@ const { title = '未命名技术博客', description = '记录逆向、CTF、Lin
     <footer class="site-footer">
       <div class="shell">用文字记录问题，用代码验证答案。</div>
     </footer>
+    <script define:vars={{ base }}>
+      document.querySelectorAll('img[src^="/upload/"]').forEach((image) => {
+        image.setAttribute('src', `${base}${image.getAttribute('src').slice(1)}`);
+      });
+    </script>
   </body>
 </html>
