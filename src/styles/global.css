@@ -17,6 +17,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { background: var(--bg); scroll-behavior: smooth; }
 body { position: relative; min-height: 100vh; margin: 0; color: var(--text); background-image: linear-gradient(rgba(92,151,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(92,151,255,.035) 1px, transparent 1px), radial-gradient(ellipse at 15% -10%, rgba(48,104,214,.3), transparent 34rem), radial-gradient(ellipse at 100% 35%, rgba(25,65,155,.22), transparent 30rem), linear-gradient(160deg, #07132d 0%, var(--bg) 52%, #030713 100%); background-size: 72px 72px, 72px 72px, auto, auto, auto; line-height: 1.75; overflow-x: hidden; }
 body::before { content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .58; background-image: radial-gradient(circle, rgba(190,215,255,.88) 0 1px, transparent 1.5px), radial-gradient(circle, rgba(113,171,255,.6) 0 1px, transparent 1.5px), radial-gradient(circle, rgba(255,255,255,.7) 0 1px, transparent 1.5px); background-size: 137px 151px, 211px 193px, 317px 277px; background-position: 17px 29px, 83px 11px, 151px 97px; animation: star-drift 34s linear infinite; }
