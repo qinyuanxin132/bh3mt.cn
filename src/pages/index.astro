@@ -8,6 +8,17 @@ const posts = (await getCollection('posts'))
 const formatDate = (date: Date) => date.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' });
 const searchable = posts.map(({ data }) => [data.title, data.slug, ...data.categories, ...data.tags].join(' ').toLowerCase());
 const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const latestDate = posts[0]?.data.date ?? new Date();
+const monthKeys = Array.from({ length: 12 }, (_, index) => {
+  const date = new Date(latestDate.getFullYear(), latestDate.getMonth() - 11 + index, 1);
+  return { key: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`, label: date.toLocaleDateString('zh-CN', { month: 'short' }) };
+});
+const monthlyCounts = new Map(monthKeys.map(({ key }) => [key, 0]));
+for (const post of posts) {
+  const key = `${post.data.date.getFullYear()}-${String(post.data.date.getMonth() + 1).padStart(2, '0')}`;
+  if (monthlyCounts.has(key)) monthlyCounts.set(key, (monthlyCounts.get(key) ?? 0) + 1);
+}
+const peakMonth = Math.max(...monthlyCounts.values(), 1);
 ---
 <SiteLayout>
   <div class="shell">
@@ -27,6 +38,20 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
         <div class="hero-card-line"><span>topics</span><strong>reverse / ctf</strong></div>
         <div class="hero-card-line"><span>published</span><strong>{posts.length} notes</strong></div>
         <div class="hero-card-prompt">$ keep_learning<span>_</span></div>
+      </div>
+    </section>
+
+    <section class="activity-section" aria-labelledby="activity-title">
+      <div class="section-heading">
+        <div><span class="eyebrow">writing rhythm</span><h2 id="activity-title">更新节奏</h2></div>
+        <span class="muted">最近 12 个月</span>
+      </div>
+      <div class="activity-chart">
+        {monthKeys.map(({ key, label }) => {
+          const count = monthlyCounts.get(key) ?? 0;
+          const height = count ? Math.max(12, Math.round((count / peakMonth) * 100)) : 4;
+          return <div class="activity-month" title={`${key}：${count} 篇`}><div class="activity-bar-track"><div class="activity-bar" style={`height: ${height}%`}></div></div><strong>{count}</strong><span>{label}</span></div>;
+        })}
       </div>
     </section>
 

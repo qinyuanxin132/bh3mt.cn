@@ -37,6 +37,7 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -.035em; }
 .terminal-dot i:first-child { background: #d58b8b; }.terminal-dot i:nth-child(2) { background: #d7b879; }.terminal-dot i:nth-child(3) { background: #83b49a; }
 .hero-card-line { display: flex; justify-content: space-between; gap: 1rem; padding-top: .9rem; color: var(--muted); }.hero-card-line strong { color: var(--text); font-weight: 500; }.hero-card-prompt { margin-top: 1.5rem; color: var(--accent-strong); }.hero-card-prompt span { animation: blink 1.1s steps(2, start) infinite; } @keyframes blink { 50% { opacity: 0; } }
 .button { border: 1px solid var(--line); border-radius: 999px; padding: .55rem 1rem; color: var(--text); background: var(--panel); }
+.activity-section { margin: 1rem 0 5rem; padding: 1.25rem 1.35rem 1.4rem; border: 1px solid var(--line); border-radius: 14px; background: linear-gradient(145deg, rgba(16,20,28,.7), rgba(12,15,22,.45)); }.activity-section .section-heading { margin-top: 0; }.activity-chart { display: grid; grid-template-columns: repeat(12, 1fr); align-items: end; gap: .65rem; height: 145px; padding-top: 1rem; }.activity-month { display: grid; grid-template-rows: 1fr auto auto; justify-items: center; align-items: end; height: 100%; gap: .35rem; color: var(--muted); font-size: .7rem; }.activity-month strong { color: var(--accent-strong); font: .72rem ui-monospace, monospace; }.activity-month span { white-space: nowrap; }.activity-bar-track { display: flex; align-items: end; width: 100%; height: 100%; max-width: 24px; border-radius: 6px 6px 3px 3px; background: rgba(142,167,255,.07); overflow: hidden; }.activity-bar { width: 100%; border-radius: inherit; background: linear-gradient(to top, #677fe5, #b4c2ff); box-shadow: 0 0 18px rgba(142,167,255,.18); }
 .button.primary { border-color: rgba(142,167,255,.5); background: var(--accent); color: #0a0d16; font-weight: 700; }
 .section-heading { display: flex; justify-content: space-between; align-items: end; margin: 1rem 0 1.25rem; }
 .section-heading h2 { margin: .35rem 0 0; font-size: 1.3rem; }
@@ -94,6 +95,7 @@ kbd { padding: .1rem .35rem; border: 1px solid var(--line); border-radius: 5px; 
   .nav { min-height: 62px; }
   .nav-links { gap: .75rem; }
   .hero { grid-template-columns: 1fr; gap: 2.5rem; padding: 5rem 0 3.5rem; }
+  .activity-section { padding: 1rem .75rem 1.2rem; }.activity-chart { gap: .25rem; }
   .archive-page { padding: 3.5rem 0; }.category-grid { margin-bottom: 3.5rem; }
   .about-page { padding: 3.5rem 0; }.about-grid, .principle-grid { grid-template-columns: 1fr; }.about-card { min-height: auto; }.about-card-main h2 { margin-top: 2rem; }.about-principles { margin-top: 3.5rem; }.about-contact { margin-top: 4rem; }
   .hero-card { max-width: 420px; width: 100%; }
