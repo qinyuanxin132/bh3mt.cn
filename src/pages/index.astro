@@ -9,16 +9,22 @@ const formatDate = (date: Date) => date.toLocaleDateString('zh-CN', { year: 'num
 const searchable = posts.map(({ data }) => [data.title, data.slug, ...data.categories, ...data.tags].join(' ').toLowerCase());
 const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
 const latestDate = posts[0]?.data.date ?? new Date();
-const monthKeys = Array.from({ length: 12 }, (_, index) => {
-  const date = new Date(latestDate.getFullYear(), latestDate.getMonth() - 11 + index, 1);
-  return { key: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`, label: date.toLocaleDateString('zh-CN', { month: 'short' }) };
+const formatDay = (date: Date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+const endOfWeek = new Date(latestDate.getFullYear(), latestDate.getMonth(), latestDate.getDate());
+const heatmapStart = new Date(endOfWeek);
+heatmapStart.setDate(endOfWeek.getDate() - endOfWeek.getDay() - (52 * 7));
+const heatmapDays = Array.from({ length: 53 * 7 }, (_, index) => {
+  const date = new Date(heatmapStart);
+  date.setDate(heatmapStart.getDate() + index);
+  return { key: formatDay(date), label: date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }), count: 0 };
 });
-const monthlyCounts = new Map(monthKeys.map(({ key }) => [key, 0]));
+const dailyCounts = new Map(heatmapDays.map(({ key }) => [key, 0]));
 for (const post of posts) {
-  const key = `${post.data.date.getFullYear()}-${String(post.data.date.getMonth() + 1).padStart(2, '0')}`;
-  if (monthlyCounts.has(key)) monthlyCounts.set(key, (monthlyCounts.get(key) ?? 0) + 1);
+  const key = formatDay(post.data.date);
+  if (dailyCounts.has(key)) dailyCounts.set(key, (dailyCounts.get(key) ?? 0) + 1);
 }
-const peakMonth = Math.max(...monthlyCounts.values(), 1);
+for (const day of heatmapDays) day.count = dailyCounts.get(day.key) ?? 0;
+const heatmapWeeks = Array.from({ length: 53 }, (_, week) => heatmapDays.slice(week * 7, week * 7 + 7));
 ---
 <SiteLayout>
   <div class="shell">
@@ -44,15 +50,15 @@ const peakMonth = Math.max(...monthlyCounts.values(), 1);
     <section class="activity-section" aria-labelledby="activity-title">
       <div class="section-heading">
         <div><span class="eyebrow">writing rhythm</span><h2 id="activity-title">更新节奏</h2></div>
-        <span class="muted">最近 12 个月</span>
+        <span class="muted">最近一年</span>
       </div>
-      <div class="activity-chart">
-        {monthKeys.map(({ key, label }) => {
-          const count = monthlyCounts.get(key) ?? 0;
-          const height = count ? Math.max(12, Math.round((count / peakMonth) * 100)) : 4;
-          return <div class="activity-month" title={`${key}：${count} 篇`}><div class="activity-bar-track"><div class="activity-bar" style={`height: ${height}%`}></div></div><strong>{count}</strong><span>{label}</span></div>;
-        })}
+      <div class="heatmap-wrap">
+        <div class="heatmap-days" aria-hidden="true"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+        <div class="heatmap" aria-label="最近一年的文章更新频次">
+          {heatmapWeeks.map((week) => <div class="heatmap-week">{week.map((day) => <span class={`heatmap-cell level-${Math.min(day.count, 4)}`} title={`${day.label}：${day.count} 篇`} aria-label={`${day.label}：${day.count} 篇`}></span>)}</div>)}
+        </div>
       </div>
+      <div class="heatmap-legend"><span>少</span><i class="level-0"></i><i class="level-1"></i><i class="level-2"></i><i class="level-3"></i><i class="level-4"></i><span>多</span></div>
     </section>
 
     <section id="articles">
