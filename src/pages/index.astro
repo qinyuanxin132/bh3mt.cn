@@ -126,8 +126,14 @@ const heatmapWeeks = Array.from({ length: 53 }, (_, week) => heatmapDays.slice(w
       if (resultPanel) resultPanel.classList.toggle('is-open', Boolean(query));
       if (noResult) noResult.hidden = visibleResults !== 0;
     };
+    const closeResults = () => resultPanel?.classList.remove('is-open');
     input?.addEventListener('input', filter);
     input?.addEventListener('search', filter);
+    input?.addEventListener('focus', () => { if (input.value.trim()) resultPanel?.classList.add('is-open'); });
+    input?.addEventListener('blur', () => window.setTimeout(closeResults, 120));
+    document.addEventListener('pointerdown', (event) => {
+      if (!event.target.closest('.header-search')) closeResults();
+    });
     document.addEventListener('keydown', (event) => {
       if (event.key === '/' && document.activeElement !== input) {
         event.preventDefault();
