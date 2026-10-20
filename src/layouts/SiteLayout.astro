@@ -20,6 +20,7 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
           <span class="brand-mark">B</span>
           <span>BH3MT <em>无风</em></span>
         </a>
+        <div class="header-search-slot"><slot name="header-search" /></div>
         <nav class="nav-links" aria-label="主导航">
           <a href={base}>文章</a>
           <a href={`${base}categories/`}>分类</a>

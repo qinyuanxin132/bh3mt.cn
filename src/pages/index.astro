@@ -27,15 +27,19 @@ for (const day of heatmapDays) day.count = dailyCounts.get(day.key) ?? 0;
 const heatmapWeeks = Array.from({ length: 53 }, (_, week) => heatmapDays.slice(week * 7, week * 7 + 7));
 ---
 <SiteLayout>
-  <div class="shell">
-    <div class="top-search">
-      <label class="search-box" for="post-search">
-        <span aria-hidden="true">⌕</span>
-        <input id="post-search" type="search" placeholder="搜索文章、分类或标签…" autocomplete="off" aria-label="搜索文章、分类或标签" />
-        <kbd>/</kbd>
-      </label>
-      <span class="search-status" id="search-status">{posts.length} 篇文章</span>
+  <div slot="header-search" class="header-search">
+    <label class="search-box" for="post-search">
+      <span aria-hidden="true">⌕</span>
+      <input id="post-search" type="search" placeholder="搜索文章…" autocomplete="off" aria-label="搜索文章" />
+      <kbd>/</kbd>
+    </label>
+    <span class="search-status" id="search-status">{posts.length} 篇</span>
+    <div class="search-results" id="search-results" aria-live="polite">
+      {posts.map((post, index) => <a class="search-result" data-result-search={searchable[index]} href={`${base}posts/${post.data.slug}/`}><strong>{post.data.title}</strong><span>{post.data.categories[0] ?? '未分类'} · {formatDate(post.data.date)}</span></a>)}
+      <span class="search-no-result" id="search-no-result" hidden>没有找到匹配文章</span>
     </div>
+  </div>
+  <div class="shell">
     <section class="hero" id="about">
       <div class="hero-copy">
         <span class="eyebrow">notes / reverse / linux</span>
@@ -99,6 +103,9 @@ const heatmapWeeks = Array.from({ length: 53 }, (_, week) => heatmapDays.slice(w
     const cards = [...document.querySelectorAll('[data-search]')];
     const empty = document.querySelector('#empty-state');
     const status = document.querySelector('#search-status');
+    const results = [...document.querySelectorAll('.search-result')];
+    const resultPanel = document.querySelector('#search-results');
+    const noResult = document.querySelector('#search-no-result');
     const filter = () => {
       const query = input?.value.trim().toLowerCase() ?? '';
       let visible = 0;
@@ -108,8 +115,16 @@ const heatmapWeeks = Array.from({ length: 53 }, (_, week) => heatmapDays.slice(w
         card.hidden = !match;
         if (match) visible++;
       });
+      let visibleResults = 0;
+      results.forEach((result) => {
+        const match = !query || (result.dataset.resultSearch ?? '').includes(query);
+        result.hidden = !match;
+        if (match) visibleResults++;
+      });
       if (empty) empty.hidden = visible !== 0;
-      if (status) status.textContent = query ? `${visible} 个结果` : `${cards.length} 篇文章`;
+      if (status) status.textContent = query ? `${visible} 个结果` : `${cards.length} 篇`;
+      if (resultPanel) resultPanel.classList.toggle('is-open', Boolean(query));
+      if (noResult) noResult.hidden = visibleResults !== 0;
     };
     input?.addEventListener('input', filter);
     input?.addEventListener('search', filter);
