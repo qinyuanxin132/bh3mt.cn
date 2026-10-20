@@ -35,6 +35,31 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
       document.querySelectorAll('img[src^="/upload/"]').forEach((image) => {
         image.setAttribute('src', `${base}${image.getAttribute('src').slice(1)}`);
       });
+      const finePointer = matchMedia('(pointer: fine)').matches;
+      const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (finePointer && !reducedMotion) {
+        const glow = document.createElement('div');
+        const dot = document.createElement('div');
+        glow.className = 'cursor-glow';
+        dot.className = 'cursor-dot';
+        document.body.append(glow, dot);
+        document.body.classList.add('cursor-fx-active');
+        let x = -100, y = -100, targetX = x, targetY = y;
+        const move = (event) => { targetX = event.clientX; targetY = event.clientY; };
+        const render = () => {
+          x += (targetX - x) * .18;
+          y += (targetY - y) * .18;
+          glow.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+          dot.style.transform = `translate3d(${targetX}px, ${targetY}px, 0)`;
+          requestAnimationFrame(render);
+        };
+        window.addEventListener('pointermove', move, { passive: true });
+        document.querySelectorAll('a, button, input, .heatmap-cell').forEach((element) => {
+          element.addEventListener('pointerenter', () => glow.classList.add('is-hover'));
+          element.addEventListener('pointerleave', () => glow.classList.remove('is-hover'));
+        });
+        render();
+      }
     </script>
   </body>
 </html>

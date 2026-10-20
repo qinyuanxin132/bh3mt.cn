@@ -26,6 +26,12 @@ body::after { content: ''; position: fixed; inset: -20%; z-index: 0; pointer-eve
 @keyframes nebula-drift { from { transform: translate3d(-2%, -1%, 0) scale(1); } to { transform: translate3d(2%, 1%, 0) scale(1.05); } }
 a { color: inherit; text-decoration: none; }
 a:hover { color: var(--accent-strong); }
+.cursor-glow, .cursor-dot { position: fixed; top: 0; left: 0; z-index: 50; pointer-events: none; opacity: 0; }
+.cursor-glow { width: 240px; height: 240px; margin: -120px 0 0 -120px; border-radius: 50%; background: radial-gradient(circle, rgba(94,231,255,.13), rgba(91,117,255,.06) 35%, transparent 70%); filter: blur(2px); transition: width .25s ease, height .25s ease, margin .25s ease, opacity .3s; }
+.cursor-dot { width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 12px 3px rgba(94,231,255,.65); transition: opacity .2s; }
+.cursor-fx-active .cursor-glow, .cursor-fx-active .cursor-dot { opacity: 1; }
+.cursor-glow.is-hover { width: 330px; height: 330px; margin: -165px 0 0 -165px; background: radial-gradient(circle, rgba(167,139,250,.16), rgba(94,231,255,.07) 38%, transparent 70%); }
+.cursor-fx-active a, .cursor-fx-active button, .cursor-fx-active input { cursor: none; }
 .shell { width: min(calc(100% - 2.5rem), var(--max)); margin: 0 auto; }
 .site-header { border-bottom: 1px solid rgba(125,169,255,.18); background: rgba(5,12,29,.68); backdrop-filter: blur(18px); position: sticky; top: 0; z-index: 10; }.site-header::before { content: ''; position: absolute; top: 0; left: 8%; right: 8%; height: 1px; background: linear-gradient(90deg, transparent, var(--cyan), var(--violet), transparent); box-shadow: 0 0 12px rgba(94,231,255,.65); }
 .nav { display: flex; align-items: center; justify-content: space-between; min-height: 72px; gap: 2rem; }
