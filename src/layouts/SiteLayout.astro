@@ -1,0 +1,33 @@
+---
+import '../styles/global.css';
+interface Props { title?: string; description?: string; }
+const { title = '未命名技术博客', description = '记录逆向、CTF、Linux 与编程学习。' } = Astro.props;
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="shell nav">
+        <a class="brand" href="/">
+          <span class="brand-mark">&gt;_</span>
+          <span>未命名技术博客</span>
+        </a>
+        <nav class="nav-links" aria-label="主导航">
+          <a href="/">文章</a>
+          <a href="/#about">关于</a>
+        </nav>
+      </div>
+    </header>
+    <main><slot /></main>
+    <footer class="site-footer">
+      <div class="shell">用文字记录问题，用代码验证答案。</div>
+    </footer>
+  </body>
+</html>

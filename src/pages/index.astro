@@ -1,0 +1,84 @@
+---
+import { getCollection } from 'astro:content';
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+const posts = (await getCollection('posts'))
+  .filter((post) => post.data.published)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const formatDate = (date: Date) => date.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' });
+const searchable = posts.map(({ data }) => [data.title, data.slug, ...data.categories, ...data.tags].join(' ').toLowerCase());
+---
+<SiteLayout>
+  <div class="shell">
+    <section class="hero" id="about">
+      <div class="hero-copy">
+        <span class="eyebrow">notes / reverse / linux</span>
+        <h1>把遇到的问题，<br /><span class="muted">写成下次能读懂的答案。</span></h1>
+        <p>这里记录 CTF、逆向工程、Linux、编程学习，以及一些还没有被整理成答案的想法。</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#articles">浏览文章</a>
+          <a class="button" href="https://github.com/" target="_blank" rel="noreferrer">GitHub ↗</a>
+        </div>
+      </div>
+      <div class="hero-card" aria-label="博客状态">
+        <div class="terminal-dot"><i></i><i></i><i></i></div>
+        <div class="hero-card-line"><span>status</span><strong>writing</strong></div>
+        <div class="hero-card-line"><span>topics</span><strong>reverse / ctf</strong></div>
+        <div class="hero-card-line"><span>published</span><strong>{posts.length} notes</strong></div>
+        <div class="hero-card-prompt">$ keep_learning<span>_</span></div>
+      </div>
+    </section>
+
+    <section id="articles">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">archive</span>
+          <h2>最近文章</h2>
+        </div>
+        <span class="muted">{posts.length} 篇公开文章</span>
+      </div>
+      <label class="search-box">
+        <span aria-hidden="true">⌕</span>
+        <input id="post-search" type="search" placeholder="搜索标题、分类或标签…" autocomplete="off" />
+        <kbd>/</kbd>
+      </label>
+      <div class="post-list" id="post-list">
+        {posts.map((post, index) => (
+          <article class="post-card" data-search={searchable[index]}>
+            <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+            <div>
+              <h3><a href={`/posts/${post.data.slug}/`}>{post.data.title}</a></h3>
+              <div class="meta">
+                {post.data.categories.map((category) => <span class="tag">{category}</span>)}
+                {post.data.tags.slice(0, 3).map((tag) => <span class="tag">#{tag}</span>)}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+      <p class="empty-state" id="empty-state" hidden>没有找到匹配的文章。</p>
+    </section>
+  </div>
+  <script>
+    const input = document.querySelector('#post-search');
+    const cards = [...document.querySelectorAll('[data-search]')];
+    const empty = document.querySelector('#empty-state');
+    const filter = () => {
+      const query = input.value.trim().toLowerCase();
+      let visible = 0;
+      cards.forEach((card) => {
+        const match = !query || card.dataset.search.includes(query);
+        card.hidden = !match;
+        if (match) visible++;
+      });
+      empty.hidden = visible !== 0;
+    };
+    input?.addEventListener('input', filter);
+    document.addEventListener('keydown', (event) => {
+      if (event.key === '/' && document.activeElement !== input) {
+        event.preventDefault();
+        input?.focus();
+      }
+    });
+  </script>
+</SiteLayout>

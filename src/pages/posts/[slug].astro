@@ -1,0 +1,78 @@
+---
+import { getCollection, render } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('posts'))
+    .filter((post) => post.data.published)
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  return posts.map((post, index) => ({
+    params: { slug: post.data.slug },
+    props: { post, previous: posts[index + 1] ?? null, next: posts[index - 1] ?? null },
+  }));
+}
+
+const { post, previous, next } = Astro.props;
+const { Content } = await render(post);
+const formatDate = (date: Date) => date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+<SiteLayout title={`${post.data.title} · 未命名技术博客`} description={post.data.title}>
+  <div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div>
+  <article class="article-shell">
+    <header class="article-header">
+      <a class="back-link" href="/">← 返回文章列表</a>
+      <h1>{post.data.title}</h1>
+      <div class="meta">
+        <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+        {post.data.categories.map((category) => <span class="tag">{category}</span>)}
+        {post.data.tags.map((tag) => <span class="tag">#{tag}</span>)}
+      </div>
+    </header>
+    <div class="article-grid">
+      <div class="article-content"><Content /></div>
+      <aside class="toc-panel">
+        <div class="toc-title">目录</div>
+        <nav id="toc" aria-label="文章目录"><span class="muted">正在读取…</span></nav>
+      </aside>
+    </div>
+    <nav class="post-nav" aria-label="文章导航">
+      {previous ? <a class="post-nav-item" href={`/posts/${previous.data.slug}/`}><span>上一篇</span><strong>← {previous.data.title}</strong></a> : <span></span>}
+      {next ? <a class="post-nav-item next" href={`/posts/${next.data.slug}/`}><span>下一篇</span><strong>{next.data.title} →</strong></a> : <span></span>}
+    </nav>
+  </article>
+  <script>
+    const content = document.querySelector('.article-content');
+    const toc = document.querySelector('#toc');
+    const headings = [...document.querySelectorAll('.article-content h2, .article-content h3')];
+    if (toc && headings.length) {
+      toc.innerHTML = headings.map((heading, index) => {
+        const id = `section-${index + 1}`;
+        heading.id = id;
+        return `<a class="toc-${heading.tagName.toLowerCase()}" href="#${id}">${heading.textContent}</a>`;
+      }).join('');
+    } else if (toc) {
+      toc.innerHTML = '<span class="muted">这篇文章没有小节目录</span>';
+    }
+    document.querySelectorAll('.article-content pre').forEach((block) => {
+      const button = document.createElement('button');
+      button.className = 'copy-code';
+      button.type = 'button';
+      button.textContent = '复制';
+      button.addEventListener('click', async () => {
+        await navigator.clipboard.writeText(block.querySelector('code')?.textContent ?? block.textContent ?? '');
+        button.textContent = '已复制';
+        window.setTimeout(() => { button.textContent = '复制'; }, 1400);
+      });
+      block.append(button);
+    });
+    const progress = document.querySelector('#reading-progress-bar');
+    const updateProgress = () => {
+      if (!content || !progress) return;
+      const top = content.getBoundingClientRect().top + window.scrollY;
+      const total = content.scrollHeight - window.innerHeight;
+      progress.style.width = `${Math.max(0, Math.min(100, ((window.scrollY - top) / total) * 100))}%`;
+    };
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+  </script>
+</SiteLayout>
