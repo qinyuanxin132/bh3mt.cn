@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 interface Props { title?: string; description?: string; }
-const { title = '未命名技术博客', description = '记录逆向、CTF、Linux 与编程学习。' } = Astro.props;
+const { title = 'BH3MT 无风', description = '记录逆向、CTF、Linux 与编程学习。' } = Astro.props;
 const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
 ---
 <!doctype html>
@@ -17,18 +17,19 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
     <header class="site-header">
       <div class="shell nav">
         <a class="brand" href={base}>
-          <span class="brand-mark">&gt;_</span>
-          <span>未命名技术博客</span>
+          <span class="brand-mark">B</span>
+          <span>BH3MT <em>无风</em></span>
         </a>
         <nav class="nav-links" aria-label="主导航">
           <a href={base}>文章</a>
+          <a href={`${base}categories/`}>分类</a>
           <a href={`${base}#about`}>关于</a>
         </nav>
       </div>
     </header>
     <main><slot /></main>
     <footer class="site-footer">
-      <div class="shell">用文字记录问题，用代码验证答案。</div>
+      <div class="shell"><strong>BH3MT 无风</strong><span> · 用文字记录问题，用代码验证答案。</span></div>
     </footer>
     <script define:vars={{ base }}>
       document.querySelectorAll('img[src^="/upload/"]').forEach((image) => {
