@@ -28,6 +28,14 @@ const heatmapWeeks = Array.from({ length: 53 }, (_, week) => heatmapDays.slice(w
 ---
 <SiteLayout>
   <div class="shell">
+    <div class="top-search">
+      <label class="search-box" for="post-search">
+        <span aria-hidden="true">⌕</span>
+        <input id="post-search" type="search" placeholder="搜索文章、分类或标签…" autocomplete="off" aria-label="搜索文章、分类或标签" />
+        <kbd>/</kbd>
+      </label>
+      <span class="search-status" id="search-status">{posts.length} 篇文章</span>
+    </div>
     <section class="hero" id="about">
       <div class="hero-copy">
         <span class="eyebrow">notes / reverse / linux</span>
@@ -69,11 +77,6 @@ const heatmapWeeks = Array.from({ length: 53 }, (_, week) => heatmapDays.slice(w
         </div>
         <span class="muted">{posts.length} 篇公开文章</span>
       </div>
-      <label class="search-box">
-        <span aria-hidden="true">⌕</span>
-        <input id="post-search" type="search" placeholder="搜索标题、分类或标签…" autocomplete="off" />
-        <kbd>/</kbd>
-      </label>
       <div class="post-list" id="post-list">
         {posts.map((post, index) => (
           <article class="post-card" data-search={searchable[index]}>
@@ -95,17 +98,21 @@ const heatmapWeeks = Array.from({ length: 53 }, (_, week) => heatmapDays.slice(w
     const input = document.querySelector('#post-search');
     const cards = [...document.querySelectorAll('[data-search]')];
     const empty = document.querySelector('#empty-state');
+    const status = document.querySelector('#search-status');
     const filter = () => {
-      const query = input.value.trim().toLowerCase();
+      const query = input?.value.trim().toLowerCase() ?? '';
       let visible = 0;
       cards.forEach((card) => {
-        const match = !query || card.dataset.search.includes(query);
+        const haystack = `${card.dataset.search ?? ''} ${card.textContent ?? ''}`.toLowerCase();
+        const match = !query || haystack.includes(query);
         card.hidden = !match;
         if (match) visible++;
       });
-      empty.hidden = visible !== 0;
+      if (empty) empty.hidden = visible !== 0;
+      if (status) status.textContent = query ? `${visible} 个结果` : `${cards.length} 篇文章`;
     };
     input?.addEventListener('input', filter);
+    input?.addEventListener('search', filter);
     document.addEventListener('keydown', (event) => {
       if (event.key === '/' && document.activeElement !== input) {
         event.preventDefault();
