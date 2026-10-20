@@ -7,7 +7,7 @@ const posts = (await getCollection('posts'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const formatDate = (date: Date) => date.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' });
 const searchable = posts.map(({ data }) => [data.title, data.slug, ...data.categories, ...data.tags].join(' ').toLowerCase());
-const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
 ---
 <SiteLayout>
   <div class="shell">

@@ -1,11 +1,12 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
 ---
 <SiteLayout title="页面不存在 · 未命名技术博客">
   <div class="shell not-found">
     <span class="eyebrow">404 / signal lost</span>
     <h1>这条路径还没有答案。</h1>
     <p class="muted">页面可能已经移动，或者它还没有被写出来。</p>
-    <a class="button primary" href={import.meta.env.BASE_URL}>回到文章列表</a>
+    <a class="button primary" href={base}>回到文章列表</a>
   </div>
 </SiteLayout>
