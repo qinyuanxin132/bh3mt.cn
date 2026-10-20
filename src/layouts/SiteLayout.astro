@@ -59,6 +59,25 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
           element.addEventListener('pointerleave', () => glow.classList.remove('is-hover'));
         });
         render();
+        document.addEventListener('pointerdown', (event) => {
+          const burst = document.createElement('div');
+          burst.className = 'click-burst';
+          burst.style.left = `${event.clientX}px`;
+          burst.style.top = `${event.clientY}px`;
+          const ring = document.createElement('i');
+          ring.className = 'click-ring';
+          burst.append(ring);
+          for (let index = 0; index < 18; index += 1) {
+            const particle = document.createElement('span');
+            particle.style.setProperty('--angle', `${(index / 18) * 360 + (Math.random() * 14 - 7)}deg`);
+            particle.style.setProperty('--distance', `${34 + Math.random() * 32}px`);
+            particle.style.setProperty('--delay', `${Math.random() * 70}ms`);
+            particle.className = index % 3 === 0 ? 'is-violet' : 'is-cyan';
+            burst.append(particle);
+          }
+          document.body.append(burst);
+          window.setTimeout(() => burst.remove(), 850);
+        });
       }
     </script>
   </body>
