@@ -1,0 +1,51 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+---
+<SiteLayout title="关于 · BH3MT 无风" description="关于 BH3MT 无风，以及这个博客记录的内容。">
+  <div class="shell about-page">
+    <header class="about-hero">
+      <span class="eyebrow">about / bh3mt</span>
+      <h1>你好，这里是<br /><span class="muted">BH3MT 无风。</span></h1>
+      <p>这是一个用来记录问题、保存答案，也保存学习过程的地方。</p>
+    </header>
+
+    <div class="about-grid">
+      <section class="about-card about-card-main">
+        <span class="card-kicker">01 / 为什么写</span>
+        <h2>因为有些东西，值得下次还能找到。</h2>
+        <p>命令、工具和解决问题的过程，很难只看一遍就记住。于是把它们写下来，在需要的时候重新阅读，也把走过的路留给未来的自己。</p>
+        <p>文章不一定一次就写得完美，但希望每一次回头看，都能比上一次更接近真正理解。</p>
+      </section>
+      <section class="about-card about-card-side">
+        <span class="card-kicker">02 / 这里有什么</span>
+        <ul class="topic-list">
+          <li><span>01</span> CTF Writeup</li>
+          <li><span>02</span> 逆向工程</li>
+          <li><span>03</span> Linux 与工具</li>
+          <li><span>04</span> C / 汇编学习</li>
+          <li><span>05</span> 一些零散想法</li>
+        </ul>
+      </section>
+    </div>
+
+    <section class="about-principles">
+      <div class="section-heading"><div><span class="eyebrow">principles</span><h2>写作原则</h2></div></div>
+      <div class="principle-grid">
+        <article><strong>记录过程</strong><p>不只记录最后的答案，也记录那些没有立刻想通的地方。</p></article>
+        <article><strong>保持具体</strong><p>命令、代码和现象尽量写清楚，让文章可以被重新验证。</p></article>
+        <article><strong>持续整理</strong><p>先留下痕迹，再慢慢修正结构。学习本来就是一个迭代过程。</p></article>
+      </div>
+    </section>
+
+    <section class="about-contact">
+      <span class="eyebrow">find me</span>
+      <h2>想看看代码，或者继续阅读？</h2>
+      <div class="hero-actions">
+        <a class="button primary" href={`${base}`}>浏览文章</a>
+        <a class="button" href="https://github.com/qinyuanxin132/bh3mt.cn" target="_blank" rel="noreferrer">GitHub ↗</a>
+      </div>
+    </section>
+  </div>
+</SiteLayout>
