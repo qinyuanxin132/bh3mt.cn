@@ -4,11 +4,9 @@ slug: "xi-dian-ctf-cheng-du-hao-shi-you-wp"
 date: 2026-10-20
 updated: 2026-10-20
 published: true
-categories: []
-tags: []
----
-
-# 西电 CTF 成都好室友 wp
+categories: ["西电CTF_2026"]
+tags: ["西电CTF_2026"]
+---# 西电 CTF 成都好室友 wp
 
 > 发布于 2026-10-20 01:22:09
 
