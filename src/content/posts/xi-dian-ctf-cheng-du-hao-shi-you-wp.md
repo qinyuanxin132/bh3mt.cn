@@ -1,5 +1,5 @@
 ---
-title: "西电 CTF 成都好室友 wp"
+title: "西电 CTF 2026 成都好室友 wp"
 slug: "xi-dian-ctf-cheng-du-hao-shi-you-wp"
 date: 2026-10-20
 updated: 2026-10-20
@@ -71,3 +71,5 @@ Image data size: 11116 bytes.
 ![](../attachments/upload/result.png)
 
 发现这个二维码被擦除了三个角
+
+
