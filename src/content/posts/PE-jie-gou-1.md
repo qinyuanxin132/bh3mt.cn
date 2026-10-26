@@ -40,6 +40,30 @@ RAV描述了一个从PE文件的基地址开始的偏移量，用于定位文件
 用于直接定位存储在磁盘上的PE文件内的任意结构的精确位置
 在使十六进制编辑器打开PE文件时，显示的地址通常就是文件偏移地址
 
+```
+文件                          内存
+┌──────────────┐            ┌──────────────┐ ← ImageBase
+│ DOS头/NT头   │            │ 头部         │
+│ 节表         │            │              │
+├──────────────┤            ├──────────────┤ ← ImageBase + 节.VirtualAddress
+│ .text        │            │ .text        │
+│  PointerToRawData         │  (RVA起点)   │
+│  ↑文件偏移   │  ──映射──▶ │              │
+│              │            │              │
+├──────────────┤            ├──────────────┤
+│ .idata       │            │ .idata       │
+└──────────────┘            └──────────────┘
+   FOA：从文件0算           VA：ImageBase + RVA
+```
+
+这几个地址都是相对于内存说的
+
+而对于磁盘层面：
+文件偏移（FOA / File Offset）
+基准：文件第 0 字节。
+
+十六进制编辑器里跳转用的就是它。
+
 ## DOS部分
 
 ### DOS MZ 头
@@ -156,4 +180,77 @@ PE文件中节的数量
 
 在32位的PE文件中，可选头被定义为IMAGE_OPTIONAL_HEADER32
 64位则IMAGE_OPTIONAL_HEADER64
+
+```c
+typedef struct _IMAGE_OPTIONAL_HEADER {
+    //
+    // Standard fields.
+    //
+    WORD    Magic;                       // 表示PE文件的标志字：0x10B = PE32, 0x20B = PE32+
+    BYTE    MajorLinkerVersion;          // 链接器主版本号
+    BYTE    MinorLinkerVersion;          // 链接器次版本号
+    DWORD   SizeOfCode;                  // 代码节的总大小
+    DWORD   SizeOfInitializedData;       // 已初始化数据节的总大小
+    DWORD   SizeOfUninitializedData;     // 未初始化数据节的总大小（未初始化的数据通常在.bss中）
+    DWORD   AddressOfEntryPoint;         // ★ 程序入口点的相对虚拟地址（RVA）
+    DWORD   BaseOfCode;                  // 代码节起始 RVA
+    DWORD   BaseOfData;                  // 数据节起始 RVA（PE32+ 无此字段）
+    //
+    // NT additional fields.
+    //
+    DWORD   ImageBase;                   // ★ 首选加载基址
+    DWORD   SectionAlignment;            // ★ 节在内存中的对齐粒度（每个节被载入的地址必定为本字段指定数值的整数倍，默认的对其值为目标CPU的页尺寸，页尺寸=操作系统内存管理的最小分配单位，即一个“页（Page）”的大小。 内存不是按字节分配给进程的，而是按页为单位映射的。）
+    DWORD   FileAlignment;               // ★ 节在文件中的对齐粒度
+    WORD    MajorOperatingSystemVersion; // 所需操作系统主版本
+    WORD    MinorOperatingSystemVersion; // 所需操作系统次版本
+    WORD    MajorImageVersion;           // 映像主版本
+    WORD    MinorImageVersion;           // 映像次版本
+    WORD    MajorSubsystemVersion;       // 子系统主版本
+    WORD    MinorSubsystemVersion;       // 子系统次版本
+    DWORD   Win32VersionValue;           // 保留，必须为0
+    DWORD   SizeOfImage;                 // ★ 映像在内存中的总大小
+    DWORD   SizeOfHeaders;               // ★ 所有头部的总大小（含节表）
+    DWORD   CheckSum;                    // 校验和
+    WORD    Subsystem;                   // 子系统类型（GUI/Console等）
+    WORD    DllCharacteristics;          // DLL 特性标志（ASLR/DEP等）
+    DWORD   SizeOfStackReserve;          // 初始线程栈保留大小
+    DWORD   SizeOfStackCommit;           // 初始线程栈提交大小
+    DWORD   SizeOfHeapReserve;           // 进程堆保留大小
+    DWORD   SizeOfHeapCommit;            // 进程堆提交大小
+    DWORD   LoaderFlags;                 // 加载器标志（已过时）
+    DWORD   NumberOfRvaAndSizes;         // 数据目录的有效条目数，自Windows NT发布以来一直都是0x10
+    IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES]; // ★ 数据目录数组（16项）
+} IMAGE_OPTIONAL_HEADER32, *PIMAGE_OPTIONAL_HEADER32;
+```
+
+### 目录
+
+数据目录位于可选头结构的末尾,包含一个或多个数据目录项（IMAGE_DATA_DIRECTORY）
+
+每个数据目录项对应着一个特定类型的数据块
+
+包含两个字段：VirtualAddress（表示该数据在内存中的相对虚拟地址）和Size (表示该数据块的大小)
+
+标准定义：
+
+```
+typedef struct _IMAGE_DATA_DIRECTORY {
+    DWORD   VirtualAddress;   // 数据目录项的 RVA
+    DWORD   Size;             // 数据目录项的大小
+} IMAGE_DATA_DIRECTORY, *PIMAGE_DATA_DIRECTORY;
+```
+
+```
+IMAGE_NT_HEADERS
+ ├─ Signature
+ ├─ IMAGE_FILE_HEADER
+ └─ IMAGE_OPTIONAL_HEADER
+      ├─ Magic / AddressOfEntryPoint / ImageBase / SectionAlignment ...
+      ├─ NumberOfRvaAndSizes
+      └─ DataDirectory[16]        ← 数据目录在这里
+           ├─ [0] 导出表  → RVA 指向 .edata 节
+           ├─ [1] 导入表  → RVA 指向 .idata 节
+           ├─ [5] 重定位表 → RVA 指向 .reloc 节
+           └─ ...
+```
 

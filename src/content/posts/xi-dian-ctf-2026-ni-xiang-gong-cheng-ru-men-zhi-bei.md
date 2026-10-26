@@ -83,36 +83,3 @@ int __fastcall main(int argc, const char **argv, const char **envp)
 如果是 UPX 等壳 → 先脱壳，再进 IDA
 
 如果是普通 Windows exe → IDA/Ghidra 静态 + x64dbg 动态
-
-先将二进制文件拖入IDE
-
-![](../attachments/upload/image-zxoe.png)
-
-得到文件的信息
-
-将文件拖入IDA
-得到这个阶段看不懂的汇编语言
-
-使用F5反编译
-得到类C语言
-
-```
-int __fastcall main(int argc, const char **argv, const char **envp)
-{
-  char s[128]; // [rsp+0h] [rbp-C0h] BYREF
-  char s2[64]; // [rsp+80h] [rbp-40h] BYREF
-
-  strcpy(s2, "moectf{C0ngr4tuLati0N_On_find1n9_your_1st_RE_f1aggggg!!!}");
-  printf("Input flag: ");
-  if ( !fgets(s, 128, stdin) )
-    return 1;
-  s[strcspn(s, "\n")] = 0;
-  if ( !strncmp(s, s2, 0x3Au) )
-    puts("yes");
-  else
-    puts("no");
-  return 0;
-}
-```
-
-得到flag
