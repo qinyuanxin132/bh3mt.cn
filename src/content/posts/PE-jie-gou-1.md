@@ -1,8 +1,8 @@
 ---
 title: "PE结构学习 #1"
 slug: "PE-jie-gou-1"
-date: 2026-10-09
-updated: 2026-10-24
+date: 2026-10-24
+updated: 2026-10-26
 published: true
 categories: ["PE结构学习"]
 tags: ["PE结构学习"]
