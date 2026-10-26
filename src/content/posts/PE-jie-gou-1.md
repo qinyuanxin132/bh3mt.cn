@@ -254,3 +254,101 @@ IMAGE_NT_HEADERS
            └─ ...
 ```
 
+## 节
+
+节是一种组织文件内容的逻辑单元，节由处于pe文件头与数据块中间的节表 来 描述
+
+IMAGE_NT_HEADERS
+ ├─ Signature                    ("PE\0\0")
+ ├─ IMAGE_FILE_HEADER            (20 字节，含 NumberOfSections)
+ └─ IMAGE_OPTIONAL_HEADER        (PE32: 224 / PE32+: 240 字节)
+      ├─ Magic / AddressOfEntryPoint / ImageBase / SectionAlignment ...
+      ├─ NumberOfRvaAndSizes
+      └─ DataDirectory[16]       ← 数据目录在这里
+           ├─ [0] 导出表  → RVA 指向 .edata 节
+           ├─ [1] 导入表  → RVA 指向 .idata 节
+           ├─ [5] 重定位表 → RVA 指向 .reloc 节
+           └─ ...
+
+IMAGE_SECTION_HEADER[]           ← 节表紧跟可选头之后
+ ├─ [0] .text    (Name / VirtualAddress / PointerToRawData / Characteristics ...)
+ ├─ [1] .data
+ ├─ [2] .rsrc
+ └─ ...                          (项数 = NumberOfSections，每项 40 字节)
+
+节数据区
+ ├─ .text / .data / .rdata / .idata / .edata / .reloc / .rsrc ...
+
+
+ ### 节表
+
+ 用于描述文件中各个节的信息，由多个节表项(IMAGE_SECTION_HEADER)数组构成
+
+1 个节表（Section Table，整体）
+  └─ 由 N 个节表项（IMAGE_SECTION_HEADER）组成的数组
+       ├─ 节表项[0] → 对应节 .text
+       ├─ 节表项[1] → 对应节 .data
+       ├─ 节表项[2] → 对应节 .rsrc
+       └─ ...
+
+
+ 每个节表项对应一个节，包含节的基本信息
+
+```
+typedef struct _IMAGE_SECTION_HEADER {
+    BYTE    Name[IMAGE_SIZEOF_SHORT_NAME];  // 8字节节名，如".text"，不足8字节补0
+    union {
+        DWORD   PhysicalAddress;            // 文件偏移（用于目标文件）
+        DWORD   VirtualSize;                // ★ 节在内存中的实际大小（未对齐）
+    } Misc;
+    DWORD   VirtualAddress;                 // ★ 节在内存中的起始 RVA
+    DWORD   SizeOfRawData;                  // ★ 节在文件中对齐后的大小
+    DWORD   PointerToRawData;               // ★ 节在文件中的起始偏移（FOA）
+    DWORD   PointerToRelocations;           // 重定位信息偏移（可执行文件为0）
+    DWORD   PointerToLinenumbers;           // 行号信息偏移（可执行文件为0）
+    WORD    NumberOfRelocations;            // 重定位项数量
+    WORD    NumberOfLinenumbers;            // 行号项数量
+    DWORD   Characteristics;                // ★ 节属性标志（可读/写/执行等）
+} IMAGE_SECTION_HEADER, *PIMAGE_SECTION_HEADER;
+```
+
+**`Name 只是标签，不可信`**
+
+#### characteristics
+
+节的特性
+
+常见字段及其说明：
+| 值 | 标志 | 含义 |
+|---|---|---|
+| `0x00000020` | `IMAGE_SCN_CNT_CODE` | 节中含**可执行代码** |
+| `0x00000040` | `IMAGE_SCN_CNT_INITIALIZED_DATA` | 节中含**已初始化数据** |
+| `0x00000080` | `IMAGE_SCN_CNT_UNINITIALIZED_DATA` | 节中含**未初始化数据**（如 `.bss`） |
+| `0x40000000` | `IMAGE_SCN_MEM_READ` | 节在内存中**可读** |
+| `0x80000000` | `IMAGE_SCN_MEM_WRITE` | 节在内存中**可写** |
+| `0x20000000` | `IMAGE_SCN_MEM_EXECUTE` | 节在内存中**可执行** |
+| `0x10000000` | `IMAGE_SCN_MEM_SHARED` | 节在内存中**可被共享** |
+| `0x02000000` | `IMAGE_SCN_MEM_DISCARDABLE` | 节**可被丢弃**（加载后不再需要） |
+| `0x00000200` | `IMAGE_SCN_LNK_INFO` | 节含**链接器信息**（目标文件用，EXE 少见） |
+| `0x00000800` | `IMAGE_SCN_LNK_REMOVE` | 节在生成映像时被**移除**（目标文件用，EXE 少见） |
+
+### 常见的节
+
+**学 PE 时按“节”理解，不要把汇编的四段硬套进来。**
+
+常见的节
+
+| 节名 | 内容 | 典型属性 |
+|---|---|---|
+| `.text` | 可执行代码（程序指令） | 可读、可执行，含代码 |
+| `.data` | 已初始化的可读写全局/静态变量 | 可读、可写，含已初始化数据 |
+| `.rdata` | 只读数据（常量、字符串、导入表相关数据） | 可读，含已初始化数据 |
+| `.bss` | 未初始化的全局/静态变量（文件中不占实际空间） | 可读、可写，含未初始化数据 |
+| `.idata` | 导入表（Import Table），记录依赖的 DLL 和函数 | 可读，含已初始化数据 |
+| `.edata` | 导出表（Export Table），DLL 对外提供的函数 | 可读，含已初始化数据 |
+| `.reloc` | 基址重定位表（Base Relocation），修正绝对地址 | 可读，可丢弃 |
+| `.rsrc` | 资源（图标、菜单、对话框、版本信息等） | 可读，含已初始化数据 |
+
+### 节的对其值
+
+### 文件偏移与虚拟内存地址转换
