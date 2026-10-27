@@ -353,3 +353,5 @@ typedef struct _IMAGE_SECTION_HEADER {
 
 ### 文件偏移与虚拟内存地址转换
 
+## 导入表
+
