@@ -3,7 +3,7 @@ title: "Verilog 入门学习"
 slug: "Verilog-ru-men"
 date: 2026-10-27
 updated: 2026-10-27
-published: false
+published: true
 categories: ["Verilog"]
 tags: ["Verilog "]
 ---
