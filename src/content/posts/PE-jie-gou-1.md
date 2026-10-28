@@ -2,14 +2,102 @@
 title: "PE结构学习 #1"
 slug: "PE-jie-gou-1"
 date: 2026-10-24
-updated: 2026-10-26
+updated: 2026-10-28
 published: true
 categories: ["PE结构学习"]
 tags: ["PE结构学习"]
 ---
 > 发布于 2026-10-24 11:09:25
-> 
+> 最后更新时间 2026-10-28 16:09:25
 # PE结构学习 #1 windows向
+
+## 总览
+
+```
+PE 文件
+├─ IMAGE_DOS_HEADER                      文件偏移 0，64 字节，DOS 兼容头
+│  ├─ e_magic    WORD   = 0x5A4D ('MZ')   DOS 签名，判断是否为 MZ 可执行文件
+│  └─ e_lfanew   DWORD  → PE 头偏移        从文件开头算起的 PE 头偏移（FOA）
+├─ DOS 存根                                位于 DOS 头与 PE 头之间，有效 DOS 程序
+│                                          在不支持 PE 的系统上会打印 "This program cannot be run in DOS mode"
+└─ IMAGE_NT_HEADERS                      @ e_lfanew，PE 头总入口
+   ├─ Signature   DWORD = 0x00004550 ('PE\0\0')    PE 文件标识
+   ├─ IMAGE_FILE_HEADER                  20 字节，文件基本特征
+   │  ├─ Machine                WORD     目标平台（0x014C=x86，0x8664=x64，0x01C0=ARM）
+   │  ├─ NumberOfSections       WORD     → 节表项数，决定后面 IMAGE_SECTION_HEADER 数组长度
+   │  ├─ TimeDateStamp          DWORD    文件创建时间戳（Unix 时间）
+   │  ├─ PointerToSymbolTable   DWORD    符号表 FOA；无符号表时为 0
+   │  ├─ NumberOfSymbols        DWORD    符号表条目数；无符号表时为 0
+   │  ├─ SizeOfOptionalHeader   WORD     (224 / 240) 可选头大小，PE32=224，PE32+=240
+   │  └─ Characteristics        WORD     文件属性：0x0002=可执行，0x2000=DLL，0x0100=32位
+   ├─ IMAGE_OPTIONAL_HEADER32/64         可选头 224 / 240 字节，关键运行属性
+   │  ├─ Magic                  WORD     0x10B=PE32，0x20B=PE32+，决定后续字段布局
+   │  ├─ AddressOfEntryPoint    DWORD    入口点 RVA；DLL 可为 0（由 DllMain 决定）
+   │  ├─ ImageBase              DWORD    首选加载基址；EXE 默认 0x400000，DLL 默认 0x10000000
+   │  ├─ SectionAlignment       DWORD    内存对齐，通常 0x1000（一个内存页）
+   │  ├─ FileAlignment          DWORD    文件对齐，通常 0x200（一个磁盘扇区）
+   │  ├─ SizeOfImage            DWORD    加载到内存后的总大小，按 SectionAlignment 对齐
+   │  ├─ SizeOfHeaders          DWORD    所有头部（DOS+NT+节表）总大小，按 FileAlignment 对齐
+   │  ├─ Subsystem              WORD     子系统：2=GUI，3=Console
+   │  ├─ DllCharacteristics     WORD     ASLR/DEP/CFG 等安全特性
+   │  ├─ NumberOfRvaAndSizes    DWORD    = 0x10，数据目录有效项数
+   │  └─ DataDirectory[16]      IMAGE_DATA_DIRECTORY[16]，16×8=128 字节
+   │     ├─ [0] 导出表     { RVA, Size } → .edata      DLL 对外提供的函数
+   │     ├─ [1] 导入表     { RVA, Size } → .idata（展开见下）  依赖的外部函数
+   │     ├─ [5] 重定位表   { RVA, Size } → .reloc      基址被改时修正绝对地址
+   │     ├─ [2] 资源表     { RVA, Size } → .rsrc
+   │     ├─ [3] 异常表     { RVA, Size } → .pdata      仅 x64
+   │     ├─ [4] 安全目录   { RVA, Size } → 证书
+   │     ├─ [6] 调试目录   { RVA, Size } → .debug
+   │     ├─ [9] TLS 表     { RVA, Size } → .tls
+   │     └─ ...
+   └─ IMAGE_SECTION_HEADER[]             紧跟可选头，每项 40 字节，共 NumberOfSections 项
+      ├─ [0] .text                        代码节
+      │  ├─ Name[8]              BYTE[8]  节名，只是标签，不可信（可被改）
+      │  ├─ VirtualSize          DWORD (Misc)  节在内存中的实际大小（未对齐）
+      │  ├─ VirtualAddress       DWORD  RVA      节在内存中的起始 RVA
+      │  ├─ SizeOfRawData        DWORD            节在文件中对齐后的大小
+      │  ├─ PointerToRawData     DWORD  FOA      节在文件中的起始偏移
+      │  └─ Characteristics      DWORD            属性：0x20000000=可执行，0x40000000=可读，0x80000000=可写
+      ├─ [1] .data                        已初始化可读写数据
+      ├─ [2] .rdata / .idata / .edata / .reloc / .rsrc ...   只读数据/导入/导出/重定位/资源
+      └─ ...
+
+节数据区
+├─ .text / .data / .rdata / .idata / .edata / .reloc / .rsrc
+└─ ...                                    按节表 PointerToRawData 定位，按 VirtualAddress 映射
+
+────────────────────────────────────────────────────────────
+DataDirectory[1] 展开：导入表
+────────────────────────────────────────────────────────────
+
+DataDirectory[1].VirtualAddress           导入表 RVA；只认这个值，不认节名
+└─ IID 数组   IMAGE_IMPORT_DESCRIPTOR[]   每项 20 字节，每个 IID 描述一个 DLL
+   ├─ IID[0]   Name → "KERNEL32.dll"      该 IID 对应依赖的 DLL
+   │  ├─ +0x00  OriginalFirstThunk   RVA → INT     指向导入名称表；为 0 时用 FirstThunk 当 INT
+   │  ├─ +0x04  TimeDateStamp        DWORD         0=未绑定；0xFFFFFFFF=已绑定
+   │  ├─ +0x08  ForwarderChain       DWORD         转发链索引；通常 -1/0，解析可忽略
+   │  ├─ +0x0C  Name                 DWORD → DLL 名字符串   以 '\0' 结尾
+   │  └─ +0x10  FirstThunk           RVA → IAT     指向导入地址表；加载后被填真实地址
+   ├─ IID[1]   Name → "USER32.dll" ...
+   └─ IID[k]   全零 → 数组结束                    5 个 DWORD 全 0；常用 Name==0 判断
+
+INT   IMAGE_THUNK_DATA[]   每项 4/8 字节，导入名称表（文件态线索）
+├─ ITD[0]   最高位=0  RVA → IIBN                  按名字导入，RVA 指向函数名结构
+├─ ITD[1]   最高位=0  RVA → IIBN("ReadFile")      同上
+├─ ITD[2]   最高位=1  低31位=序号（按序号导入）    按序号导入，低位直接是导出序号
+└─ ITD[n]   = 0 → 数组结束                        每个 DLL 的 INT 以 0 结尾
+
+IIBN   IMAGE_IMPORT_BY_NAME   可变长，函数名片
+├─ Hint     WORD   导出表建议序号                  只是优化提示，查不到再按 Name 查
+└─ Name[]   "CreateFileA"，以 '\0' 结尾            函数名字符串
+
+IAT   IMAGE_THUNK_DATA[]   每项 4/8 字节，导入地址表（结果表）
+├─ ITD[0]   文件态：镜像 INT / 加载后：真实函数 VA  程序运行时通过它间接调用
+├─ ITD[1]                                          加载器把查到的真实地址写进对应槽位
+└─ ITD[n]   = 0 → 数组结束
+```
+
 
 PE文件主要结构包括
 - DOS部分，包含DOS头和  DOS存根（保持向后兼容）
@@ -117,7 +205,7 @@ typedef struct _IMAGE_FILE_HEADER {
 
 | 标志 | 运行平台 |
 | ---  | ---      |
-|0x014C|Inter 386 及其兼容处理器|
+|0x014C|Intel 386 及其兼容处理器|
 |0x0162|MIPS R3000|
 |0x0166|MIPS R4000|
 |0x01A2|Alpha AXP|
@@ -129,7 +217,7 @@ typedef struct _IMAGE_FILE_HEADER {
 #### NumberOfSections
 PE文件中节的数量
 
-#### TimeDataStamp
+#### TimeDateStamp
 
 表示创建PE文件的时间戳
 
@@ -142,12 +230,12 @@ PE文件中节的数量
 
 #### NumberOfSymbols
 
-如果存在符号表，改字段表示符号表中的符号数量
+如果存在符号表，该字段表示符号表中的符号数量
 不存在为0
 
 #### SizeOfOptionalHeader
 
-表示可选头即`IMAGE_OptionalH_eader`的大小
+表示可选头即`IMAGE_OPTIONAL_HEADER`的大小
 
 #### Characteristics
 
@@ -349,7 +437,7 @@ typedef struct _IMAGE_SECTION_HEADER {
 | `.reloc` | 基址重定位表（Base Relocation），修正绝对地址 | 可读，可丢弃 |
 | `.rsrc` | 资源（图标、菜单、对话框、版本信息等） | 可读，含已初始化数据 |
 
-### 节的对其值
+### 节的对齐值
 
 PE文件节的大小需要对
 
@@ -380,4 +468,76 @@ add1就是文件偏移地址
 需要在代码中声明名称和参数
 
 编译器生成的是对函数地址的引用，程序运行时，操作系统负责将程序中对导入函数的引用解析为实际的函数地址，这个过程被称之为动态链接
+
+导入地址表(Import Address Table IAT)用于记录程序中所有导入函数的地址
+
+在程序加载中，操作系统会根据导入表加载DLL文件并解析函数地址，将这些地址填充到IAT中（它预先填好了函数名或序号信息，等程序加载时由系统用真实函数地址覆盖掉）
+
+###  IMAGE_IMPORT_DESCRIPTOR 结构
+
+在PE可选头中，目录结构的第一个成员指向导出表，第二个成员指向导入表
+
+
+```
+IMAGE_NT_HEADERS
+ ├─ Signature
+ ├─ IMAGE_FILE_HEADER
+ └─ IMAGE_OPTIONAL_HEADER
+      ├─ Magic / AddressOfEntryPoint / ImageBase / SectionAlignment ...
+      ├─ NumberOfRvaAndSizes
+      └─ DataDirectory[16]        ← 数据目录在这里
+           ├─ [0] 导出表  → RVA 指向 .edata 节
+           ├─ [1] 导入表  → RVA 指向 .idata 节
+           ├─ [5] 重定位表 → RVA 指向 .reloc 节
+           └─ ...
+```
+
+导入表是由一个IMAGE_IMPORT_DESCRIPTOR (IID)数组开始的，IID数组通常以NULL单元结尾，用来确定读到IID数组尾部
+
+```
+typedef struct _IMAGE_IMPORT_DESCRIPTOR {
+    union {
+        DWORD   Characteristics;        // 为 0 时表示这是导入表的最后一个元素（终止符）
+        DWORD   OriginalFirstThunk;     // 包含导入名称表INT的RVA，指向 INT (导入名称表)
+    } DUMMYUNIONNAME;
+    DWORD       TimeDateStamp;          // 时间戳 （表示DLL创建时间）（与绑定导入相关，未绑定时为 0）
+    DWORD       ForwarderChain;         // 转发链索引；通常为 -1（0xFFFFFFFF）表示无转发；0 也常被部分资料视为“无转发/未启用”，实际解析通常可忽略
+    DWORD       Name;                   // RVA，指向 DLL 名称字符串（以 '\0' 结尾）
+    DWORD       FirstThunk;             // RVA，指向 IAT (导入地址表)
+} IMAGE_IMPORT_DESCRIPTOR, *PIMAGE_IMPORT_DESCRIPTOR;
+```
+
+INT 和 IAT 都是“ITD 数组”；每个 ITD 就是一个双字，文件状态下它要么指向函数名结构、要么直接是序号；加载后 IAT 里的 ITD 被换成真实函数地址。INT 是“查询线索表”，IAT 是“结果地址表”，两者元素类型相同、数组都以 0 结尾。
+
+IMAGE_THUNK_DATA:
+
+```
+typedef struct _IMAGE_THUNK_DATA32 {
+    union {
+        DWORD ForwarderString;  // 转发字符串 RVA
+        DWORD Function;         // 加载/绑定后的真实函数地址（VA）
+        DWORD Ordinal;          // 按序号导入时的函数序号
+        DWORD AddressOfData;    // 指向 IMAGE_IMPORT_BY_NAME 的 RVA（按名字导入）
+    } u1;
+} IMAGE_THUNK_DATA32;
+```
+
+数据目录[1] → IID 数组
+                │
+                ├─ IID[0] ── Name ─────────→ "KERNEL32.dll"
+                │    ├─ OriginalFirstThunk → INT ── ITD[0] → IIBN("CreateFileA")
+                │    │                              ITD[1] → IIBN("ReadFile")
+                │    │                              ITD[n] = 0
+                │    └─ FirstThunk ────────→ IAT ── ITD[0]（文件里镜像 INT；加载后=真实地址）
+                │                                  ITD[1]
+                │                                  ITD[n] = 0
+                ├─ IID[1] ── Name ─────────→ "USER32.dll"
+                │    ├─ OriginalFirstThunk → INT ...
+                │    └─ FirstThunk ────────→ IAT ...
+                └─ IID[k] = 全零（数组结束）
+
+typedef struct _IMAGE_IMPORT_BY_NAME {
+    WORD Hint;       // 序号提示，导出表中的建议序号
+    BYTE Name[1];    // 函数名字符串，以 '\0' 结尾，长度可变
+} IMAGE_IMPORT_BY_NAME, *PIMAGE_IMPORT_BY_NAME;
 
