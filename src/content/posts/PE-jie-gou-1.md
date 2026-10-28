@@ -541,3 +541,66 @@ typedef struct _IMAGE_IMPORT_BY_NAME {
     BYTE Name[1];    // 函数名字符串，以 '\0' 结尾，长度可变
 } IMAGE_IMPORT_BY_NAME, *PIMAGE_IMPORT_BY_NAME;
 
+### PE装载器
+
+INT和IAT两个并行的指针数组都指向IMAGE_IMPORT_BY_NAME结构，其中INT不可改写，IAT是PE装载器重写的（文件里(PE装载器重写前)的IAT通常和INT一模一样，装的是名字线索）
+
+装载器拿 INT 里的名字去搜索，然后在目标 DLL 的导出表里找到该函数的真实地址，再把它写进 IAT 对应的槽位
+
+## 导出表
+
+导出表(Export Table)用于记录PE文件所导出的函数和数据,使得其他DLL文件或可执行文件能够访问和调用这些导出的函数和数据
+
+在程序运行时，操作系统会将程序和DLL文件加载到内存中，PE装载器会根据DLL文件的导出表填充IAT，来建立和DLL之间的连接关系
+
+### IMAGE_EXPORT_DESCRIPTOR
+
+typedef struct _IMAGE_EXPORT_DIRECTORY {
+    DWORD   Characteristics;       // 特征标志
+    DWORD   TimeDateStamp;         // 时间戳
+    WORD    MajorVersion;          // 主版本号
+    WORD    MinorVersion;          // 次版本号
+    DWORD   Name;                  // RVA，指向 DLL 名字符串（以 '\0' 结尾）
+    DWORD   Base;                  // 导出函数序号的基准值
+    DWORD   NumberOfFunctions;     // AddressOfFunctions 数组的元素个数
+    DWORD   NumberOfNames;         // AddressOfNames / AddressOfNameOrdinals 的元素个数
+    DWORD   AddressOfFunctions;    // RVA，指向函数地址数组（DWORD[]）
+    DWORD   AddressOfNames;        // RVA，指向函数名 RVA 数组（DWORD[]）
+    DWORD   AddressOfNameOrdinals;// RVA，指向名字对应的序号数组（WORD[]）
+} IMAGE_EXPORT_DIRECTORY, *PIMAGE_EXPORT_DIRECTORY;
+
+## 加载顺序
+
+```
+用户双击 exe
+  │
+  ├─ 1. CreateProcess
+  ├─ 2. 内核创建进程，映射 ntdll
+  ├─ 3. ntdll!LdrInitializeThunk → LdrpInitializeProcess
+  │     ├─ 3.1 解析 DOS/NT 头，检查合法性
+  │     ├─ 3.2 保留地址空间，映射头部和节
+  │     ├─ 3.3 重定位（ActualBase != ImageBase 时）
+  │     ├─ 3.4 解析导入表，递归加载依赖 DLL，填 IAT
+  │     ├─ 3.5 处理 TLS 回调（DLL 的）
+  │     ├─ 3.6 调用各 DLL 的 DllMain(DLL_PROCESS_ATTACH)
+  │     └─ 3.7 跳到主模块 AddressOfEntryPoint
+  ├─ 4. CRT 启动代码（mainCRTStartup / WinMainCRTStartup）
+  └─ 5. 你的 main / WinMain
+```
+
+### CRT 启动代码
+AddressOfEntryPoint 指向的不是你的 main，而是 CRT 的启动函数：
+
+控制台程序：mainCRTStartup
+
+GUI 程序：WinMainCRTStartup
+
+CRT 启动代码做这些事：
+
+初始化全局变量、堆、I/O；
+
+调用 C++ 全局对象的构造函数；
+
+准备 argc/argv；
+
+最后调用你的 main / WinMain。
