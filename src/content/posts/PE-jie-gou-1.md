@@ -9,7 +9,7 @@ tags: ["PE结构学习"]
 ---
 > 发布于 2026-10-24 11:09:25
 > 最后更新时间 2026-10-28 16:09:25
-# PE结构学习 #1 windows向
+# PE结构学习 #1 (PE结构学习)
 
 ## 总览
 
@@ -156,6 +156,30 @@ RAV描述了一个从PE文件的基地址开始的偏移量，用于定位文件
 
 ### DOS MZ 头
 是一个结构体，有很多字段
+
+```
+typedef struct _IMAGE_DOS_HEADER {
+    WORD   e_magic;        // +0x00  DOS 签名，固定 0x5A4D ('MZ')
+    WORD   e_cblp;         // +0x02  最后页的字节数
+    WORD   e_cp;           // +0x04  文件页数
+    WORD   e_crlc;         // +0x06  重定位项数
+    WORD   e_cparhdr;      // +0x08  头部大小（以 16 字节为单位）
+    WORD   e_minalloc;     // +0x0A  所需最小额外内存（节）
+    WORD   e_maxalloc;     // +0x0C  所需最大额外内存（节）
+    WORD   e_ss;           // +0x0E  初始 SS 值（相对段）
+    WORD   e_sp;           // +0x10  初始 SP 值
+    WORD   e_csum;         // +0x12  校验和
+    WORD   e_ip;           // +0x14  初始 IP 值
+    WORD   e_cs;           // +0x16  初始 CS 值（相对段）
+    WORD   e_lfarlc;       // +0x18  重定位表文件偏移
+    WORD   e_ovno;         // +0x1A  覆盖号
+    WORD   e_res[4];       // +0x1C  保留字（4 个 WORD）
+    WORD   e_oemid;        // +0x24  OEM 标识
+    WORD   e_oeminfo;      // +0x26  OEM 信息
+    WORD   e_res2[10];     // +0x28  保留字（10 个 WORD）
+    LONG   e_lfanew;       // +0x3C  ★ PE 头文件偏移（FOA）
+} IMAGE_DOS_HEADER, *PIMAGE_DOS_HEADER;
+```
 
 最重要的两个字段：  
 
