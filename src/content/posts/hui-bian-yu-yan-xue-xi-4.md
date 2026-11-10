@@ -1,8 +1,8 @@
 ---
 title: "汇编语言学习 #4 手记"
 slug: "hui-bian-yu-yan-xue-xi-4"
-date: 2026-11-09
-updated: 2026-11-09
+date: 2026-11-10
+updated: 2026-11-10
 published: true
 categories: ["汇编语言学习"]
 tags: ["汇编语言学习", "CTF", "Reverse", "x86-64", "GDB", "pwndbg"]
@@ -156,15 +156,20 @@ while n < 16:
 #经运算得到
 #v7 = [109, 249, 109, 108, 258, 310, 434, 443, 491, 496, 306, 367, 519, 571, 688, 600]
 
-while i >= 0 :
+while i > 0 :
     i -= 1
     v7_ = v7[i]
     v4 -= 7
     v5 -= 5
     v8 = b2[i]
-    d = (i & 3 + 1)
+    d = (i & 3) + 1
     v8_l = v8 & 0xff
     v8_l = ((v8 >> d) & 0xff) | ((v8 << (8 - d)) & 0xff)
     v8 = (v8 & ~0xFF) | (v8_l & 0xFF)
-    inpu[i] = (v8 - 11 - v7 - v4)^ b1[v5 & 0xf]
+    inpu[i] = ((v8 - 11 - v7_ - v4) & 0xff) ^ b1[v5 & 0xf]
+print(inpu)
 ```
+
+得到
+[114, 51, 118, 95, 100, 121, 110, 97, 109, 105, 99, 95, 50, 48, 50, 54]
+正确
