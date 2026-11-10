@@ -438,3 +438,5 @@ print(result4)
 moectf{Tre4t_f4ncha1_W1tH_xxtea_Wh4t_A_g00d_Id3a_HahaHAh4hAH4ha}
 
 ![alt text](image-11.png)
+
+[python脚本](../fujian/jiemi7.py)
