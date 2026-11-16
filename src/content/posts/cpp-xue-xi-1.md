@@ -259,3 +259,80 @@ KISS
 YAGNI
 
 高内聚，低耦合
+
+## ‘this’指针
+
+看一个实例：
+
+```c++
+class Player
+{
+public:
+    int hp = 100;
+
+    void damage(int n)
+    {
+        this->hp -= n;
+    }
+};
+
+int main()
+{
+    Player p1;
+    p1.damage(30);
+}
+```
+
+clas Player创建了一个类
+
+player p1是新建了一个对象（实例） (类似于结构体)，名字是p1
+
+类是模板，对象是根据类创建出来的具体实例。
+
+`p1.damage(30);`调用p1对象里的damage函数
+
+我们并没有手动传入 &p1，但是 damage() 仍然知道应该修改 p1。因为 C++ 会隐式地把当前对象的信息传给成员函数，这个对象指针就是 this。
+
+![alt text](image-16.png)
+
+表达式|含义
+---|---
+p1|整个玩家对象
+&p1|整个玩家对象的地址
+p1.hp|玩家的血量值
+this|当前对象的指针
+this->hp|当前对象的血量
+
+当执行 p1.damage(30) 时：
+this == &p1
+
+而：
+this->hp
+
+相当于：
+p1.hp
+
+\[\boxed{p\texttt{->}hp = (*p).hp}\]
+
+![alt text](image-17.png)
+
+### 什么时候需要显式写 this
+
+```c++
+class Player
+{
+public:
+    int hp;
+
+    void setHP(int hp)
+    {
+        this->hp = hp;
+    }
+};
+```
+
+这里出现了两个 hp：  
+
+- this->hp：对象的成员变量。
+- hp：函数接收的参数。
+
