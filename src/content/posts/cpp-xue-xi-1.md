@@ -11,6 +11,8 @@ tags: ["C++"]
 ## C++ 入门学习
 
 > 发布于 2026-11-15 16-49-46
+> 参考GPT生成的C++教程
+> 本篇文章为学习笔记，建议在C语言的基础上阅读学习
 
 ## 基本语法
 
@@ -483,10 +485,169 @@ int main() {
 }
 ```
 
-p2在p1这个作用域结束后就会结构，不需要等到main函数结束
+p2 在内层作用域结束时就会自动调用析构函数，而 p1 要等到 main() 结束时才析构。因此输出 AACBDB。
 
 输出`AACBDB`
 
+## 构造函数初始化列表
 
+先看两组代码：
 
+构造函数体内赋值
+
+```c++
+class Player{
+    public:
+    int hp;
+
+    player(int n){
+        hp = n;
+    }
+};
+```
+
+初始化列表
+
+```c++
+class Player{
+    public:
+    int hp;
+
+    player(int n)
+        :hp(n){
+
+    }
+};
+```
+
+这两段代码创建出的 Player 对象，其 hp 都可以得到传入的 n
+
+区别：
+
+- A 先进入构造结构体，再执行`hp=n`赋值
+- B 在进入构造结构体之前，直接用n初始化hp
+
+### 为什么需要初始化列表？
+
+接下来我们看一个特殊情况：const 成员变量。
+
+如果写
+
+```c++
+class Player {
+public:
+    const int maxHP;
+
+    Player(int n) {
+        maxHP = n;  // 编译错误
+    }
+};
+```
+
+编译器会报错，因为maxHP是const成员，必须在初始化确定它的值，不能等进入构造函数再赋值
+
+正确写法：
+
+```c++
+class Player {
+public:
+    const int maxHP;
+
+    Player(int n) : maxHP(n) {
+    }
+};
+```
+
+### 引用成员的初始化
+
+现在来看另一种情况：引用成员 int&
+
+```c++
+class Test {
+public:
+    int& ref;
+
+    Test(int& x) : ref(x) {
+    }
+};
+```
+
+这里`int& ref;`表示ref是一个整数引用
+
+`Test(int& x) : ref(x) {}`表示创建对象时，让ref绑定到传入的变量
+
+例如：
+
+```c++
+int main() {
+    int a = 10;
+
+    Test t(a);
+
+    t.ref = 50;
+
+    std::cout << a << std::endl;
+}
+```
+
+打印`50`
+
+错误写法：
+
+```c++
+class Test {
+public:
+    int& ref;
+
+    Test(int& x) {
+        ref = x;  // 编译错误
+    }
+};
+```
+
+原因是：进入构造函数体之前，引用成员就必须已经绑定到某个对象。
+
+而 ref = x 是赋值操作，不是引用绑定操作。
+
+### 成员初始化顺序
+
+C++ 规定：同一个类的非静态成员变量，按照它们在类中声明的顺序初始化，而不是初始化列表中的书写顺序。
+
+例如：
+
+```c++
+class Test {
+public:
+    int a;
+    int b;
+
+    Test(int x) : b(x + 10), a(x) {
+    }
+};
+```
+
+虽然初始化列表中b写在前面，但是是按照在类中的声明顺序初始化
+
+所以应该是先初始化a，再初始化b
+
+> 推荐你始终让初始化列表与成员声明顺序保持一致，并避免用尚未初始化的成员计算其他成员。
+
+## static 静态成员
+
+### 为什么需要 static
+
+假设我们在开发一个游戏，需要创建多个玩家。
+
+```c++
+class Player {
+public:
+    int hp = 100;
+};
+
+int main() {
+    Player p1;
+    Player p2;
+    Player p3;
+}
+```
 
