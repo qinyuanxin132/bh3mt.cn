@@ -40,9 +40,12 @@ const heatmapWeeks = Array.from({ length: 53 }, (_, week) => heatmapDays.slice(w
     </div>
   </div>
   <div class="shell">
-    <section class="hero" id="about">
+    <section class="hero hero-ling" id="about">
+      <picture>
+        <img src={`${base}images/ling/ling-moonlit-study.webp`} alt="泠坐在月光下的书桌旁，陪你翻开新的学习笔记" width="1536" height="1024" fetchpriority="high" />
+      </picture>
       <div class="hero-copy">
-        <span class="eyebrow">notes / reverse / linux</span>
+        <span class="eyebrow">moonlit notes / 与泠一起记录</span>
         <h1>把遇到的问题，<br /><span class="muted">写成下次能读懂的答案。</span></h1>
         <p>这里记录 CTF、逆向工程、Linux、编程学习，以及一些还没有被整理成答案的想法。</p>
         <div class="hero-actions">
@@ -50,13 +53,8 @@ const heatmapWeeks = Array.from({ length: 53 }, (_, week) => heatmapDays.slice(w
           <a class="button" href="https://github.com/qinyuanxin132/bh3mt.cn" target="_blank" rel="noreferrer">GitHub ↗</a>
         </div>
       </div>
-      <div class="hero-card" aria-label="博客状态">
-        <div class="terminal-dot"><i></i><i></i><i></i></div>
-        <div class="hero-card-line"><span>status</span><strong>writing</strong></div>
-        <div class="hero-card-line"><span>topics</span><strong>reverse / ctf</strong></div>
-        <div class="hero-card-line"><span>published</span><strong>{posts.length} notes</strong></div>
-        <div class="hero-card-prompt">$ keep_learning<span>_</span></div>
-      </div>
+      <div class="hero-signature"><span class="signature-line"></span><span>泠 <small>LING / 月下伴读</small></span></div>
+      <div class="hero-note"><span class="online-star" aria-hidden="true">✦</span> {posts.length} 篇笔记 <span class="note-divider">/</span> reverse · ctf · linux <span class="note-divider">/</span> keep learning</div>
     </section>
 
     <section class="activity-section" aria-labelledby="activity-title">

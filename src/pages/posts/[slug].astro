@@ -32,6 +32,10 @@ const formatDate = (date: Date) => date.toLocaleDateString('zh-CN', { year: 'num
     <div class="article-grid">
       <div class="article-content"><Content /></div>
       <aside class="toc-panel">
+        <a class="reading-companion" href={`${base}about/#ling-title`} aria-label="认识泠">
+          <img src={`${base}images/ling/ling-reading.webp`} alt="泠陪你读这一页" width="640" height="800" loading="lazy" />
+          <span>泠陪你读这一页 <i aria-hidden="true">✦</i></span>
+        </a>
         <div class="toc-title">目录</div>
         <nav id="toc" aria-label="文章目录"><span class="muted">正在读取…</span></nav>
       </aside>

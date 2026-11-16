@@ -17,7 +17,7 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
     <header class="site-header">
       <div class="shell nav">
         <a class="brand" href={base}>
-          <span class="brand-mark">B</span>
+          <span class="brand-mark fox-mark" aria-hidden="true">✦</span>
           <span>BH3MT <em>无风</em></span>
         </a>
         <div class="header-search-slot"><slot name="header-search" /></div>
@@ -30,7 +30,7 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
     </header>
     <main><slot /></main>
     <footer class="site-footer">
-      <div class="shell"><strong>BH3MT 无风</strong><span> · 用文字记录问题，用代码验证答案。</span></div>
+      <div class="shell footer-inner"><div><strong>BH3MT 无风</strong><span> · 用文字记录问题，用代码验证答案。</span></div><a class="footer-ling" href={`${base}about/#ling-title`}>✦ 月光与泠，陪你读到这里</a></div>
     </footer>
     <script define:vars={{ base }}>
       document.querySelectorAll('img[src^="/upload/"]').forEach((image) => {
