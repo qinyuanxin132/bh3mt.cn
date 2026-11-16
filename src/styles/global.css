@@ -2276,3 +2276,206 @@ html {
 .article-content h4 {
   scroll-margin-top: 0;
 }
+
+/* 泠的正文伴读：章节、书签与狐火。 */
+.article-content {
+  background-image: radial-gradient(
+    ellipse at 100% 0,
+    #aec4ff08,
+    transparent 50%
+  );
+}
+.article-content h2 {
+  position: relative;
+  display: block;
+  min-height: 57px;
+  padding: 0.55rem 5rem 0.6rem 1.8rem;
+  border-bottom: 1px solid #a5ccf440;
+  border-radius: 8px 8px 0 0;
+  background: linear-gradient(90deg, #a5ccf40c, transparent 75%);
+  font-size: 1.45rem;
+}
+.article-content h2::before {
+  content: "";
+  position: absolute;
+  top: 1.15rem;
+  left: 0.55rem;
+  width: 10px;
+  height: 14px;
+  border: 1px solid #c0e9fc;
+  border-radius: 75% 5% 75% 40%;
+  transform: rotate(22deg);
+  background: #92d3ec42;
+  box-shadow: 0 0 12px #9bdcf73b;
+}
+.article-content h2::after {
+  content: "";
+  position: absolute;
+  right: 0.3rem;
+  bottom: -1px;
+  width: 70px;
+  height: 70px;
+  background: url("/images/ling/ling-page-peek.webp") center bottom / contain
+    no-repeat;
+  pointer-events: none;
+}
+.article-content h3 {
+  padding-left: 0.85rem;
+  border-left: 2px solid #c1b5e6a6;
+  font-weight: 550;
+}
+.article-content blockquote {
+  position: relative;
+  border: 1px solid #a5ccf42e;
+  border-left: 2px solid #a5ccf4b0;
+  border-radius: 3px 14px 14px 3px;
+  padding: 0.4rem 2.2rem 0.4rem 1.2rem;
+  background: linear-gradient(120deg, #a5ccf410, #c1b5e607);
+}
+.article-content blockquote::after {
+  content: "☾";
+  position: absolute;
+  right: 0.65rem;
+  top: 0.4rem;
+  color: #c1d7f18c;
+  font: 1.3rem/1.2 var(--serif);
+  pointer-events: none;
+}
+.article-content hr {
+  position: relative;
+  border: 0;
+  height: 1px;
+  margin: 2.8rem auto;
+  max-width: 70%;
+  background: linear-gradient(90deg, transparent, #acd6ee8c, transparent);
+}
+.article-content hr::after {
+  content: "✦";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0 0.8rem;
+  color: #b7dbf4;
+  background: #152034;
+  font-size: 0.75rem;
+}
+.article-content .ling-interlude {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  min-height: 145px;
+  margin: 3rem 0 2.3rem;
+  padding: 1.2rem 165px 1.2rem 1.6rem;
+  border: 1px solid #a5ccf43a;
+  border-radius: 18px 18px 5px 18px;
+  background:
+    radial-gradient(ellipse at 95% 100%, #a5ccf425, transparent 60%),
+    linear-gradient(110deg, #21334d, #17253d);
+  box-shadow: 0 12px 30px #060d181f;
+}
+.ling-interlude::after {
+  content: "";
+  position: absolute;
+  left: 1.5rem;
+  right: 1.5rem;
+  bottom: -6px;
+  height: 5px;
+  border: 1px solid #a5ccf425;
+  border-top: 0;
+  border-radius: 0 0 5px 5px;
+}
+.interlude-orbit {
+  position: absolute;
+  top: 0.65rem;
+  right: 135px;
+  color: #b6d6f1;
+  font-size: 0.8rem;
+  text-shadow: 0 0 12px #99dafa80;
+}
+.interlude-copy {
+  position: relative;
+  z-index: 1;
+}
+.interlude-kicker {
+  display: block;
+  color: #b7d2f1;
+  font:
+    0.57rem/1.6 ui-monospace,
+    monospace;
+  letter-spacing: 0.16em;
+}
+.article-content .interlude-copy p {
+  margin: 0.45rem 0 0.5rem;
+  color: #e0ebfa;
+  font: 500 1.05rem/1.6 var(--serif);
+}
+.article-content a.interlude-link {
+  color: #b1c9e8;
+  font-size: 0.65rem;
+  text-decoration: none;
+  border-bottom: 1px solid #a5ccf440;
+}
+.article-content a.interlude-link:hover {
+  color: #edf6ff;
+  text-decoration: underline;
+}
+.article-content .ling-interlude .interlude-ling {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0;
+  width: 145px;
+  height: 145px;
+  object-fit: contain;
+  object-position: center bottom;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  filter: drop-shadow(0 5px 12px #0915294d);
+  pointer-events: none;
+}
+@media (max-width: 760px) {
+  .article-content h2 {
+    padding: 0.55rem 3.8rem 0.6rem 1.5rem;
+    min-height: 50px;
+    font-size: 1.2rem;
+  }
+  .article-content h2::before {
+    left: 0.35rem;
+    top: 1rem;
+    width: 8px;
+    height: 12px;
+  }
+  .article-content h2::after {
+    width: 54px;
+    height: 54px;
+    right: 0;
+  }
+  .article-content .ling-interlude {
+    min-height: 133px;
+    padding: 1rem 112px 1rem 1rem;
+    margin: 2.5rem 0 2rem;
+    border-radius: 14px 14px 4px 14px;
+  }
+  .article-content .ling-interlude .interlude-ling {
+    right: 0.2rem;
+    width: 100px;
+    height: 120px;
+  }
+  .interlude-kicker {
+    font-size: 0.47rem;
+    letter-spacing: 0.06em;
+  }
+  .article-content .interlude-copy p {
+    font-size: 0.87rem;
+  }
+  .interlude-orbit {
+    right: 101px;
+    top: 0.4rem;
+    font-size: 0.6rem;
+  }
+  .article-content a.interlude-link {
+    font-size: 0.59rem;
+  }
+}

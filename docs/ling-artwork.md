@@ -1,5 +1,15 @@
 # 泠 · 网站插画
 
+
+## 正文伴读书签 · ling-page-peek.webp
+
+内置 image_gen 图生图；参考 `p/图层 2.png` 和已认可的 `public/images/ling/ling-reading.webp`。新图为透明底，WebP 保存于 `public/images/ling/ling-page-peek.webp`，用于正文标题与小节间书签，属于博客形象，不增补故事经历。
+
+提示词：
+
+Use case: identity-preserve image-to-image illustration. Input image 1 is the canonical visual reference of the user's OC 泠; input image 2 is the approved cute website illustration of the same OC. Create a NEW transparent chibi half-body sticker of the SAME recognizable character peeking over a horizontal invisible page ledge, both forearms comfortably resting on the ledge and hands gently overlapping, head tilted slightly with a cheerful small smile, bright light-blue fox eyes looking at reader. Preserve her round soft oval face, long silver-white hair with pale water-blue tips, white fox ears with light pink inner tips. Outfit follows her official story setting: WHITE haori jacket with long flowing sleeves over WHITE wrapped chest cloth, fine narrow white ribbons; no redesign, no added jewelry, no hats, no glasses. A compact fluffy fan of silver-white fox tails with pale-water-blue tips behind her shoulders, tips all fully inside the frame. Head and ears fully visible with generous top margin. Japanese anime, delicate clean linework and soft luminous cool blue shading consistent with image 2. Full sticker silhouette contained, lower edge naturally terminates at the forearms and flowing sleeves, no visible lower torso. Aspect ratio square or 4:3. Real transparent alpha background, no drawn checkerboard, no ledge object, no scenery, no book, no typography, no text, no watermark. This asset will be displayed at 100-160px wide inside article section dividers so keep a clear readable expression and simple silhouette. Do not copy the reference pose.
+
+
 ## 第二轮 · 泠主题 UI 重构
 
 使用内置 image_gen 图生图，每张均传入原设定图 `p/图层 2.png`、九尾设定图 `p/银尾九尾狐少女泠的华丽立绘.png` 和首轮成图 `public/images/ling/ling-moonlit-study.webp`。三张最终素材均保存在 `public/images/ling/`，迷路图保留透明通道。
