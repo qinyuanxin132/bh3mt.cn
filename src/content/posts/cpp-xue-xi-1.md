@@ -300,7 +300,7 @@ player p1是新建了一个对象（实例） (类似于结构体)，名字是p1
 p1|整个玩家对象
 &p1|整个玩家对象的地址
 p1.hp|玩家的血量值
-this|当前对象的指针
+tis|当前对象的指针
 this->hp|当前对象的血量
 
 当执行 p1.damage(30) 时：
@@ -335,4 +335,155 @@ public:
 
 - this->hp：对象的成员变量。
 - hp：函数接收的参数。
+
+## 构造函数
+
+例如这个实例
+
+```c++
+class Player {
+public:
+    int hp = 100;
+};
+
+int main() {
+    Player p1;
+}
+```
+
+创建一个玩家的时候，只能固定血量是100，但如果我想让p1血量是100，p2血量是200呢
+
+这就需要构造函数：
+
+```c++
+#include <iostream>
+
+class Player
+{
+public:
+    int hp;
+
+    Player(int n){
+        hp = n;
+    }
+};
+
+int main()
+{
+    Player p1(100);
+    Player p2(200);
+
+    std::cout << p1.hp << " " << p2.hp << std::endl;
+}
+```
+
+其中
+
+```c++
+Player(int n){
+        hp = n;
+    }
+```
+
+与类的名字相同而且没有定义返回类型
+
+并且**创建对象会自动调用**
+
+![alt text](image-18.png)
+
+## 析构函数
+
+那么对象不再使用时，怎么执行清理操作呢？
+
+答案是：析构函数（Destructor）。
+
+```c++
+#include <iostream>
+
+class Player {
+public:
+    Player() {
+        std::cout << "Created\n";
+    }
+
+    ~Player() {
+        std::cout << "Destroyed\n";
+    }
+};
+
+int main() {
+    Player p1;
+
+    std::cout << "Hello\n";
+}
+```
+
+其中
+
+```c++
+Player()   // 构造函数
+~Player()  // 析构函数
+```
+
+析构函数比构造函数多一个~
+
+### 析构顺序
+
+```c++
+#include <iostream>
+
+class Player {
+public:
+    Player() {
+        std::cout << "A";
+    }
+
+    ~Player() {
+        std::cout << "B";
+    }
+};
+
+int main() {
+    Player p1;
+    Player p2;
+
+    std::cout << "C";
+}
+```
+
+main()函数运行完后，p1和p2的生命周期结束
+
+由于是先创建的p1，再创建的p2，所以会先析构p2，再析构p1
+
+### 理解作用域对析构的影响
+
+```c++
+#include <iostream>
+
+class Player {
+public:
+    Player() {
+        std::cout << "A";
+    }
+
+    ~Player() {
+        std::cout << "B";
+    }
+};
+
+int main() {
+    Player p1;
+
+    {
+        Player p2;
+        std::cout << "C";
+    }
+
+    std::cout << "D";
+}
+```
+
+p2在p1这个作用域结束后就会结构，不需要等到main函数结束
+
+输出`AACBDB`
 
