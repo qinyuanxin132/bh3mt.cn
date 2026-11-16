@@ -2,7 +2,7 @@
 title: "C++ 入门学习 #1"
 slug: "cpp-xue-xi-1"
 date: 2026-11-15
-updated: 2026-11-15
+updated: 2026-11-16
 published: true
 categories: ["C++学习笔记"]
 tags: ["C++"]
