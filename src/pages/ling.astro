@@ -1,0 +1,113 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const sections = [{id:'identity',label:'初识泠'}, {id:'origin',label:'青丘与名字'}, {id:'souls',label:'泠与晞'}, {id:'abilities',label:'能力与随身物'}, {id:'world',label:'她的世界'}, {id:'illustrations',label:'站内插画'}];
+const gallery = [
+  {file:'ling-moonlit-study.webp', title:'月下手记', note:'在窗边，把今天的问题写下来。'},
+  {file:'ling-library.webp', title:'书签之间', note:'给零散的笔记，留一个能找到的位置。'},
+  {file:'ling-farewell.webp', title:'下次见', note:'这一页结束了，还有下一次相见。'},
+];
+---
+<SiteLayout title="泠 · 澪雨 | 原创角色介绍 · BH3MT 无风" description="认识《泠晞》中的泠：来自青丘的九尾白狐澪雨，与晞双魂共体。她离开青丘，想找到被叫作泠的自己。">
+  <div class="shell character-page">
+    <header class="character-hero">
+      <div class="character-hero-copy">
+        <span class="eyebrow">original character / 《泠晞》</span>
+        <h1>泠 <span>澪雨</span></h1>
+        <p class="character-lead">她想找的，是“泠”。</p>
+        <p>青丘的九条溪为她涨过水，族人把她称作传说。<br />可她想要的，是有人叫她的名字时，眼里只有她。</p>
+        <div class="character-labels"><span>青丘白狐</span><span>九尾血统</span><span>双魂共体</span></div>
+        <a class="text-link" href="#identity">从这里认识她 ↓</a>
+      </div>
+      <figure class="character-portrait">
+        <img src={`${base}images/ling/ling-reading.webp`} alt="博客伴读形象中的泠：银白长发、蓝瞳与蓬松狐尾" width="640" height="800" fetchpriority="high" />
+        <figcaption>泠 · 博客伴读形象</figcaption>
+      </figure>
+    </header>
+
+    <nav class="character-index" aria-label="泠的介绍章节">
+      {sections.map((item,index) => <a href={`#${item.id}`}><small>{String(index+1).padStart(2,'0')}</small>{item.label}</a>)}
+    </nav>
+
+    <section class="character-section" id="identity" aria-labelledby="identity-title">
+      <div class="section-heading"><div><span class="eyebrow">01 / identity</span><h2 id="identity-title">先认识她，再认识九尾。</h2></div></div>
+      <div class="character-two-columns">
+        <div class="character-prose">
+          <p>本名澪雨，常用名泠。她是青丘白狐一脉的直系后裔，十七岁那年秋天离开青丘，走进人间。</p>
+          <p>她开朗、话多，情绪藏不住；会接话、反问、讨价还价，也会嘴硬，但被戳穿后撑不了多久。她的活泼有自己的分寸，郑重的承诺才会让她放慢脚步。</p>
+          <p>在笑容背后，她怕被丢下，也怕再度只剩一个响亮的身份。晞的一句“我在”，能让她确认自己并不孤单。</p>
+        </div>
+        <dl class="character-facts">
+          <div><dt>本名 / 常用名</dt><dd>澪雨 / 泠</dd></div>
+          <div><dt>出身</dt><dd>青丘 · 白狐一脉</dd></div>
+          <div><dt>身高 / 体重</dt><dd>162 cm / 48 kg</dd></div>
+          <div><dt>发色 / 瞳色</dt><dd>银白长发，发梢浅水蓝 / 浅蓝</dd></div>
+          <div><dt>狐耳 / 狐尾</dt><dd>白色狐耳，耳尖微粉 / 银白狐尾，尾尖水蓝</dd></div>
+          <div><dt>常服</dt><dd>白色缠胸布、白色羽织外套、白色毛绒安全裤，胸口垂细飘带</dd></div>
+          <div><dt>狐形与九尾</dt><dd>狐狸本相日常为单尾；九尾是血统完全展开态，人形也可收放狐尾</dd></div>
+        </dl>
+      </div>
+      <div class="character-habits"><span class="eyebrow">small things about her</span><p>开心时，尾巴先动；喊“晞姐”时，头往左偏；难过时摸水蓝色的尾尖。喝热水前吹三下，睡觉时蜷成一团，到了陌生地方先看天。</p></div>
+    </section>
+
+    <section class="character-section" id="origin" aria-labelledby="origin-title">
+      <div class="section-heading"><div><span class="eyebrow">02 / a name of her own</span><h2 id="origin-title">从青丘走出来，去找自己的名字。</h2></div></div>
+      <div class="character-origin">
+        <ol class="character-timeline">
+          <li><span>出生</span><div><h3>九条溪同时涨水</h3><p>九尾白狐降生，族人把她看作白狐一脉的传说。那份注视，也成了她与旁人之间的距离。</p></div></li>
+          <li><span>童年</span><div><h3>被看见的是“九尾”</h3><p>她没有遭到公开的攻击，却被礼貌地避开。尾巴越醒目，能走到她身边的人越少。</p></div></li>
+          <li><span>十二岁</span><div><h3>“我叫泠。”</h3><p>她问父亲为什么没有人叫她的名字。那晚，晞在她心里回答：“我看见你。”</p></div></li>
+          <li><span>十七岁 · 秋</span><div><h3>带着“我会回来”离家</h3><p>她留下一封信，临走又折回去带上白狐玉佩。她不是不要家，而是想看看，青丘之外有没有属于“泠”的位置。</p></div></li>
+        </ol>
+        <blockquote class="character-quote"><p>“他们看得见我，<br />但看不见我。”</p><footer>泠 ·《泠晞》第四章〈名字〉</footer></blockquote>
+      </div>
+    </section>
+
+    <section class="character-section" id="souls" aria-labelledby="souls-title">
+      <div class="section-heading"><div><span class="eyebrow">03 / two souls, one journey</span><h2 id="souls-title">门的两边，是泠与晞。</h2></div></div>
+      <p class="character-section-intro">晞是魔族公主。她在重伤坠落时进入刚出生的泠体内，此后与泠共用一具身体。泠一岁时听到的“云很慢”，是晞最早的回应。</p>
+      <div class="soul-pair">
+        <article class="soul-card"><span class="eyebrow">泠 / 青丘白狐</span><h3>走在外面的妹妹</h3><p>日常由泠行动。她感受世界，也把沿途所见与晞分享；她会需要姐姐，也会为了姐姐主动迈出下一步。</p></article>
+        <div class="soul-door"><span aria-hidden="true">↔</span><strong>门</strong><small>连接两个存在</small></div>
+        <article class="soul-card soul-xi"><span class="eyebrow">晞 / 魔族公主</span><h3>留在门里的姐姐</h3><p>晞寡言，把往事压在心里。她与泠一同感知外界，在泠需要时守住她，也会借身体出去透气。</p></article>
+      </div>
+      <div class="character-two-columns soul-rules">
+        <article><h3>接管，是交出身体的控制权。</h3><p>泠主动让出、失去意识、情绪崩溃，或晞判断必须出面时，晞可以接管。此时泠退到后台，仍可感知外界。</p></article>
+        <article><h3>“裂隙”与“门”，是同一处连接。</h3><p>裂隙位于泠左侧肩背至腰侧，是晞坠落留下的入口。“门”说的是它连接两魂的本质，随泠同行。</p></article>
+      </div>
+      <details class="character-detail"><summary>继续了解 · 晞如何站到泠身边</summary><div><p>门长好后，晞可以凝成独立的实体分身。她照着看了十七年的泠的脸成形：银白长发、相同身形与白色常服，瞳色则是暗红，脸色也更白。</p><p>分身与接管是两件事。分身靠泠的灵力维持，灵力不足时晞回到门里；回去不意味着消失，门在，她就在。</p></div></details>
+    </section>
+
+    <section class="character-section" id="abilities" aria-labelledby="abilities-title">
+      <div class="section-heading"><div><span class="eyebrow">04 / gifts and keepsakes</span><h2 id="abilities-title">水汽、狐火，和随身带着的牵挂。</h2></div></div>
+      <div class="character-ability-grid">
+        <article><span class="card-kicker">01 / 血统与感知</span><h3>雨天是她的主场</h3><p>九尾展开会强化感知、速度和耐力。雨、溪水与雾能进一步帮助她行动；远距听觉、气味辨读、夜视与存在感知，让她先于危险察觉变化。</p></article>
+        <article><span class="card-kicker">02 / 行走与飞行</span><h3>翅膀收起时，不留痕迹</h3><p>主翼与腿部辅助小翅平时不可见。基础飞行靠身体结构，无灵力时也能独自飞行；注入灵力后可加速或带人，速度、承重与消耗各有边界。</p></article>
+        <article><span class="card-kicker">03 / 水漠</span><h3>一段凝成刃的水</h3><p>白色细长刀柄上有浅羽纹，别在胸带外侧。平时只见刀柄，注入灵力才凝出水蓝色半透明翠刃；泠反握使用，擅长一击后拉开距离。</p></article>
+        <article><span class="card-kicker">04 / 留下的光</span><h3>淡蓝色的狐火</h3><p>狐火用于照明、标记路径与传递信号，不能拿来战斗。她也能收敛气息、降低存在感，但那不等于隐身。</p></article>
+      </div>
+      <details class="character-detail"><summary>随身物 · 白狐玉佩与隐狐坠</summary><div><p><strong>白狐玉佩</strong>是离家时舍不得留下的家中之物。她想走出“九尾”的身份，却仍带着与家人的牵挂。</p><p><strong>隐狐坠</strong>是月银细链与蜷卧狐狸轮廓的吊坠，能遮掩妖魔气息，也能抵挡一次致命伤，一个月可用一次。它并非无条件的庇护，刻意探查仍可能识破遮蔽。</p></div></details>
+      <details class="character-detail"><summary>瞳术 · 她很少使用的能力</summary><div><p>魅惑之瞳能在短暂对视中控制对方的身体动作，时间约三至五息，消耗很大。它不是修改记忆的能力。泠很少使用，因为她不想被人以同样的方式注视。</p></div></details>
+    </section>
+
+    <section class="character-section" id="world" aria-labelledby="world-title">
+      <div class="section-heading"><div><span class="eyebrow">05 / the world of ling & xi</span><h2 id="world-title">她走过的世界，处处有边界。</h2></div></div>
+      <div class="character-world-grid">
+        <article><span>青丘 · 妖族</span><p>山海之间，白狐血统与九尾传说沉入族中规矩。九条温溪、狐火草与慢云，是泠记得的家。</p></article>
+        <article><span>九天 · 天族</span><p>以秩序与律法维持界线。天族与魔族对立，晞的身份让她们的同行承受额外风险。</p></article>
+        <article><span>九幽夹层 · 魔族</span><p>天与地之间的魔界，也是晞的来处。暗红灵力在人间会侵蚀环境，不能随意外放。</p></article>
+        <article><span>人间 · 人族与道士</span><p>人可以与妖成为朋友，道士却以守护人间为责，对妖魔保持警惕。善意与规矩并不总在同一边。</p></article>
+      </div>
+      <details class="character-detail"><summary>故事中的相遇 · 江岫与女娲</summary><div><p><strong>江岫</strong>是《守微录》的持有者、当代守微人。他能看见边界，收留过狐狸形态的泠，也让她学着看清自己与晞之间的路。</p><p><strong>女娲</strong>是故事里的天族少女，后来成为补天者。她先把泠看作一个姐姐，与泠结下深厚的关系。两人的相遇与成长，是《泠晞》的另一段重要旅程。</p></div></details>
+    </section>
+
+    <section class="character-section" id="illustrations" aria-labelledby="illustrations-title">
+      <div class="section-heading"><div><span class="eyebrow">06 / moments on this site</span><h2 id="illustrations-title">故事之外，留在博客里的她。</h2></div></div>
+      <p class="character-section-intro">月下读书、整理笔记，是泠来到博客后的日常想象。这些站内场景插画，与上面的角色设定分开收藏。</p>
+      <div class="character-gallery">
+        {gallery.map(item => <figure><a href={`${base}images/ling/${item.file}`} target="_blank" rel="noreferrer" aria-label={`查看${item.title}大图（新标签页）`}><img src={`${base}images/ling/${item.file}`} alt={`${item.title}：泠的博客场景插画`} width="1536" height="1024" loading="lazy" /></a><figcaption><strong>{item.title}</strong><span>{item.note}</span></figcaption></figure>)}
+      </div>
+    </section>
+    <div class="character-endnote"><p>人物介绍依据《泠晞》人物档案、世界观与正文整理。这里从她的名字和旅程起点讲起，后面的故事，留待相见。</p><a class="text-link" href={`${base}about/`}>关于作者与博客 →</a></div>
+  </div>
+</SiteLayout>

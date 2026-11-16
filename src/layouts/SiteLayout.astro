@@ -1,9 +1,9 @@
 ---
 import '../styles/global.css';
 interface Props { title?: string; description?: string; }
-const { title = 'BH3MT 无风 · 泠的月下手记', description = '与泠一起，记录逆向、CTF、Linux 与编程学习。' } = Astro.props;
+const { title = 'BH3MT 无风 · 月下手记', description = '与泠一起，记录逆向、CTF、Linux 与编程学习。' } = Astro.props;
 const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
-const links = [{href:base, label:'手记', en:'NOTES'}, {href:`${base}categories/`, label:'书架', en:'LIBRARY'}, {href:`${base}about/`, label:'关于与泠', en:'ABOUT'}];
+const links = [{href:base, label:'手记', en:'NOTES'}, {href:`${base}categories/`, label:'分类', en:'ARCHIVE'}, {href:`${base}ling/`, label:'泠', en:'CHARACTER'}, {href:`${base}about/`, label:'关于', en:'ABOUT'}];
 ---
 <!doctype html>
 <html lang="zh-CN">
@@ -22,7 +22,7 @@ const links = [{href:base, label:'手记', en:'NOTES'}, {href:`${base}categories
       <div class="shell nav">
         <a class="brand" href={base} aria-label="BH3MT 无风 首页">
           <span class="brand-avatar"><img src={`${base}images/ling/ling-reading.webp`} alt="" width="640" height="800" /></span>
-          <span>BH3MT <em>无风</em><small>泠的月下手记 · MOONLIT NOTES</small></span>
+          <span>BH3MT <em>无风</em><small>月下手记 · MOONLIT NOTES</small></span>
         </a>
         <nav class="nav-links" aria-label="主导航">
           {links.map(link => <a href={link.href} aria-current={Astro.url.pathname === link.href ? 'page' : link.href === base && Astro.url.pathname.startsWith(`${base}posts/`) ? 'location' : undefined}><span>{link.label}</span><small>{link.en}</small></a>)}
@@ -35,7 +35,7 @@ const links = [{href:base, label:'手记', en:'NOTES'}, {href:`${base}categories
       <div class="shell">
         <div class="farewell-banner">
           <img src={`${base}images/ling/ling-farewell.webp`} alt="泠在月色下的窗边轻轻挥手" width="1536" height="1024" loading="lazy" />
-          <div class="farewell-copy"><span class="eyebrow">until the next page</span><p>这一页读完了，<br />下次也来坐坐吧。</p><a href={`${base}about/#ling-title`}>认识泠 <span aria-hidden="true">↗</span></a></div>
+          <div class="farewell-copy"><span class="eyebrow">until the next page</span><p>这一页读完了，<br />下次也来坐坐吧。</p><a href={`${base}ling/`}>认识泠 <span aria-hidden="true">↗</span></a></div>
         </div>
         <div class="footer-inner"><div><strong>BH3MT 无风</strong><span> · 记录问题，也收藏月光。</span></div><span>原创角色 · 泠 <i aria-hidden="true">✦</i> 用文字记录，用代码验证</span></div>
       </div>
@@ -45,6 +45,12 @@ const links = [{href:base, label:'手记', en:'NOTES'}, {href:`${base}categories
       document.querySelectorAll('img[src^="/upload/"]').forEach((image) => {
         image.setAttribute('src', `${base}${image.getAttribute('src').slice(1)}`);
       });
+      const header = document.querySelector('.site-header');
+      const updateHeaderHeight = () => {
+        if (header) document.documentElement.style.setProperty('--header-height', `${header.getBoundingClientRect().height}px`);
+      };
+      if (header) new ResizeObserver(updateHeaderHeight).observe(header);
+      updateHeaderHeight();
       const topButton = document.querySelector('.back-top');
       const updateTop = () => { if (topButton) topButton.hidden = window.scrollY < 600; };
       window.addEventListener('scroll', updateTop, { passive: true });

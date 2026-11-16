@@ -11,16 +11,6 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
       <p>这是一个用来记录问题、保存答案，也保存学习过程的地方。</p>
     </header>
 
-    <section class="ling-intro" aria-labelledby="ling-title">
-      <img src={`${base}images/ling/ling-reading.webp`} alt="捧着书、坐在银蓝狐尾上的泠" width="640" height="800" loading="lazy" />
-      <div>
-        <span class="eyebrow">original character / 泠</span>
-        <h2 id="ling-title">月色很轻，泠也在这里。</h2>
-        <p>泠是我的原创角色，也是这个小站里陪伴阅读的身影。银白的长发、蓝色的眼睛，还有蓬松的九尾，把一点喜欢的幻想留在代码与文字之间。</p>
-        <span class="ling-caption">与泠一起，慢慢翻过每一页。</span>
-      </div>
-    </section>
-
     <div class="about-grid">
       <section class="about-card about-card-main">
         <span class="card-kicker">01 / 为什么写</span>
@@ -47,6 +37,13 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
         <article><strong>保持具体</strong><p>命令、代码和现象尽量写清楚，让文章可以被重新验证。</p></article>
         <article><strong>持续整理</strong><p>先留下痕迹，再慢慢修正结构。学习本来就是一个迭代过程。</p></article>
       </div>
+    </section>
+
+    <section class="about-character-link" id="ling-title" aria-labelledby="character-link-title">
+      <span class="eyebrow">original character / 泠</span>
+      <h2 id="character-link-title">这个小站，也有泠的一席之地。</h2>
+      <p>泠是我的原创角色，来自《泠晞》。她的身世、与晞的关系和世界观，收在独立的角色章节里。</p>
+      <a class="text-link" href={`${base}ling/`}>前往泠的角色介绍 →</a>
     </section>
 
     <section class="about-contact">
