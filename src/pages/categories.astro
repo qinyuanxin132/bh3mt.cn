@@ -19,10 +19,13 @@ const formatDate = (date: Date) => date.toLocaleDateString('zh-CN', { year: 'num
 ---
 <SiteLayout title="分类 · BH3MT 无风" description="BH3MT 无风的文章分类与归档。">
   <div class="shell archive-page">
-    <header class="archive-hero">
+    <header class="archive-hero illustrated-heading">
+      <img src={`${base}images/ling/ling-library.webp`} alt="泠在月光下的书架旁整理笔记" width="1536" height="1024" fetchpriority="high" />
+      <div class="illustrated-copy">
       <span class="eyebrow">taxonomy / archive</span>
-      <h1>按分类阅读</h1>
+      <h1>泠的月下书架</h1>
       <p>把零散的笔记放回它们应该在的位置。共 {categories.length} 个分类，{posts.length} 篇公开文章。</p>
+      </div>
     </header>
 
     <nav class="category-grid" aria-label="文章分类">

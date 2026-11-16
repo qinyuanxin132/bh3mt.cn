@@ -19,9 +19,10 @@ const formatDate = (date: Date) => date.toLocaleDateString('zh-CN', { year: 'num
 ---
 <SiteLayout title={`${post.data.title} · BH3MT 无风`} description={post.data.title}>
   <div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div>
-  <article class="article-shell">
+  <article class="article-shell shell">
     <header class="article-header">
       <a class="back-link" href={base}>← 返回文章列表</a>
+      <span class="eyebrow article-kicker">moonlit notes / 月下手记</span>
       <h1>{post.data.title}</h1>
       <div class="meta">
         <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
@@ -74,7 +75,7 @@ const formatDate = (date: Date) => date.toLocaleDateString('zh-CN', { year: 'num
     const updateProgress = () => {
       if (!content || !progress) return;
       const top = content.getBoundingClientRect().top + window.scrollY;
-      const total = content.scrollHeight - window.innerHeight;
+      const total = Math.max(1, content.scrollHeight - window.innerHeight);
       progress.style.width = `${Math.max(0, Math.min(100, ((window.scrollY - top) / total) * 100))}%`;
     };
     window.addEventListener('scroll', updateProgress, { passive: true });

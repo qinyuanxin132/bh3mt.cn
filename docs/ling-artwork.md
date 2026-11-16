@@ -1,5 +1,22 @@
 # 泠 · 网站插画
 
+## 第二轮 · 泠主题 UI 重构
+
+使用内置 image_gen 图生图，每张均传入原设定图 `p/图层 2.png`、九尾设定图 `p/银尾九尾狐少女泠的华丽立绘.png` 和首轮成图 `public/images/ling/ling-moonlit-study.webp`。三张最终素材均保存在 `public/images/ling/`，迷路图保留透明通道。
+
+### 书架 / ling-library.webp
+
+Image-to-image transformation of the attached original character 泠 (Ling). Image 1 is the canonical character sheet: preserve EXACT same face, bangs, silver-white long hair with lavender undershadows, blue eyes, tall white fox ears, black choker, white wrap top, white shorts, ice-blue oversized kimono coat with dark navy sleeve lining and white shoes. Image 2 provides her silver-blue NINE fox tails. Image 3 is the approved rendering style and face continuity reference. Keep her recognizable as the very same OC, do not redesign clothing, hair, species or personality. Change only pose and setting as specified. Polished delicate anime illustration, cool silver, icy blue and lavender, midnight navy setting, no lettering, no watermark. Create a landscape 3:2 illustration for the blog's category/library page. Ling is standing beside a low bookshelf, holding three small notebooks to her chest with one arm and using the other hand to slip a blue bookmark into one book on the shelf. Gentle warm smile toward viewer. Medium shot head to hips, character on RIGHT half, all ears fully inside frame with generous top margin. Nine soft tails visible behind her. Moonlit quiet personal study with shelves of navy and pale-blue books, small blue blossom vase. LEFT half contains shadowy shelves and calm dark negative space for website heading. Keep canonical simple outfit from Image 1, no added hair jewelry or fur trim.
+
+### 迷路 / ling-lost.webp
+
+undefinedCreate a transparent-background portrait sticker, full body, same anime proportions as approved image (not chibi). Ling stands looking at a small unfolded paper map held in both hands, head gently tilted with a slightly puzzled but calm expression. Her fluffy nine silver-blue tails curl into a compact fan behind her. No signpost, no text on map, just subtle thin blue route lines. Full fox ears, tail tips and white shoes inside frame with transparent margins. Real transparent alpha, no background, no checkerboard drawn. Preserve canonical simple ice-blue coat, white wrap top, white shorts, black choker and same hair and face.
+
+### 挥手告别 / ling-farewell.webp
+
+Image-to-image transformation of the attached original character 泠 (Ling). Image 1 is the canonical character sheet: preserve EXACT same face, bangs, silver-white long hair with lavender undershadows, blue eyes, tall white fox ears, black choker, white wrap top, white shorts, ice-blue oversized kimono coat with dark navy sleeve lining and white shoes. Image 2 provides her silver-blue NINE fox tails. Image 3 is the approved rendering style and face continuity reference. Keep her recognizable as the very same OC, do not redesign clothing, hair, species or personality. Change only pose and setting as specified. Polished delicate anime illustration, cool silver, icy blue and lavender, midnight navy setting, no lettering, no watermark. Create a wide landscape 3:2 illustration for a website end-of-reading farewell banner. Ling is sitting at an open wooden window, seen from waist up in three-quarter view, turning toward viewer and raising one hand in a small gentle goodbye wave, relaxed warm smile. Nine silver-blue tails curl behind her. Character on RIGHT third, face and fox ears wholly inside upper-middle-right area with at least 12 percent margin above ears. LEFT two-thirds are a calm moonlit navy lake with distant mountains, faint stars, pale blossoms framing top corners. Quiet tender ending to a night of study. Preserve exact canonical simple coat, white wrap top, black choker, hair and face. No hair ornaments, no outfit redesign. No text.
+
+
 使用内置 image_gen 图像参考生成，两次均传入 p/图层 2.png 与 p/银尾九尾狐少女泠的华丽立绘.png。原设定图不直接展示在网站中。
 
 网站素材：public/images/ling/ling-moonlit-study.webp（首页）；public/images/ling/ling-reading.webp（关于、文章目录与 404，保留透明通道）。WebP 为生成原图的压缩版本。

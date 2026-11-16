@@ -1,8 +1,9 @@
 ---
 import '../styles/global.css';
 interface Props { title?: string; description?: string; }
-const { title = 'BH3MT 无风', description = '记录逆向、CTF、Linux 与编程学习。' } = Astro.props;
+const { title = 'BH3MT 无风 · 泠的月下手记', description = '与泠一起，记录逆向、CTF、Linux 与编程学习。' } = Astro.props;
 const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const links = [{href:base, label:'手记', en:'NOTES'}, {href:`${base}categories/`, label:'书架', en:'LIBRARY'}, {href:`${base}about/`, label:'关于与泠', en:'ABOUT'}];
 ---
 <!doctype html>
 <html lang="zh-CN">
@@ -10,76 +11,45 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#101a2b" />
+    <link rel="icon" type="image/webp" href={`${base}images/ling/ling-reading.webp`} />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
   <body>
+    <a class="skip-link" href="#main-content">跳到正文</a>
     <header class="site-header">
       <div class="shell nav">
-        <a class="brand" href={base}>
-          <span class="brand-mark fox-mark" aria-hidden="true">✦</span>
-          <span>BH3MT <em>无风</em></span>
+        <a class="brand" href={base} aria-label="BH3MT 无风 首页">
+          <span class="brand-avatar"><img src={`${base}images/ling/ling-reading.webp`} alt="" width="640" height="800" /></span>
+          <span>BH3MT <em>无风</em><small>泠的月下手记 · MOONLIT NOTES</small></span>
         </a>
-        <div class="header-search-slot"><slot name="header-search" /></div>
         <nav class="nav-links" aria-label="主导航">
-          <a href={base}>文章</a>
-          <a href={`${base}categories/`}>分类</a>
-          <a href={`${base}about/`}>关于</a>
+          {links.map(link => <a href={link.href} aria-current={Astro.url.pathname === link.href ? 'page' : link.href === base && Astro.url.pathname.startsWith(`${base}posts/`) ? 'location' : undefined}><span>{link.label}</span><small>{link.en}</small></a>)}
         </nav>
+        <div class="header-search-slot"><slot name="header-search" /></div>
       </div>
     </header>
-    <main><slot /></main>
+    <main id="main-content"><slot /></main>
     <footer class="site-footer">
-      <div class="shell footer-inner"><div><strong>BH3MT 无风</strong><span> · 用文字记录问题，用代码验证答案。</span></div><a class="footer-ling" href={`${base}about/#ling-title`}>✦ 月光与泠，陪你读到这里</a></div>
+      <div class="shell">
+        <div class="farewell-banner">
+          <img src={`${base}images/ling/ling-farewell.webp`} alt="泠在月色下的窗边轻轻挥手" width="1536" height="1024" loading="lazy" />
+          <div class="farewell-copy"><span class="eyebrow">until the next page</span><p>这一页读完了，<br />下次也来坐坐吧。</p><a href={`${base}about/#ling-title`}>认识泠 <span aria-hidden="true">↗</span></a></div>
+        </div>
+        <div class="footer-inner"><div><strong>BH3MT 无风</strong><span> · 记录问题，也收藏月光。</span></div><span>原创角色 · 泠 <i aria-hidden="true">✦</i> 用文字记录，用代码验证</span></div>
+      </div>
     </footer>
+    <button class="back-top" type="button" aria-label="回到页面顶部" hidden>↑<small>TOP</small></button>
     <script define:vars={{ base }}>
       document.querySelectorAll('img[src^="/upload/"]').forEach((image) => {
         image.setAttribute('src', `${base}${image.getAttribute('src').slice(1)}`);
       });
-      const finePointer = matchMedia('(pointer: fine)').matches;
-      const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (finePointer && !reducedMotion) {
-        const glow = document.createElement('div');
-        const dot = document.createElement('div');
-        glow.className = 'cursor-glow';
-        dot.className = 'cursor-dot';
-        document.body.append(glow, dot);
-        document.body.classList.add('cursor-fx-active');
-        let x = -100, y = -100, targetX = x, targetY = y;
-        const move = (event) => { targetX = event.clientX; targetY = event.clientY; };
-        const render = () => {
-          x += (targetX - x) * .18;
-          y += (targetY - y) * .18;
-          glow.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-          dot.style.transform = `translate3d(${targetX}px, ${targetY}px, 0)`;
-          requestAnimationFrame(render);
-        };
-        window.addEventListener('pointermove', move, { passive: true });
-        document.querySelectorAll('a, button, input, .heatmap-cell').forEach((element) => {
-          element.addEventListener('pointerenter', () => glow.classList.add('is-hover'));
-          element.addEventListener('pointerleave', () => glow.classList.remove('is-hover'));
-        });
-        render();
-        document.addEventListener('pointerdown', (event) => {
-          const burst = document.createElement('div');
-          burst.className = 'click-burst';
-          burst.style.left = `${event.clientX}px`;
-          burst.style.top = `${event.clientY}px`;
-          const ring = document.createElement('i');
-          ring.className = 'click-ring';
-          burst.append(ring);
-          for (let index = 0; index < 18; index += 1) {
-            const particle = document.createElement('span');
-            particle.style.setProperty('--angle', `${(index / 18) * 360 + (Math.random() * 14 - 7)}deg`);
-            particle.style.setProperty('--distance', `${34 + Math.random() * 32}px`);
-            particle.style.setProperty('--delay', `${Math.random() * 70}ms`);
-            particle.className = index % 3 === 0 ? 'is-violet' : 'is-cyan';
-            burst.append(particle);
-          }
-          document.body.append(burst);
-          window.setTimeout(() => burst.remove(), 850);
-        });
-      }
+      const topButton = document.querySelector('.back-top');
+      const updateTop = () => { if (topButton) topButton.hidden = window.scrollY < 600; };
+      window.addEventListener('scroll', updateTop, { passive: true });
+      topButton?.addEventListener('click', () => window.scrollTo({top:0, behavior:matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'}));
+      updateTop();
     </script>
   </body>
 </html>
