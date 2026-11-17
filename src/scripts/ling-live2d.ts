@@ -71,6 +71,7 @@ export function initLingLive2D() {
   let zoom = 1;
   let showcaseZoom = 1;
   let showcasing = false;
+  let showcaseFace: { x: number; y: number } | undefined;
   let restoreFocus: HTMLElement | null = null;
   let previousOverflow = "";
   let modelPoint: any;
@@ -134,16 +135,27 @@ export function initLingLive2D() {
       const { width, height } = view.getBoundingClientRect();
       if (width && height) {
         app.renderer.resize(width, height);
-        model.scale.set(
+        const baseScale =
           Math.min(
             width / model.internalModel.width,
             height / model.internalModel.height,
-          ) *
-            1.12 *
-            (showcasing ? showcaseZoom : 1),
-        );
+          ) * 1.12;
+        model.scale.set(baseScale * (showcasing ? showcaseZoom : 1));
         model.anchor.set(0.5, showcasing ? 0.5 : 1);
         model.position.set(width / 2, showcasing ? height / 2 : height - 2);
+        if (showcasing && showcaseFace) {
+          // Zoom around the face, with room above it for the fox ears.
+          const offsetX = (showcaseFace.x - model.pivot.x) * baseScale;
+          const offsetY = (showcaseFace.y - model.pivot.y) * baseScale;
+          const faceY = height / 2 + offsetY;
+          const headroom =
+            Math.max(0, height * 0.28 - faceY) *
+            Math.min(1, Math.max(0, showcaseZoom - 1));
+          model.position.set(
+            width / 2 + (1 - showcaseZoom) * offsetX,
+            height / 2 + (1 - showcaseZoom) * offsetY + headroom,
+          );
+        }
         app.renderer.render(app.stage);
       }
     }
@@ -167,6 +179,17 @@ export function initLingLive2D() {
     previousOverflow = document.body.style.overflow;
     showcasing = true;
     showcaseZoom = 1;
+    const internal = model.internalModel;
+    const head = internal.hitAreas.Head;
+    if (head) {
+      const bounds = internal.getDrawableBounds(head.index, {});
+      showcaseFace = internal.localTransform.apply({
+        x: bounds.x + bounds.width / 2,
+        y: bounds.y + bounds.height / 2,
+      });
+    } else {
+      showcaseFace = { x: internal.width / 2, y: internal.height * 0.18 };
+    }
     root.dataset.showcase = "true";
     showcaseButton.textContent = "返回伴读";
     showcaseButton.title = "退出橱窗";
