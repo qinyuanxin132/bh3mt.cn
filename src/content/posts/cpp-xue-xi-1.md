@@ -634,7 +634,9 @@ public:
 
 ## static 静态成员
 
-### 为什么需要 static
+### 成员
+
+#### 为什么需要 static
 
 假设我们在开发一个游戏，需要创建多个玩家。
 
@@ -651,3 +653,253 @@ int main() {
 }
 ```
 
+假设我们希望记录程序一共创建了多少个玩家。
+
+这时候应该把计数器放在哪里？
+
+我们需要的是：不管创建多少个对象，都共享同一个计数器。
+
+这就是 static 静态成员变量的用途之一。
+
+#### static 基本语法
+
+```c++
+#include <iostream>
+
+class Player {
+public:
+    int hp = 100;
+
+    inline static int count = 0;
+
+    Player() {
+        count++;
+    }
+};
+
+int main() {
+    Player p1;
+    Player p2;
+    Player p3;
+
+    std::cout << Player::count << '\n';
+}
+```
+
+输出3
+
+inline static int count = 0
+
+inline 允许在类内定义并初始化静态成员
+
+static 这是属于类的静态成员，不属于某个对象独有
+
+#### static 内存管理
+
+![alt text](image-19.png)
+
+count 不会因为有三个 Player 对象就分配三份
+
+#### static 在什么时候创建
+
+普通成员`Player p1`在创建对象的时候创建
+
+但静态成员在整个程序执行期间存在且初始化不会由于创建对象而重复执行
+
+#### 为什么要使用 Player::count
+
+::是作用域解析运算符
+
+`Player::count`表示在这个类作用域中寻找count
+
+即使一个对象都没创建，也能访问
+
+语义上假如有个p1对象，写p1.count也合法，但Player::count能更清楚的表示这是个类共享的变量
+
+#### static小测试
+
+```c++
+class Player {
+public:
+    int hp = 100;
+    inline static int count = 0;
+
+    Player() {
+        count++;
+    }
+};
+
+int main() {
+    Player p1;
+    Player p2;
+
+    p1.hp = 50;
+    Player::count += 5;
+
+    Player p3;
+
+    std::cout << p1.hp << " "
+              << p2.hp << " "
+              << p3.hp << " "
+              << Player::count;
+}
+```
+
+请你回答：
+
+1. 最终输出哪四个数字？
+2. Player::count += 5 为什么不需要指定 p1 或 p2？
+3. 如果执行 p1.hp = 50，为什么不会影响 p2.hp？
+
+输出：50 100 100 8  
+
+因为这是类的共享变量
+
+不会，hp又不共享，每个对象都有个单独的hp
+
+### 静态成员函数
+
+既然变量能属于类，那函数能不能也属于类
+
+这就是静态成员函数
+
+```c++
+#include <iostream>
+
+class Player {
+public:
+    inline static int count = 0;
+
+    Player() {
+        count++;
+    }
+
+    static void showCount() {
+        std::cout << count << '\n';
+    }
+};
+
+int main() {
+    Player p1;
+    Player p2;
+
+    Player::showCount();
+}
+```
+
+输出 2
+
+重点是`static void showCount()`在函数前面加了个static
+
+因此，我们可以通过类名调用
+
+`Player::showCount();`
+
+不需要先创建一个专门用来调用它的对象
+
+#### 静态成员函数没有this指针
+
+普通成员需要this指针指向正在操作的对象
+
+但静态成员函数没有this指针
+
+因此
+
+```c++
+class Player {
+public:
+    int hp = 100;
+    inline static int count = 0;
+
+    static void show() {
+        std::cout << count;  // 正确
+        std::cout << hp;     // 编译错误
+    }
+};
+```
+
+因为没有this指针`std::cout << hp;`不知道访问哪个对象的hp
+
+但如果明确提供对象，就可以访问公开成员
+
+```c++
+static void showHP(const Player& p) {
+    std::cout << p.hp;
+}
+```
+
+这里的 p 是我们自己传入的对象引用，并不是 this。
+
+特征|普通成员函数|静态成员函数
+---|---|---
+声明|void show()|static void show()
+是否有this|有|没有
+能否直接访问静态成员|可以|可以
+能否直接访问普通成员|可以|不可以
+典型调用|p1.show()|Player::show()
+
+#### 小测试
+
+```c++
+#include <iostream>
+
+class Player {
+public:
+    int hp = 100;
+    inline static int count = 0;
+
+    Player() {
+        count++;
+    }
+
+    static void addCount(int n) {
+        count += n;
+    }
+
+    void damage(int n) {
+        hp -= n;
+    }
+};
+
+int main() {
+    Player p1;
+    Player p2;
+
+    Player::addCount(3);
+    p1.damage(40);
+
+    std::cout << p1.hp << " "
+              << p2.hp << " "
+              << Player::count;
+}
+```
+
+回答三个问题：
+
+1. 最终输出什么？
+2. addCount() 为什么能直接修改 count？
+3. 如果在 addCount() 中写 this->hp = 50;，能否编译？为什么？
+
+60 100 5
+
+这是静态成员函数，可以直接修改类的静态成员变量
+
+不能，静态成员函数不支持使用this指针，不过可以通过引用来修改
+
+第三题使用引用来修改示例
+
+```c++
+class Player {
+public:
+    int hp = 100;
+
+    static void setHP(Player& p, int n) {
+        p.hp = n;
+    }
+};
+
+int main() {
+    Player p1;
+    Player::setHP(p1, 50);
+}
+```
