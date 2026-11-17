@@ -1,17 +1,18 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
 import '../styles/code-lab.css';
+import {languageIds, languageInfo} from '../data/code-lab';
 const base = import.meta.env.BASE_URL;
 ---
-<SiteLayout title="代码实验室 · BH3MT 无风" description="在浏览器里编写并运行 Python、C、C++，和泠一起把想法写成代码。">
+<SiteLayout title="代码实验室 · BH3MT 无风" description="在浏览器里编写并运行 Python、JavaScript、Java、Go 等 11 种语言，和泠一起把想法写成代码。">
   <div class="shell code-lab" data-code-lab data-base={base}>
     <header class="lab-hero">
-      <div><span class="eyebrow">MOONLIT WORKSPACE / 01</span><h1>代码实验室<span>把想法，运行一下。</span></h1><p>写几行代码，试一个猜想。Python、C 和 C++，在这里都能开始。</p><div class="lab-badges"><span>✦ 浏览器内运行</span><span>自动保存草稿</span><span>Ctrl / ⌘ + Enter 运行</span></div></div>
+      <div><span class="eyebrow">MOONLIT WORKSPACE / 01</span><h1>代码实验室<span>把想法，运行一下。</span></h1><p>写几行代码，试一个猜想。从 Python、JavaScript 到 Java、Go，11 种语言在这里开始。</p><div class="lab-badges"><span>✦ 浏览器内运行</span><span>自动保存草稿</span><span>Ctrl / ⌘ + Enter 运行</span></div></div>
       <a class="lab-ling" href={`${base}ling/`} aria-label="认识泠"><img src={`${base}images/ling/ling-reading.webp`} width="640" height="800" alt="在一旁陪伴的泠" /><span>一边写，一边找到答案。<small>LING / STUDY COMPANION</small></span></a>
     </header>
     <section class="lab-workspace" aria-label="在线代码编辑器">
       <div class="lab-controls">
-        <div class="lab-control-group"><label for="lab-language">语言</label><select id="lab-language"><option value="python">Python</option><option value="c">C · C17</option><option value="cpp">C++ · C++20</option></select><label for="lab-example" class="sr-only">示例</label><select id="lab-example"><option value="hello">你好，世界</option><option value="sum">读取输入 · 求和</option><option value="algorithm">算法 · 斐波那契</option></select><button id="lab-load-example" type="button" title="用所选示例替换当前代码">载入示例</button></div>
+        <div class="lab-control-group"><label for="lab-language">语言</label><select id="lab-language">{languageIds.map(lang => <option value={lang}>{languageInfo[lang].label}</option>)}</select><label for="lab-example" class="sr-only">示例</label><select id="lab-example"><option value="hello">你好，世界</option><option value="sum">读取输入 · 求和</option><option value="algorithm">算法 · 斐波那契</option></select><button id="lab-load-example" type="button" title="用所选示例替换当前代码">载入示例</button></div>
         <div class="lab-control-group"><button id="lab-stop" class="lab-stop" type="button" disabled>■ 停止</button><button id="lab-run" class="lab-run" type="button">▶ 运行代码</button></div>
       </div>
       <div class="lab-panels">
@@ -21,13 +22,13 @@ const base = import.meta.env.BASE_URL;
           <div class="lab-editor-footer"><span id="lab-cursor">Ln 1, Col 1</span><div><button id="lab-reset" type="button">恢复初始代码</button><button id="lab-download" type="button">下载源码 ↗</button></div></div>
         </section>
         <div class="lab-io-panels">
-          <section class="lab-input-panel" aria-labelledby="lab-input-title"><div class="lab-panel-heading"><h2 id="lab-input-title">标准输入 <small>STDIN</small></h2><label for="lab-timeout">执行上限 <select id="lab-timeout"><option value="5">5 秒</option><option value="10" selected>10 秒</option><option value="30">30 秒</option></select></label></div><textarea id="lab-stdin" aria-label="标准输入" placeholder="需要 input()、scanf() 或 cin 时，在运行前填好输入。" spellcheck="false"></textarea><p>输入按原样送入程序；读完后为 EOF。</p></section>
+          <section class="lab-input-panel" aria-labelledby="lab-input-title"><div class="lab-panel-heading"><h2 id="lab-input-title">标准输入 <small>STDIN</small></h2><label for="lab-timeout">执行上限 <select id="lab-timeout"><option value="5">5 秒</option><option value="10" selected>10 秒</option><option value="30">30 秒</option></select></label></div><textarea id="lab-stdin" aria-label="标准输入" placeholder="运行前填写程序需要的输入；各语言读取方式见下方说明。" spellcheck="false"></textarea><p id="lab-runtime-note">输入按原样送入程序；读完后为 EOF。</p></section>
           <section class="lab-output-panel" aria-labelledby="lab-output-title"><div class="lab-panel-heading"><h2 id="lab-output-title">运行结果 <small>OUTPUT</small></h2><button id="lab-clear" type="button">清空</button></div><div class="lab-output-scroll" tabindex="0" aria-label="程序输出"><pre id="lab-output" data-empty="true">点击「运行代码」，在这里查看结果。</pre></div><div class="lab-result-footer"><span id="lab-status" role="status" aria-live="polite" data-state="idle">● 就绪</span><span id="lab-duration"></span></div></section>
         </div>
       </div>
     </section>
     <noscript><p>代码实验室需要启用 JavaScript 才能编辑和运行代码。</p></noscript>
-    <section class="lab-notes" aria-label="使用说明"><div><span class="eyebrow">A LITTLE FIELD GUIDE</span><h2>从一小段代码开始。</h2><p>先选语言和示例，按下运行。每种语言的代码与输入分别保存，切换回来还能接着写。</p></div><details><summary>运行环境与使用范围 <span>＋</span></summary><p>Python 使用 Pyodide，提供 Python 标准库；C / C++ 使用 Clang 编译到 WebAssembly，提供 C 标准库和 libc++。此页面适合单文件语法练习与算法实验，暂不支持安装第三方包、系统进程、网络套接字、线程和 C++ 异常。</p><p>首次运行会下载环境：Python 约 13 MB，C / C++ 约 94 MB（未压缩大小），之后由浏览器缓存。运行计时在环境准备和编译完成后开始。停止或超时会结束本次运行，下次会重新初始化环境。</p><p>工具链与代码执行均在浏览器中完成，无需上传源码到编译服务器。草稿仅保存在当前浏览器，不会跨设备同步。</p><p class="lab-credits">运行环境：<a href="https://pyodide.org/en/0.27.7/" target="_blank" rel="noreferrer">Pyodide 0.27.7</a> · <a href="https://github.com/BertalanD/browsercc" target="_blank" rel="noreferrer">browsercc 0.1.1</a> · <a href="https://github.com/bjorn3/browser_wasi_shim" target="_blank" rel="noreferrer">browser_wasi_shim</a></p></details></section>
+    <section class="lab-notes" aria-label="使用说明"><div><span class="eyebrow">A LITTLE FIELD GUIDE</span><h2>从一小段代码开始。</h2><p>先选语言和示例，按下运行。每种语言的代码与输入分别保存，切换回来还能接着写。</p></div><details><summary>运行环境与使用范围 <span>＋</span></summary><p>支持 Python、C、C++、JavaScript、TypeScript、Java、Go、PHP、Ruby、Lua 和 SQL。适合单文件语法与算法练习；各语言的运行方式和输入说明显示在输入框下方。JavaScript / TypeScript 使用浏览器 API，不能直接使用 Node.js 模块；TypeScript 会转译运行，不做静态类型检查。Go 使用 Yaegi 解释器，Ruby 使用 mruby，SQL 使用 SQLite，Java 编译为 WebAssembly，提供常用 Scanner 输入兼容层，部分标准库 API 受限。暂不支持安装第三方包、系统进程和线程。</p><p>语言环境按需下载并由浏览器缓存。Python 约 13 MB，C / C++ 约 94 MB，Go 约 40 MB，Java 约 7 MB，PHP 约 20 MB，Ruby / Lua / SQL 较小（未压缩大小）。运行计时在环境准备和编译完成后开始。停止或超时会结束本次运行，下次会重新初始化环境。</p><p>工具链与代码执行均在浏览器中完成，无需上传源码到编译服务器。草稿仅保存在当前浏览器，不会跨设备同步。</p><p class="lab-credits">运行环境：<a href="https://pyodide.org/en/0.27.7/" target="_blank" rel="noreferrer">Pyodide 0.27.7</a> · <a href="https://github.com/BertalanD/browsercc" target="_blank" rel="noreferrer">browsercc 0.1.1</a> · <a href="https://github.com/konsoletyper/teavm-javac" target="_blank" rel="noreferrer">TeaVM</a> · <a href="https://github.com/traefik/yaegi" target="_blank" rel="noreferrer">Yaegi</a> · <a href="https://developer.wordpress.org/playground/" target="_blank" rel="noreferrer">PHP.wasm</a> · <a href="https://github.com/takahashim/mruby-wasm-js" target="_blank" rel="noreferrer">mruby</a> · <a href="https://github.com/ceifa/wasmoon" target="_blank" rel="noreferrer">Wasmoon</a> · <a href="https://sql.js.org/" target="_blank" rel="noreferrer">SQLite</a> · <a href="https://github.com/bjorn3/browser_wasi_shim" target="_blank" rel="noreferrer">browser_wasi_shim</a></p></details></section>
   </div>
 </SiteLayout>
 <script>import '../scripts/code-lab';</script>

@@ -17,18 +17,28 @@
   "dependencies": {
     "@astrojs/markdown-satteri": "0.4.4",
     "@bjorn3/browser_wasi_shim": "0.4.2",
+    "@browserrun/go": "0.1.0",
+    "@browserrun/java": "0.1.0",
     "@codemirror/commands": "6.11.1",
     "@codemirror/lang-cpp": "6.0.3",
+    "@codemirror/lang-javascript": "6.2.5",
     "@codemirror/lang-python": "6.2.1",
+    "@codemirror/language-data": "6.5.2",
     "@codemirror/state": "6.7.6",
     "@codemirror/theme-one-dark": "6.1.3",
     "@codemirror/view": "6.43.15",
+    "@php-wasm/universal": "3.1.63",
+    "@php-wasm/web-8-4": "3.1.63",
+    "@takahashim/mruby-wasm-js": "0.2.0",
     "astro": "^7.4.1",
     "browsercc": "0.1.1",
     "codemirror": "6.0.2",
     "pixi-live2d-display": "0.4.0",
     "pixi.js": "6.5.10",
-    "pyodide": "0.27.7"
+    "pyodide": "0.27.7",
+    "sql.js": "1.16.0",
+    "sucrase": "3.35.1",
+    "wasmoon": "1.16.0"
   },
   "devDependencies": {
     "playwright-core": "1.65.1"

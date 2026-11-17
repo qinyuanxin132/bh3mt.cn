@@ -6,61 +6,15 @@ import { python } from "@codemirror/lang-python";
 import { cpp } from "@codemirror/lang-cpp";
 import { oneDark } from "@codemirror/theme-one-dark";
 
-type Language = "python" | "c" | "cpp";
-type Draft = { source: string; stdin: string };
-const examples: Record<Language, Record<string, Draft>> = {
-  python: {
-    hello: {
-      source:
-        'print("你好，世界！这里是泠的代码实验室。")\n\nfor i in range(1, 4):\n    print(f"第 {i} 次尝试，离答案更近一点。")\n',
-      stdin: "",
-    },
-    sum: {
-      source:
-        '# 输入两个整数，以空格分隔\na, b = map(int, input().split())\nprint(f"{a} + {b} = {a + b}")\n',
-      stdin: "12 30\n",
-    },
-    algorithm: {
-      source:
-        '# 输出前 n 个斐波那契数\nn = int(input())\na, b = 0, 1\nfor _ in range(n):\n    print(a, end=" ")\n    a, b = b, a + b\nprint()\n',
-      stdin: "10\n",
-    },
-  },
-  c: {
-    hello: {
-      source:
-        '#include <stdio.h>\n\nint main(void) {\n    printf("你好，世界！这里是泠的代码实验室。\\n");\n    for (int i = 1; i <= 3; ++i) {\n        printf("第 %d 次尝试，离答案更近一点。\\n", i);\n    }\n    return 0;\n}\n',
-      stdin: "",
-    },
-    sum: {
-      source:
-        '#include <stdio.h>\n\nint main(void) {\n    long long a, b;\n    if (scanf("%lld %lld", &a, &b) != 2) {\n        fprintf(stderr, "请输入两个整数\\n");\n        return 1;\n    }\n    printf("%lld + %lld = %lld\\n", a, b, a + b);\n    return 0;\n}\n',
-      stdin: "12 30\n",
-    },
-    algorithm: {
-      source:
-        '#include <stdio.h>\n\nint main(void) {\n    int n;\n    if (scanf("%d", &n) != 1 || n < 0 || n > 90) return 1;\n    unsigned long long a = 0, b = 1;\n    for (int i = 0; i < n; ++i) {\n        printf("%llu ", a);\n        unsigned long long next = a + b;\n        a = b; b = next;\n    }\n    printf("\\n");\n    return 0;\n}\n',
-      stdin: "10\n",
-    },
-  },
-  cpp: {
-    hello: {
-      source:
-        '#include <iostream>\n#include <string>\n#include <vector>\n\nint main() {\n    std::vector<std::string> notes = {"你好，世界！", "这里是泠的代码实验室。"};\n    for (const auto& note : notes) {\n        std::cout << note << "\\n";\n    }\n}\n',
-      stdin: "",
-    },
-    sum: {
-      source:
-        '#include <iostream>\n\nint main() {\n    long long a, b;\n    if (!(std::cin >> a >> b)) {\n        std::cerr << "请输入两个整数\\n";\n        return 1;\n    }\n    std::cout << a << " + " << b << " = " << a + b << "\\n";\n}\n',
-      stdin: "12 30\n",
-    },
-    algorithm: {
-      source:
-        '#include <iostream>\n#include <vector>\n\nint main() {\n    int n;\n    if (!(std::cin >> n) || n < 0 || n > 90) return 1;\n    std::vector<unsigned long long> fib = {0, 1};\n    for (int i = 2; i < n; ++i) fib.push_back(fib[i - 1] + fib[i - 2]);\n    for (int i = 0; i < n; ++i) std::cout << fib[i] << " ";\n    std::cout << "\\n";\n}\n',
-      stdin: "10\n",
-    },
-  },
-};
+import {
+  examples,
+  languageIds,
+  languageInfo,
+  type Language,
+  type Draft,
+} from "../data/code-lab";
+import { javascript } from "@codemirror/lang-javascript";
+import { languages } from "@codemirror/language-data";
 const root = document.querySelector<HTMLElement>("[data-code-lab]")!;
 const get = <T extends HTMLElement>(id: string) =>
   document.getElementById(`lab-${id}`) as T;
@@ -78,23 +32,20 @@ const saveState = root.querySelector<HTMLElement>(
 );
 const languageExtension = new Compartment();
 const key = "bh3mt:code-lab:v1";
-const drafts: Record<Language, Draft> = {
-  python: { ...examples.python.hello },
-  c: { ...examples.c.hello },
-  cpp: { ...examples.cpp.hello },
-};
+const drafts = Object.fromEntries(
+  languageIds.map((lang) => [lang, { ...examples[lang].hello }]),
+) as Record<Language, Draft>;
 let language: Language = "python";
 try {
   const saved = JSON.parse(localStorage.getItem(key) || "null");
-  for (const lang of ["python", "c", "cpp"] as const) {
+  for (const lang of languageIds) {
     if (
       typeof saved?.drafts?.[lang]?.source === "string" &&
       typeof saved.drafts[lang].stdin === "string"
     )
       drafts[lang] = saved.drafts[lang];
   }
-  if (["python", "c", "cpp"].includes(saved?.language))
-    language = saved.language;
+  if (languageIds.includes(saved?.language)) language = saved.language;
 } catch {
   /* Work without localStorage. */
 }
@@ -129,13 +80,28 @@ const updateCursor = (view: EditorView) => {
     line = view.state.doc.lineAt(pos);
   get("cursor").textContent = `Ln ${line.number}, Col ${pos - line.from + 1}`;
 };
+function grammar(lang: Language) {
+  if (lang === "python") return python();
+  if (lang === "c" || lang === "cpp") return cpp();
+  if (lang === "javascript" || lang === "typescript")
+    return javascript({ typescript: lang === "typescript" });
+  return [];
+}
+async function loadGrammar(lang: Language) {
+  if (["python", "c", "cpp", "javascript", "typescript"].includes(lang)) return;
+  const support = await languages
+    .find((item) => item.name.toLowerCase() === languageInfo[lang].grammar)
+    ?.load();
+  if (support && language === lang)
+    editor.dispatch({ effects: languageExtension.reconfigure(support) });
+}
 const editor = new EditorView({
   state: EditorState.create({
     doc: drafts[language].source,
     extensions: [
       basicSetup,
       oneDark,
-      languageExtension.of(language === "python" ? python() : cpp()),
+      languageExtension.of(grammar(language)),
       Prec.highest(
         keymap.of([
           {
@@ -163,12 +129,9 @@ const editor = new EditorView({
 get("fallback").remove();
 // The initial HTML textarea is only a no-JS/editor-loading fallback.
 const setFileName = () => {
-  get("filename").textContent =
-    language === "python"
-      ? "main.py"
-      : language === "c"
-        ? "main.c"
-        : "main.cpp";
+  get("filename").textContent = languageInfo[language].filename;
+  get("runtime-note").textContent = languageInfo[language].note;
+  void loadGrammar(language).catch(() => {});
 };
 setFileName();
 updateCursor(editor);
@@ -295,9 +258,7 @@ languageSelect.addEventListener("change", () => {
       to: editor.state.doc.length,
       insert: drafts[language].source,
     },
-    effects: languageExtension.reconfigure(
-      language === "python" ? python() : cpp(),
-    ),
+    effects: languageExtension.reconfigure(grammar(language)),
     selection: { anchor: 0 },
   });
   input.value = drafts[language].stdin;

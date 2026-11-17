@@ -8,14 +8,16 @@ import {
 } from "@bjorn3/browser_wasi_shim";
 
 type Job = {
-  language: "python" | "c" | "cpp";
+  language: string;
   source: string;
   stdin: string;
   base: string;
 };
 const send = (data: object) => self.postMessage(data);
-const phase = (value: string, text: string) =>
+const phase = (value: string, text: string) => {
+  if (value === "running") executionStart = performance.now();
   send({ type: "phase", phase: value, text });
+};
 let buffered = "";
 let outputSize = 0;
 const flush = () => {
@@ -139,7 +141,7 @@ _lab_exit_code
         code,
         duration: performance.now() - executionStart,
       });
-    } else {
+    } else if (job.language === "c" || job.language === "cpp") {
       phase("loading", "正在准备 C/C++ 环境，首次加载较久…");
       const url = new URL("vendor/code-lab/browsercc-0.1.1/index.js", job.base)
         .href;
@@ -192,12 +194,29 @@ _lab_exit_code
         code,
         duration: performance.now() - executionStart,
       });
+    } else {
+      const { runExtra } = await import("./code-lab-extra");
+      const code = await runExtra(job, output, phase);
+      output(decoder.decode());
+      flush();
+      send({
+        type: "done",
+        code,
+        duration: executionStart
+          ? performance.now() - executionStart
+          : undefined,
+      });
     }
   } catch (error) {
     flush();
     send({
       type: "error",
-      text: error instanceof Error ? error.message : String(error),
+      text:
+        error instanceof Error
+          ? error.stack?.includes(error.message)
+            ? error.stack
+            : `${error.message}\n${error.stack ?? ""}`
+          : String(error),
     });
   }
 };

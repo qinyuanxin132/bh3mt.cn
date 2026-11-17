@@ -39,7 +39,9 @@ const assert = require("node:assert/strict");
       await p.locator("#lab-language").selectOption(lang);
     };
     const source = async (text) => {
-      await p.locator(".cm-content").fill(text);
+      await p.locator(".cm-content").focus();
+      await p.keyboard.press("Control+a");
+      await p.keyboard.insertText(text);
     };
     const run = async (expected, keyboard = false) => {
       if (keyboard) {
@@ -56,7 +58,19 @@ const assert = require("node:assert/strict");
       if (expected) assert.ok(result.includes(expected), result);
       return result;
     };
-    for (const lang of ["python", "c", "cpp"]) {
+    for (const lang of [
+      "python",
+      "c",
+      "cpp",
+      "javascript",
+      "typescript",
+      "java",
+      "go",
+      "php",
+      "ruby",
+      "lua",
+      "sql",
+    ]) {
       await select(lang);
       for (const example of ["hello", "sum", "algorithm"]) {
         await p.locator("#lab-example").selectOption(example);
@@ -75,6 +89,49 @@ const assert = require("node:assert/strict");
       }
       console.log(lang, "all 3 examples passed");
     }
+    await select("javascript");
+    await source(
+      'console.log("start"); setTimeout(() => console.log("timer completed"), 30);',
+    );
+    await run("timer completed");
+    await source(
+      'let n=0;const id=setInterval(()=>{if(++n===2){clearInterval(id);console.log("interval cleared")}},10)',
+    );
+    await run("interval cleared");
+    await select("java");
+    await source(
+      'package demo; import java.util.*; public class ReaderDemo { public static void main(String[] args) { Scanner s = new Scanner(System.in); System.out.println(s.nextLine()); System.out.println("java.util.Scanner / System.in"); } }',
+    );
+    await p.locator("#lab-stdin").fill("你好，泠 🌙\n");
+    await run("你好，泠 🌙");
+    assert.ok(
+      (await p.locator("#lab-output").innerText()).includes(
+        "java.util.Scanner / System.in",
+      ),
+    );
+    await select("php");
+    await source("<?php declare(strict_types=1); echo fgets(STDIN); exit(7);");
+    await p.locator("#lab-stdin").fill("你好，PHP\n");
+    await run("你好，PHP");
+    assert.ok((await p.locator("#lab-status").innerText()).includes("7"));
+    for (const [lang, code, error] of [
+      ["javascript", 'throw new Error("JS failure")', "JS failure"],
+      ["typescript", "const x: = 1;", "Unexpected"],
+      ["ruby", 'raise "Ruby failure"', "Ruby failure"],
+      ["lua", 'error("Lua failure")', "Lua failure"],
+      ["sql", "SELECT * FROM missing_table;", "missing_table"],
+    ]) {
+      await select(lang);
+      await source(code);
+      await run(error);
+      assert.equal(
+        await p.locator("#lab-status").getAttribute("data-state"),
+        "error",
+      );
+    }
+    console.log(
+      "JS timers, Java input/Unicode/package/literal preservation, PHP strict mode/exit code and language errors passed",
+    );
     await select("python");
     await source(
       'import sys\nprint(sys.stdin.read())\nprint("<img src=x onerror=alert(1)>")\nsys.exit(7)',
