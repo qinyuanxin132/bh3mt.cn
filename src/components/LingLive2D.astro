@@ -4,10 +4,17 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
 <aside class="ling-live2d" data-base={base} aria-label="泠的 Live2D 看板娘">
   <div class="ling-live2d-stage" id="ling-live2d-stage" hidden>
     <div class="ling-live2d-view">
-      <canvas class="ling-live2d-canvas" role="img" aria-label="泠的 Live2D 模型，可随鼠标转头，点击脸或狐耳可以互动"></canvas>
+      <span class="ling-live2d-hint" aria-hidden="true">滚轮缩放 · 双击身体进橱窗</span>
+      <canvas class="ling-live2d-canvas" role="img" aria-label="泠的 Live2D 模型，可随鼠标转头，点击脸或狐耳互动，滚轮缩放，双击身体进入橱窗"></canvas>
       <img class="ling-live2d-poster" src={`${base}images/ling/ling-reading.webp`} alt="泠正在准备出来" width="640" height="800" />
       <div class="ling-live2d-notice" role="status" aria-live="polite">泠正在过来…</div>
       <button class="ling-live2d-retry" type="button" hidden>再试一次</button>
+    </div>
+    <div class="ling-live2d-sizebar" aria-label="尺寸与橱窗">
+      <button data-ling-action="zoom-out" type="button" aria-label="缩小泠" title="缩小" disabled>−</button>
+      <button data-ling-action="zoom-reset" type="button" aria-label="恢复默认尺寸" title="恢复默认尺寸" disabled><output class="ling-live2d-zoom">100%</output></button>
+      <button data-ling-action="zoom-in" type="button" aria-label="放大泠" title="放大" disabled>＋</button>
+      <button data-ling-action="showcase" type="button" aria-haspopup="dialog" aria-controls="ling-showcase" title="双击身体也可进入橱窗" disabled>橱窗 ↗</button>
     </div>
     <div class="ling-live2d-toolbar" aria-label="看板娘控制">
       <button class="ling-live2d-drag" type="button" title="拖动移动；方向键也可移动" aria-label="移动泠的位置">⠿ 泠</button>
@@ -21,6 +28,14 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
     <span aria-hidden="true">✦</span> 召唤泠
   </button>
 </aside>
+<dialog class="ling-showcase" id="ling-showcase" aria-labelledby="ling-showcase-title" aria-describedby="ling-showcase-help">
+  <header class="ling-showcase-heading">
+    <div><span class="eyebrow">LING / LIVE2D</span><h2 id="ling-showcase-title">泠的橱窗</h2></div>
+    <button class="ling-showcase-close" type="button" aria-label="退出橱窗" title="退出橱窗（Esc）" autofocus>×</button>
+  </header>
+  <div class="ling-showcase-mount"></div>
+  <p id="ling-showcase-help">滚轮或 ＋ / − 调整大小 · 点击 100% 复位 · Esc 返回桌面</p>
+</dialog>
 <script>
   import { initLingLive2D } from '../scripts/ling-live2d';
   initLingLive2D();

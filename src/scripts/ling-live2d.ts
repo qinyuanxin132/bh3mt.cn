@@ -47,6 +47,18 @@ export function initLingLive2D() {
     '[data-ling-action="pause"]',
   )!;
   const drag = root.querySelector<HTMLButtonElement>(".ling-live2d-drag")!;
+  const dialog = document.querySelector<HTMLDialogElement>("#ling-showcase")!;
+  const dialogMount = dialog.querySelector<HTMLElement>(
+    ".ling-showcase-mount",
+  )!;
+  const showcaseButton = root.querySelector<HTMLButtonElement>(
+    '[data-ling-action="showcase"]',
+  )!;
+  const expressionButton = root.querySelector<HTMLButtonElement>(
+    '[data-ling-action="expression"]',
+  )!;
+  const zoomOutput =
+    root.querySelector<HTMLOutputElement>(".ling-live2d-zoom")!;
   const abort = new AbortController();
   const signal = abort.signal;
   let app: any;
@@ -56,6 +68,12 @@ export function initLingLive2D() {
   let paused = false;
   let disposed = false;
   let automaticCanceled = false;
+  let zoom = 1;
+  let showcaseZoom = 1;
+  let showcasing = false;
+  let restoreFocus: HTMLElement | null = null;
+  let previousOverflow = "";
+  let modelPoint: any;
   let interactionIndex = 0;
   let expressionIndex = -1;
   let lastInteraction = 0;
@@ -77,7 +95,10 @@ export function initLingLive2D() {
 
   const persist = () => {
     try {
-      localStorage.setItem(preferenceKey, JSON.stringify({ open, position }));
+      localStorage.setItem(
+        preferenceKey,
+        JSON.stringify({ open, position, zoom }),
+      );
     } catch {
       /* Storage may be disabled. */
     }
@@ -92,7 +113,23 @@ export function initLingLive2D() {
     root.style.top = `${position.y}px`;
     root.style.bottom = "auto";
   };
+  const applyFloatingSize = () => {
+    const mobile = innerWidth <= 760;
+    const width = mobile ? 190 : 250;
+    const height = mobile ? Math.min(300, innerHeight * 0.55) : 400;
+    const effective = Math.min(
+      zoom,
+      (innerWidth - 16) / width,
+      (innerHeight - 100) / height,
+    );
+    root.style.width = `${width * effective}px`;
+    view.style.height = `${height * effective}px`;
+    root.dataset.zoom = String(effective);
+    zoomOutput.value = `${Math.round(effective * 100)}%`;
+  };
   const fit = () => {
+    if (!showcasing) applyFloatingSize();
+    else zoomOutput.value = `${Math.round(showcaseZoom * 100)}%`;
     if (app && model && open) {
       const { width, height } = view.getBoundingClientRect();
       if (width && height) {
@@ -101,15 +138,144 @@ export function initLingLive2D() {
           Math.min(
             width / model.internalModel.width,
             height / model.internalModel.height,
-          ) * 1.12,
+          ) *
+            1.12 *
+            (showcasing ? showcaseZoom : 1),
         );
-        model.anchor.set(0.5, 1);
-        model.position.set(width / 2, height - 2);
+        model.anchor.set(0.5, showcasing ? 0.5 : 1);
+        model.position.set(width / 2, showcasing ? height / 2 : height - 2);
         app.renderer.render(app.stage);
       }
     }
-    if (position) setPosition(position.x, position.y);
+    if (position && !showcasing) setPosition(position.x, position.y);
   };
+  const changeZoom = (next: number) => {
+    const current = showcasing ? showcaseZoom : zoom;
+    const target = Math.max(0.65, Math.min(showcasing ? 2 : 2.4, next));
+    if (Math.abs(target - current) < 0.001) return;
+    const box = root.getBoundingClientRect();
+    if (showcasing) showcaseZoom = target;
+    else zoom = target;
+    fit();
+    if (position && !showcasing)
+      setPosition(box.left, box.bottom - root.getBoundingClientRect().height);
+    persist();
+  };
+  const enterShowcase = () => {
+    if (!model || !open || showcasing || disposed) return;
+    restoreFocus = document.activeElement as HTMLElement;
+    previousOverflow = document.body.style.overflow;
+    showcasing = true;
+    showcaseZoom = 1;
+    root.dataset.showcase = "true";
+    showcaseButton.textContent = "返回伴读";
+    showcaseButton.title = "退出橱窗";
+    view.style.height = "";
+    drag.hidden = true;
+    dialogMount.append(stage);
+    dialog.showModal();
+    document.body.style.overflow = "hidden";
+    fit();
+  };
+
+  // Test the actual drawable meshes, not the transparent canvas rectangle.
+  const overModel = (clientX: number, clientY: number) => {
+    if (!model || !open || !modelPoint) return false;
+    const box = canvas.getBoundingClientRect();
+    if (
+      clientX < box.left ||
+      clientX > box.right ||
+      clientY < box.top ||
+      clientY > box.bottom
+    )
+      return false;
+    modelPoint.set(clientX - box.left, clientY - box.top);
+    model.toModelPosition(modelPoint, modelPoint);
+    const x = modelPoint.x,
+      y = modelPoint.y;
+    const internal = model.internalModel,
+      core = internal.coreModel;
+    for (let i = core.getDrawableCount() - 1; i >= 0; i--) {
+      if (core.getDrawableOpacity(i) < 0.05) continue;
+      const bounds = internal.getDrawableBounds(i, {});
+      if (
+        x < bounds.x ||
+        x > bounds.x + bounds.width ||
+        y < bounds.y ||
+        y > bounds.y + bounds.height
+      )
+        continue;
+      const vertices = internal.getDrawableVertices(i);
+      const indices = core.getDrawableVertexIndices(i);
+      for (let k = 0; k < indices.length; k += 3) {
+        const a = indices[k] * 2,
+          b = indices[k + 1] * 2,
+          c = indices[k + 2] * 2;
+        const side = (u: number, v: number) =>
+          (x - vertices[v]) * (vertices[u + 1] - vertices[v + 1]) -
+          (vertices[u] - vertices[v]) * (y - vertices[v + 1]);
+        const ab = side(a, b),
+          bc = side(b, c),
+          ca = side(c, a);
+        if (
+          Math.abs(
+            (vertices[b] - vertices[a]) * (vertices[c + 1] - vertices[a + 1]) -
+              (vertices[c] - vertices[a]) * (vertices[b + 1] - vertices[a + 1]),
+          ) < 0.00001
+        )
+          continue;
+        if (!((ab < 0 || bc < 0 || ca < 0) && (ab > 0 || bc > 0 || ca > 0)))
+          return true;
+      }
+    }
+    return false;
+  };
+  document.addEventListener(
+    "wheel",
+    (event) => {
+      if (
+        event.ctrlKey ||
+        event.metaKey ||
+        event.deltaY === 0 ||
+        !event.cancelable ||
+        !overModel(event.clientX, event.clientY)
+      )
+        return;
+      if (
+        (event.target as Element)?.closest(
+          "button,input,textarea,select,summary",
+        )
+      )
+        return;
+      event.preventDefault();
+      const delta =
+        event.deltaY *
+        (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? innerHeight : 1);
+      changeZoom(
+        (showcasing ? showcaseZoom : zoom) *
+          Math.exp(-Math.max(-160, Math.min(160, delta)) * 0.0015),
+      );
+    },
+    { signal, passive: false, capture: true },
+  );
+  document.addEventListener(
+    "dblclick",
+    (event) => {
+      if (
+        showcasing ||
+        (event.target as Element)?.closest(
+          "a,button,input,textarea,select,summary,[contenteditable]",
+        ) ||
+        !overModel(event.clientX, event.clientY)
+      )
+        return;
+      event.preventDefault();
+      getSelection()?.removeAllRanges();
+      enterShowcase();
+    },
+    { signal },
+  );
+
   const updateRunning = () => {
     if (!app) return;
     if (open && !paused && !document.hidden && !disposed) app.start();
@@ -136,6 +302,7 @@ export function initLingLive2D() {
       const { Live2DModel } = await import("pixi-live2d-display/cubism4");
       if (disposed) return;
       Live2DModel.registerTicker(PIXI.Ticker);
+      modelPoint = new PIXI.Point();
       app = new PIXI.Application({
         view: canvas,
         width: 200,
@@ -228,6 +395,7 @@ export function initLingLive2D() {
     updateRunning();
   };
   const hide = () => {
+    if (showcasing) dialog.close();
     automaticCanceled = true;
     open = false;
     stage.hidden = true;
@@ -237,6 +405,69 @@ export function initLingLive2D() {
     persist();
     launcher.focus({ preventScroll: true });
   };
+  root
+    .querySelector('[data-ling-action="zoom-in"]')!
+    .addEventListener(
+      "click",
+      () => changeZoom((showcasing ? showcaseZoom : zoom) * 1.15),
+      { signal },
+    );
+  root
+    .querySelector('[data-ling-action="zoom-out"]')!
+    .addEventListener(
+      "click",
+      () => changeZoom((showcasing ? showcaseZoom : zoom) / 1.15),
+      { signal },
+    );
+  root
+    .querySelector('[data-ling-action="zoom-reset"]')!
+    .addEventListener("click", () => changeZoom(1), { signal });
+  showcaseButton.addEventListener(
+    "click",
+    () => {
+      if (showcasing) dialog.close();
+      else enterShowcase();
+    },
+    { signal },
+  );
+  dialog
+    .querySelector(".ling-showcase-close")!
+    .addEventListener("click", () => dialog.close(), { signal });
+  dialog.addEventListener(
+    "click",
+    (event) => {
+      if (event.target !== dialog) return;
+      const rect = dialog.getBoundingClientRect();
+      if (
+        event.clientX < rect.left ||
+        event.clientX > rect.right ||
+        event.clientY < rect.top ||
+        event.clientY > rect.bottom
+      )
+        dialog.close();
+    },
+    { signal },
+  );
+  dialog.addEventListener(
+    "close",
+    () => {
+      if (!showcasing) return;
+      showcasing = false;
+      root.dataset.showcase = "false";
+      root.insertBefore(stage, launcher);
+      drag.hidden = false;
+      showcaseButton.textContent = "橱窗 ↗";
+      showcaseButton.title = "双击身体也可进入橱窗";
+      document.body.style.overflow = previousOverflow;
+      fit();
+      if (open)
+        (restoreFocus?.isConnected && restoreFocus !== document.body
+          ? restoreFocus
+          : showcaseButton
+        ).focus({ preventScroll: true });
+    },
+    { signal },
+  );
   launcher.addEventListener(
     "click",
     () => {
@@ -262,9 +493,7 @@ export function initLingLive2D() {
     () => {
       if (!model) return;
       expressionIndex = (expressionIndex + 1) % (expressions.length + 1);
-      const button = root.querySelector<HTMLButtonElement>(
-        '[data-ling-action="expression"]',
-      )!;
+      const button = expressionButton;
       if (expressionIndex === expressions.length) {
         model.internalModel.motionManager.expressionManager.resetExpression();
         button.textContent = "表情";
@@ -297,7 +526,13 @@ export function initLingLive2D() {
   document.addEventListener(
     "pointermove",
     (event) => {
-      if (!model || !open || paused || event.pointerType === "touch") return;
+      if (!model || !open) return;
+      const onBody =
+        event.pointerType !== "touch" &&
+        overModel(event.clientX, event.clientY);
+      canvas.classList.toggle("is-interactive", onBody);
+      root.dataset.modelHover = String(onBody);
+      if (paused || event.pointerType === "touch") return;
       const box = canvas.getBoundingClientRect();
       pointerTarget = {
         x: Math.max(
@@ -322,6 +557,8 @@ export function initLingLive2D() {
     "pointerleave",
     () => {
       pointerTarget = { x: 0, y: 0 };
+      canvas.classList.remove("is-interactive");
+      root.dataset.modelHover = "false";
     },
     { signal },
   );
@@ -438,7 +675,8 @@ export function initLingLive2D() {
   );
   window.addEventListener("pageshow", updateRunning, { signal });
   let saved:
-    { open?: boolean; position?: { x: number; y: number } } | undefined;
+    | { open?: boolean; position?: { x: number; y: number }; zoom?: number }
+    | undefined;
   try {
     saved =
       JSON.parse(localStorage.getItem(preferenceKey) ?? "null") ?? undefined;
@@ -450,6 +688,8 @@ export function initLingLive2D() {
     Number.isFinite(saved?.position?.y)
   )
     position = saved!.position;
+  if (typeof saved?.zoom === "number" && Number.isFinite(saved.zoom))
+    zoom = Math.max(0.65, Math.min(2.4, saved.zoom));
   const automatic =
     matchMedia("(min-width: 1280px) and (hover: hover) and (pointer: fine)")
       .matches &&
