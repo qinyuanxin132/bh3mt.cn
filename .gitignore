@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Reproducible browser toolchains, prepared from locked npm dependencies
+public/vendor/code-lab/
