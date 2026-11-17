@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import LingLive2D from '../components/LingLive2D.astro';
 interface Props { title?: string; description?: string; }
 const { title = 'BH3MT 无风 · 月下手记', description = '与泠一起，记录逆向、CTF、Linux 与编程学习。' } = Astro.props;
 const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
@@ -40,6 +41,7 @@ const links = [{href:base, label:'手记', en:'NOTES'}, {href:`${base}categories
         <div class="footer-inner"><div><strong>BH3MT 无风</strong><span> · 记录问题，也收藏月光。</span></div><span>原创角色 · 泠 <i aria-hidden="true">✦</i> 用文字记录，用代码验证</span></div>
       </div>
     </footer>
+    <LingLive2D />
     <button class="back-top" type="button" aria-label="回到页面顶部" hidden>↑<small>TOP</small></button>
     <script define:vars={{ base }}>
       document.querySelectorAll('img[src^="/upload/"]').forEach((image) => {

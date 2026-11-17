@@ -1,0 +1,141 @@
+{
+  "Version": 3,
+  "FileReferences": {
+    "Moc": "Ling.moc3",
+    "Textures": [
+      "textures/00.png",
+      "textures/01.png"
+    ],
+    "Physics": "Ling.physics3.json",
+    "DisplayInfo": "Ling.cdi3.json",
+    "Expressions": [
+      {
+        "Name": "微笑",
+        "File": "expressions/smile.exp3.json"
+      },
+      {
+        "Name": "难过",
+        "File": "expressions/sad.exp3.json"
+      },
+      {
+        "Name": "生气",
+        "File": "expressions/angry.exp3.json"
+      },
+      {
+        "Name": "惊讶",
+        "File": "expressions/surprised.exp3.json"
+      }
+    ],
+    "Motions": {
+      "Idle": [
+        {
+          "Name": "轻微重心移动",
+          "File": "motions/idle_desktop.motion3.json",
+          "FadeInTime": 0.18,
+          "FadeOutTime": 0.22,
+          "FadeIn": 180,
+          "FadeOut": 220
+        }
+      ],
+      "TapHead": [
+        {
+          "Name": "点头微笑",
+          "File": "motions/nod_smile.motion3.json",
+          "FadeInTime": 0.18,
+          "FadeOutTime": 0.22,
+          "Priority": 3,
+          "Interruptable": false,
+          "FadeIn": 180,
+          "FadeOut": 220
+        }
+      ],
+      "TapEarLeft": [
+        {
+          "Name": "向左侧耳",
+          "File": "motions/listen_left.motion3.json",
+          "FadeInTime": 0.18,
+          "FadeOutTime": 0.22,
+          "Priority": 3,
+          "Interruptable": false,
+          "FadeIn": 180,
+          "FadeOut": 220
+        }
+      ],
+      "TapEarRight": [
+        {
+          "Name": "向右侧耳",
+          "File": "motions/listen_right.motion3.json",
+          "FadeInTime": 0.18,
+          "FadeOutTime": 0.22,
+          "Priority": 3,
+          "Interruptable": false,
+          "FadeIn": 180,
+          "FadeOut": 220
+        }
+      ],
+      "TapEyeRight": [
+        {
+          "Name": "画面右眼单眨",
+          "File": "motions/wink_L.motion3.json",
+          "Priority": 3,
+          "FadeIn": 100,
+          "FadeOut": 150,
+          "FadeInTime": 0.1,
+          "FadeOutTime": 0.15,
+          "Interruptable": false
+        }
+      ],
+      "TapEyeLeft": [
+        {
+          "Name": "画面左眼单眨",
+          "File": "motions/wink_R.motion3.json",
+          "Priority": 3,
+          "FadeIn": 100,
+          "FadeOut": 150,
+          "FadeInTime": 0.1,
+          "FadeOutTime": 0.15,
+          "Interruptable": false
+        }
+      ]
+    }
+  },
+  "Groups": [
+    {
+      "Target": "Parameter",
+      "Name": "EyeBlink",
+      "Ids": [
+        "ParamEyeLOpen",
+        "ParamEyeROpen"
+      ]
+    },
+    {
+      "Target": "Parameter",
+      "Name": "LipSync",
+      "Ids": [
+        "ParamMouthOpenY"
+      ]
+    }
+  ],
+  "HitAreas": [
+    {
+      "Id": "ArtMeshFace",
+      "Name": "Head"
+    },
+    {
+      "Id": "ArtMeshEarsR",
+      "Name": "EarLeft"
+    },
+    {
+      "Id": "ArtMeshEarsL",
+      "Name": "EarRight"
+    },
+    {
+      "Id": "ArtMeshEyewhiteL",
+      "Name": "EyeRight"
+    },
+    {
+      "Id": "ArtMeshEyewhiteR",
+      "Name": "EyeLeft"
+    }
+  ]
+}

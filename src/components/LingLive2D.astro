@@ -1,0 +1,27 @@
+---
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+---
+<aside class="ling-live2d" data-base={base} aria-label="泠的 Live2D 看板娘">
+  <div class="ling-live2d-stage" id="ling-live2d-stage" hidden>
+    <div class="ling-live2d-view">
+      <canvas class="ling-live2d-canvas" role="img" aria-label="泠的 Live2D 模型，可随鼠标转头，点击脸或狐耳可以互动"></canvas>
+      <img class="ling-live2d-poster" src={`${base}images/ling/ling-reading.webp`} alt="泠正在准备出来" width="640" height="800" />
+      <div class="ling-live2d-notice" role="status" aria-live="polite">泠正在过来…</div>
+      <button class="ling-live2d-retry" type="button" hidden>再试一次</button>
+    </div>
+    <div class="ling-live2d-toolbar" aria-label="看板娘控制">
+      <button class="ling-live2d-drag" type="button" title="拖动移动；方向键也可移动" aria-label="移动泠的位置">⠿ 泠</button>
+      <button data-ling-action="motion" type="button" title="和泠互动" disabled>互动</button>
+      <button data-ling-action="expression" type="button" title="切换泠的表情" disabled>表情</button>
+      <button data-ling-action="pause" type="button" aria-pressed="false" title="暂停动作" disabled>暂停</button>
+      <button data-ling-action="close" type="button" title="收起泠" aria-label="收起泠">×</button>
+    </div>
+  </div>
+  <button class="ling-live2d-launcher" type="button" aria-expanded="false" aria-controls="ling-live2d-stage" title="展开泠的 Live2D 看板娘">
+    <span aria-hidden="true">✦</span> 召唤泠
+  </button>
+</aside>
+<script>
+  import { initLingLive2D } from '../scripts/ling-live2d';
+  initLingLive2D();
+</script>

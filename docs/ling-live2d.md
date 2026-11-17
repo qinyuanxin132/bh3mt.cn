@@ -1,0 +1,36 @@
+# 泠的静态 Live2D 看板娘
+
+## 运行方式
+
+全程浏览器运行。GitHub Pages 直接提供 JS、模型、纹理、物理和动作文件，不需要 Node 服务、桌面 EX、摄像头或麦克风。
+
+- 组件：`src/components/LingLive2D.astro`，由公共布局引入。
+- 生命周期与交互：`src/scripts/ling-live2d.ts`。
+- 模型入口：`public/live2d/ling/ling.model3.json`。
+- 运行核心：`public/vendor/live2d/live2dcubismcore.min.js`，来自官方 Cubism Core 5.2 URL。来源、版本与校验值保存在同目录 README。
+- 渲染器：锁定 `pixi.js@6.5.10`、`pixi-live2d-display@0.4.0`。Cubism Core 5.3 改了 render-order API，不能直接替换已固定的 5.2 核心。
+
+## 模型来源与适配
+
+作者提供的 `Ling_Live2DViewerEX_v13/Ling_EX_v13/` 中桌宠入口 `Ling_Desktop.model3.json`。
+
+保留原始 `Ling.moc3`、两张 PNG 纹理、`Ling.physics3.json`、显示信息、四组表情和桌宠引用的所有动作，约 15 MB。未复制面捕入口、面捕重复模型和对比视频。模型文件均小于 GitHub 单文件上传上限，不需要 Git LFS。
+
+网页入口去掉 EX 专用的 `Controllers`、`Options` 和碰撞区域扩展字段；网页控制器复现温和鼠标跟随范围，保留原始模型与物理，不重画角色。以后更换模型要同时检查 model3.json 引用路径与大小写。
+
+## 行为
+
+- 宽屏（至少 1280px）鼠标设备默认在首次空闲时加载；窄屏、减少动态效果偏好、省流模式默认收起，点击“召唤泠”才加载。
+- JS 渲染依赖、Cubism Core、模型纹理均按需加载、同源提供，不依赖运行时第三方 CDN。
+- 可在工具栏互动、轮换微笑/惊讶/难过/生气/默认表情、暂停/继续、收起。
+- 画布穿透鼠标。通过全局碰撞检测响应脸/狐耳/眼睛点击；网页链接、按钮、表单优先，不阻挡阅读或滚动。
+- 拖动“⠿ 泠”调整位置；聚焦该按钮后方向键微调，Shift 加大步幅。窗口变化后约束到可见范围。
+- localStorage 键 `bh3mt:ling-live2d:v1` 保存展开状态和拖动位置，禁止存储时也可运行。
+- 独立 30 FPS ticker，像素比最高 1.5；收起、暂停、切换到后台时停更；离开页面释放 WebGL 和模型资源。
+- 无 WebGL、加载失败时显示静态形象与重试按钮，不影响博客功能。
+
+## 验证
+
+本地：`npm run build`；开发服务按 AGENTS.md 使用 `npm run dev -- --background`。
+
+重点检查宽屏自动加载、手机默认零模型请求、手动展开、收起记忆、动作/表情加载、拖动与缩放窗口、后台暂停、WebGL 失败重试。上线后确认 `/live2d/ling/ling.model3.json` 及其所有引用路径同源返回成功。

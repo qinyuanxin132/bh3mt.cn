@@ -2482,18 +2482,195 @@ html {
 
 /* 泠主题的原生鼠标指针，热点跟随箭头/手指/文字光标。 */
 @media (hover: hover) and (pointer: fine) and (forced-colors: none) {
-  html, body {
-    cursor: url('/cursors/ling-default.cur') 2 2, url('/cursors/ling-default.png') 2 2, default;
+  html,
+  body {
+    cursor:
+      url("/cursors/ling-default.cur") 2 2,
+      url("/cursors/ling-default.png") 2 2,
+      default;
   }
-  a, button, summary, label[for], [role='button'], input[type='button'], input[type='submit'], input[type='reset'], input[type='checkbox'], input[type='radio'], input[type='range'] {
-    cursor: url('/cursors/ling-pointer.cur') 8 3, url('/cursors/ling-pointer.png') 8 3, pointer;
+  a,
+  button,
+  summary,
+  label[for],
+  [role="button"],
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="range"] {
+    cursor:
+      url("/cursors/ling-pointer.cur") 8 3,
+      url("/cursors/ling-pointer.png") 8 3,
+      pointer;
   }
-  .article-content :is(p, li, h1, h2, h3, h4, blockquote, pre, code, td, th), input:not([type='button'], [type='submit'], [type='reset'], [type='checkbox'], [type='radio'], [type='range']), textarea, [contenteditable='true'] {
-    cursor: url('/cursors/ling-text.cur') 7 12, url('/cursors/ling-text.png') 7 12, text;
+  .article-content :is(p, li, h1, h2, h3, h4, blockquote, pre, code, td, th),
+  input:not(
+    [type="button"],
+    [type="submit"],
+    [type="reset"],
+    [type="checkbox"],
+    [type="radio"],
+    [type="range"]
+  ),
+  textarea,
+  [contenteditable="true"] {
+    cursor:
+      url("/cursors/ling-text.cur") 7 12,
+      url("/cursors/ling-text.png") 7 12,
+      text;
   }
   /* Links and copy buttons within prose keep their clickable state. */
-  .article-content a, .article-content a *, .article-content button, .article-content button *, button:enabled * {
-    cursor: url('/cursors/ling-pointer.cur') 8 3, url('/cursors/ling-pointer.png') 8 3, pointer;
+  .article-content a,
+  .article-content a *,
+  .article-content button,
+  .article-content button *,
+  button:enabled * {
+    cursor:
+      url("/cursors/ling-pointer.cur") 8 3,
+      url("/cursors/ling-pointer.png") 8 3,
+      pointer;
   }
-  button:disabled, input:disabled, textarea:disabled, [aria-disabled='true'] { cursor: not-allowed; }
+  button:disabled,
+  input:disabled,
+  textarea:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+}
+
+/* 静态托管的泠 Live2D：画布穿透，控制栏可操作。 */
+.ling-live2d {
+  position: fixed;
+  left: 8px;
+  bottom: 16px;
+  z-index: 25;
+  width: 210px;
+  pointer-events: none;
+}
+.ling-live2d-stage {
+  width: 100%;
+}
+.ling-live2d-view {
+  position: relative;
+  width: 100%;
+  height: 340px;
+}
+.ling-live2d-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.ling-live2d-poster {
+  position: absolute;
+  bottom: 18px;
+  left: 15%;
+  width: 70%;
+  height: auto;
+  pointer-events: none;
+  opacity: 0.8;
+}
+.ling-live2d-notice {
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #142035ed;
+  color: #bdd4ed;
+  font-size: 0.65rem;
+  text-align: center;
+}
+.ling-live2d-retry {
+  position: absolute;
+  bottom: 42px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: auto;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  background: #1a2c45;
+  color: var(--text);
+  font-size: 0.7rem;
+  padding: 0.35rem 0.8rem;
+}
+.ling-live2d-toolbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  padding: 5px;
+  border: 1px solid #a5ccf43d;
+  border-radius: 99px;
+  background: #101d31ed;
+  backdrop-filter: blur(12px);
+  pointer-events: auto;
+  box-shadow: 0 5px 20px #0003;
+}
+.ling-live2d-toolbar button {
+  display: block;
+  border: 0;
+  border-radius: 99px;
+  padding: 0.3rem 0.4rem;
+  background: transparent;
+  color: #bcd2ee;
+  font-family: inherit;
+  font-size: 0.61rem;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+.ling-live2d-toolbar button:hover,
+.ling-live2d-toolbar button[aria-pressed="true"] {
+  background: #a5ccf41c;
+  color: #eff7ff;
+}
+.ling-live2d-toolbar button:disabled {
+  opacity: 0.4;
+}
+.ling-live2d-toolbar .ling-live2d-drag {
+  touch-action: none;
+  cursor: grab;
+  color: #e0ecff;
+}
+.ling-live2d-toolbar .ling-live2d-drag:active {
+  cursor: grabbing;
+}
+.ling-live2d-launcher {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid #a5ccf44d;
+  border-radius: 99px;
+  background: #142139ed;
+  color: #c5dcf7;
+  box-shadow: 0 5px 20px #0003;
+  font-size: 0.72rem;
+}
+.ling-live2d-launcher span {
+  color: #a8d7ed;
+}
+@media (max-width: 760px) {
+  .ling-live2d {
+    width: 180px;
+    left: 8px;
+    bottom: 12px;
+  }
+  .ling-live2d-view {
+    height: min(290px, 55dvh);
+  }
+  .ling-live2d-toolbar button {
+    padding-inline: 0.3rem;
+    font-size: 0.56rem;
+  }
+}
+@media (max-height: 500px) {
+  .ling-live2d-view {
+    height: 68dvh;
+  }
 }
