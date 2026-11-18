@@ -903,3 +903,667 @@ int main() {
     Player::setHP(p1, 50);
 }
 ```
+
+## 函数重载
+
+假如要编写一个加法函数
+
+```c++
+int add(int a, int b) {
+    return a + b;
+}
+```
+
+如果想让他也支持小数呢
+
+C 语言通常需要不同的函数名，而 C++ 可以定义多个同名函数
+
+```c++
+#include <iostream>
+
+int add(int a, int b) {
+    return a + b;
+}
+
+double add(double a, double b) {
+    return a + b;
+}
+
+int main() {
+    std::cout << add(10, 20) << '\n';
+    std::cout << add(1.5, 2.5) << '\n';
+}
+```
+
+输出：
+
+```c
+30
+4
+```
+
+虽然两个函数都叫add
+
+但是参数类型不同
+
+编译器会根据调用时提供的参数，选择合适的函数
+
+这就是函数重载
+
+### 编译器怎么区分
+
+一般来说，函数重载需要参数列表存在区别
+
+例如
+
+```c++
+void add(double a);
+void add(int b);
+void add(int a,int b)
+
+```
+
+但不能仅靠返回值类型不同来重载函数
+
+```c++
+int test(int a);
+double test(int a);  // 错误
+```
+
+### 运算符重载
+
+例：
+
+```c++
+class point{
+    public:
+    int x;
+    int y;
+
+    point(int a,int b):x(a),y(b){}
+};
+```
+
+现在创建两个坐标
+
+```c++
+point p1(5,5);
+point p2(4,9);
+```
+
+如果我想执行`point p3 = p1 + p2`
+
+那么编译器会报错，因为它不知道p1怎么加p2
+
+所以需要我们定义一下+的行为
+
+```c++
+class Point {
+public:
+    int x;
+    int y;
+
+    Point(int a, int b) : x(a), y(b) {}
+
+    Point operator+(const Point& other) const {
+        return Point(x + other.x, y + other.y);
+    }
+};
+```
+
+Point：返回一个 Point 对象。
+
+operator+：重载加法运算符。
+
+const Point& other：接收另一个对象的常量引用。
+
+函数末尾的 const：不允许通过当前对象修改其普通成员。
+
+return Point(...)：构造并返回一个新的对象。
+
+p1 + p2：调用 p1.operator+(p2)
+
+#### 重载比较运算符 ==
+
+现在有一个新需求：
+
+如果两个 Point 对象的 x、y 都相同，我们希望使用 == 判断它们是否相等。
+
+```c++
+#include <iostream>
+
+class Point {
+public:
+    int x;
+    int y;
+
+    Point(int a, int b) : x(a), y(b) {}
+
+    bool operator==(const Point& other) const {
+        return x == other.x && y == other.y;
+    }
+};
+
+int main() {
+    Point p1(10, 20);
+    Point p2(10, 20);
+    Point p3(10, 30);
+
+    std::cout << (p1 == p2) << '\n';
+    std::cout << (p1 == p3) << '\n';
+}
+```
+
+#### 重载输出运算符 <<
+
+```c++
+Point p1(10, 20);
+
+std::cout << p1;
+```
+
+在默认状态是无法编译的，因为编译器不知道如何输出point类型
+
+```c++
+#include <iostream>
+
+class Point {
+public:
+    int x;
+    int y;
+
+    Point(int a, int b) : x(a), y(b) {}
+};
+
+std::ostream& operator<<(std::ostream& os, const Point& p) {
+    os << "(" << p.x << ", " << p.y << ")";
+    return os;
+}
+
+int main() {
+    Point p1(10, 20);
+
+    std::cout << p1 << '\n';
+}
+```
+
+std::ostream&   返回输出流的引用
+
+operator<<  定义输出运算符
+
+std::ostream& os    接收输出流对象
+
+const Point& p  接收要输出的 Point 对象
+
+现在的输出运算符是非成员函数
+
+`std::ostream& operator<<(std::ostream& os, const Point& p)`
+
+所以需要显式接收左右两个操作数。
+
+## 继承（Inheritance）
+
+假设我们要开发一个游戏，里面有两种角色：
+
+- 玩家（Player）
+- 怪物（Monster）
+
+它们都有血量 hp 和名字 name。
+
+```c++
+class Player {
+public:
+    int hp = 100;
+    std::string name;
+};
+
+class Monster {
+public:
+    int hp = 100;
+    std::string name;
+};
+```
+
+两个类重复写了相同的成员变量
+
+如果以后还要增加 attack、defense 等成员，重复的代码就会越来越多
+
+### 继承的基本写法
+
+我们把两个类共同拥有的东西，放进一个更基础的类：
+
+```c++
+#include <iostream>
+#include <string>
+
+class Character {
+public:
+    int hp = 100;
+    std::string name;
+};
+
+class Player : public Character {
+public:
+    int level = 1;
+};
+
+int main() {
+    Player p1;
+
+    p1.hp = 80;
+    p1.name = "Alice";
+    p1.level = 5;
+
+    std::cout << p1.name << '\n';
+    std::cout << p1.hp << '\n';
+    std::cout << p1.level << '\n';
+}
+```
+
+重点在这里：
+
+`class Player : public Character`
+
+class Player    定义一个名为 Player 的类
+
+:      表示后面指定基类
+public  采用公有继承方式
+Character   被继承的类，也叫基类
+
+![alt text](image-20.png)
+
+也就是说，Player 不仅拥有自己定义的 level，还包含继承而来的 Character 基类部分。
+
+继承不仅仅涉及成员变量，还包括成员函数
+
+```c++
+class Character {
+public:
+    int hp = 100;
+
+    void damage(int n) {
+        hp -= n;
+    }
+};
+
+class Player : public Character {
+public:
+    int level = 1;
+};
+```
+
+现在
+
+```c++
+Player p1;
+p1.damage(30);
+```
+
+是合法的
+
+当 p1.damage(30) 执行时，damage() 中的 this 指向 p1 对象内部的 Character 基类子对象
+
+### 小测
+
+```c++
+#include <iostream>
+
+class Animal {
+public:
+    int age = 2;
+
+    void grow() {
+        age++;
+    }
+};
+
+class Dog : public Animal {
+public:
+    int weight = 10;
+
+    void eat() {
+        weight += 5;
+    }
+};
+
+int main() {
+    Dog d1;
+    Dog d2;
+
+    d1.grow();
+    d1.grow();
+    d1.eat();
+
+    d2.grow();
+
+    std::cout << d1.age << " " << d1.weight << '\n';
+    std::cout << d2.age << " " << d2.weight << '\n';
+}
+```
+
+1. 最终输出的两行内容分别是什么？
+
+2. Dog 类里面没有定义 grow()，为什么 d1.grow() 能够执行？
+
+3. d1 修改自己的 age，为什么不会影响 d2.age？
+
+答案
+
+```c++
+4 15 和 3 10
+Dog 继承了 Animal
+d1 和 d2 内部都包含一个独立的 Animal 基类子对象。
+```
+
+## public、protected、private
+
+### 继承之后，private 会怎么样？
+
+```c++
+class Animal {
+public:
+    int age = 2;
+
+private:
+    int secret = 100;
+};
+
+class Dog : public Animal {
+public:
+    void test() {
+        age = 5;       // 合法
+        secret = 200;   // 编译错误
+    }
+};
+```
+
+问题：
+
+Dog 明明继承了 Animal，为什么不能访问 secret？
+
+因为继承并不意味着派生类可以随意访问基类的所有成员。
+
+Animal 的 private 成员仍然受到访问控制。
+
+Dog 对象里面仍然包含 Animal 的基类子对象，而 secret 仍然属于这个基类子对象。
+
+只是 Dog 的成员函数不能直接访问它。
+
+### protected
+
+它的作用可以理解为：
+
+不允许普通外部代码直接访问，但允许派生类成员函数访问。
+
+```c++
+#include <iostream>
+
+class Animal {
+protected:
+    int hp = 100;
+};
+
+class Dog : public Animal {
+public:
+    void damage(int n) {
+        hp -= n;
+    }
+
+    void showHP() {
+        std::cout << hp << '\n';
+    }
+};
+
+int main() {
+    Dog d1;
+
+    d1.damage(30);
+    d1.showHP();
+
+    // d1.hp = 50;  // 编译错误
+}
+```
+
+输出`70`
+
+```md
+在 Dog 的成员函数中：
+
+hp -= n;
+
+可以访问继承而来的 protected 成员。
+
+但是在 main() 中：
+
+d1.hp = 50;
+
+不允许直接访问，因为 hp 是受保护成员。
+
+```
+
+![alt text](image-21.png)
+
+## 三种继承方式
+
+```c++
+class Dog : public Animal {
+};
+```
+
+这里有两个关键字：
+
+- class：定义类。
+- public：指定继承方式。
+
+C++ 一共有三种继承方式：
+
+```c++
+class Dog : public Animal {};
+class Cat : protected Animal {};
+class Bird : private Animal {};
+```
+
+它们的区别在于：基类成员在派生类中具有怎样的访问权限。
+
+### public 继承
+
+```c++
+class Animal {
+public:
+    int age = 2;
+
+protected:
+    int hp = 100;
+
+private:
+    int secret = 999;
+};
+
+class Dog : public Animal {
+public:
+    void test() {
+        age = 5;      // 可以
+        hp = 80;      // 可以
+        // secret = 0; // 不可以
+    }
+};
+
+int main() {
+    Dog d;
+
+    d.age = 10; // 可以
+    // d.hp = 50; // 不可以
+}
+```
+
+因为采用 public 继承：
+
+- 基类的 public 成员仍然是 public。
+- 基类的 protected 成员仍然是 protected。
+- 基类的 private 成员仍然不能被派生类直接访问。
+
+### private 继承
+
+```c++
+class Dog : private Animal {
+public:
+    void test() {
+        age = 5;  // 可以
+        hp = 80;  // 可以
+    }
+};
+
+int main() {
+    Dog d;
+
+    // d.age = 10; // 编译错误
+}
+```
+
+采用 private 继承后，原来基类的 public 和 protected 成员，在派生类中都变成了 private 访问权限。
+
+也就是说，继承方式改变了成员的可访问性，并不是把成员删掉了。
+
+### protected 继承
+
+```c++
+class Dog : protected Animal {
+public:
+    void test() {
+        age = 5;   // 可以
+        hp = 80;   // 可以
+    }
+};
+```
+
+```c++
+class Puppy : public Dog {
+public:
+    void test() {
+        age = 10;  // 可以
+    }
+};
+```
+
+### 总结
+
+基类中的访问权限|public|继承|protected|继承|private 继承
+---|---|---|---
+public|public|protected|private
+protected|protected|protected|private
+private|不能直接访问|不能直接访问|不能直接访问
+
+对于 class，如果省略继承方式，默认就是 private 继承。
+
+### 来个小测试
+
+```c++
+#include <iostream>
+
+class Animal {
+public:
+    int age = 2;
+
+protected:
+    int hp = 100;
+};
+
+class Dog : private Animal {
+public:
+    void grow() {
+        age++;
+        hp -= 10;
+    }
+
+    void show() {
+        std::cout << age << " " << hp;
+    }
+};
+
+int main() {
+    Dog d;
+    d.grow();
+    d.show();
+
+    // d.age = 10;
+}
+```
+
+程序输出什么？
+
+为什么 Dog::grow() 能访问 age 和 hp，虽然它使用的是 private 继承？
+
+如果把 // d.age = 10; 的注释去掉，会发生什么？
+
+1. 3 90
+2. private继承：在类Dog内部的函数可以访问继承的Animal
+3. 编译错误，因为private继承不支持外部直接访问继承的Animal
+
+## 多态与 virtual 虚函数
+
+看这段代码：
+
+```c++
+class Animal {
+public:
+    void speak() {
+        std::cout << "Animal\n";
+    }
+};
+
+class Dog : public Animal {
+public:
+    void speak() {
+        std::cout << "Dog\n";
+    }
+};
+
+int main() {
+    Dog d;
+    Animal* p = &d;
+}
+```
+
+然后
+
+`Animal* p = &d;`
+
+这行只是让一个 Animal* 指针指向 d 内部的 Animal 基类部分。
+
+它并没有把 Dog 对象变成 Animal 对象，也没有删除 Dog 自己的部分。
+
+![alt text](image-22.png)
+
+> 改变指针类型，不等于改变它所指向的实际对象。
+
+```c++
+class Animal {
+public:
+    void speak() {
+        std::cout << "Animal\n";
+    }
+};
+
+class Dog : public Animal {
+public:
+    void speak() {
+        std::cout << "Dog\n";
+    }
+};
+```
+
+执行：
+
+```c++
+Dog d;
+
+Animal* p = &d;
+p->speak();
+```
+
+输出：`Animal`
+
+p 是 Animal*。
+
+对于这里的非虚成员函数，C++ 根据指针的静态类型选择 Animal::speak()
+
