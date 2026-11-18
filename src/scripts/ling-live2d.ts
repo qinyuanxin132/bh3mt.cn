@@ -591,6 +591,14 @@ export function initLingLive2D() {
     { signal },
   );
   settings.addEventListener("toggle", alignSettings, { signal });
+  settingsPanel.querySelector(".ling-live2d-settings-close")!.addEventListener(
+    "click",
+    () => {
+      settings.open = false;
+      settings.querySelector("summary")!.focus({ preventScroll: true });
+    },
+    { signal },
+  );
   presetSelect.addEventListener(
     "change",
     () => {

@@ -2955,3 +2955,23 @@ html {
 .ling-showcase .ling-live2d-settings {
   flex-shrink: 0;
 }
+
+.ling-live2d-settings-panel p {
+  align-items: center;
+  gap: 8px;
+}
+.ling-live2d-settings-close {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  margin-left: auto;
+  padding: 0;
+  border: 1px solid #a5ccf444;
+  border-radius: 50%;
+  background: #223650;
+  color: #e1efff;
+  font: 1.25rem/1 sans-serif;
+}
+.ling-live2d-settings-close:hover {
+  background: #365170;
+}
