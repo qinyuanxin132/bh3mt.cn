@@ -1,0 +1,46 @@
+export const lingPresets = [
+  { id: "soft", label: "轻柔陪伴", group: "IdleSoft", follow: 0.65 },
+  { id: "reading", label: "安静阅读", group: "IdleReading", follow: 0.3 },
+  { id: "focus", label: "专注写码", group: "IdleFocus", follow: 0.25 },
+  { id: "rest", label: "放松小憩", group: "IdleRest", follow: 0.15 },
+  { id: "greet", label: "轻轻招呼", group: "IdleGreet", follow: 0.4 },
+  { id: "display", label: "橱窗展示", group: "IdleDisplay", follow: 0.2 },
+] as const;
+export const lingActions = [
+  { group: "TapHead", label: "轻轻点头" },
+  { group: "TapEarLeft", label: "向左侧耳" },
+  { group: "TapEarRight", label: "向右侧耳" },
+  { group: "TapEyeRight", label: "左眼单眨" },
+  { group: "TapEyeLeft", label: "右眼单眨" },
+  { group: "FlickLeft", label: "左耳轻动" },
+  { group: "FlickRight", label: "右耳轻动" },
+  { group: "Breathe", label: "舒缓呼吸" },
+] as const;
+// Final rendered parameter limits, applied after expressions, gaze and physics.
+// [minimum, maximum, maximum change per second]; eyelid closures remain responsive.
+export const lingLimits: Record<string, readonly [number, number, number]> = {
+  ParamAngleX: [-8, 8, 12],
+  ParamAngleY: [-4, 4, 8],
+  ParamAngleZ: [-3, 3, 6],
+  ParamEyeBallX: [-0.5, 0.5, 1.2],
+  ParamEyeBallY: [-0.35, 0.35, 1],
+  ParamBodyAngleX: [-1.2, 1.2, 2],
+  ParamBodyAngleY: [-1, 1, 2],
+  ParamBodyAngleZ: [-1, 1, 2],
+  ParamBodyLean: [-0.25, 0.25, 0.3],
+  ParamWristLX: [-0.1, 0.1, 0.16],
+  ParamWristLY: [-0.12, 0.16, 0.16],
+  ParamWristLZ: [-0.12, 0.12, 0.2],
+  ParamWristRX: [-0.1, 0.1, 0.16],
+  ParamWristRY: [-0.12, 0.16, 0.16],
+  ParamWristRZ: [-0.12, 0.12, 0.2],
+  ParamFoxEarPoseL: [-0.3, 0.3, 0.8],
+  ParamFoxEarPoseR: [-0.3, 0.3, 0.8],
+  ParamFoxEarTipL: [-0.25, 0.25, 1],
+  ParamFoxEarTipR: [-0.25, 0.25, 1],
+  ParamMouthOpenY: [0, 0.25, 1],
+  ParamMouthForm: [-0.65, 0.65, 1.5],
+  ParamBrowLY: [-0.4, 0.4, 1.5],
+  ParamBrowRY: [-0.4, 0.4, 1.5],
+  ParamBreath: [0.12, 0.6, 0.35],
+};

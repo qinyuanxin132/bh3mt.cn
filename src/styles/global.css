@@ -2856,3 +2856,102 @@ html {
     font-size: 0.56rem;
   }
 }
+
+/* v16: compact preset panel, available in both companion and showcase. */
+.ling-live2d-settings {
+  position: relative;
+  align-self: center;
+  margin: 5px auto 0;
+  width: max-content;
+  pointer-events: auto;
+  font-size: 0.65rem;
+}
+.ling-live2d-settings > summary {
+  list-style: none;
+  border: 1px solid #a5ccf436;
+  border-radius: 99px;
+  padding: 3px 13px;
+  background: #101d31ed;
+  color: #bcd2ee;
+  cursor: pointer;
+}
+.ling-live2d-settings > summary::-webkit-details-marker {
+  display: none;
+}
+.ling-live2d-settings > summary span {
+  margin-left: 5px;
+}
+.ling-live2d-settings-panel {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 240px;
+  max-width: calc(100vw - 20px);
+  padding: 14px;
+  border: 1px solid #a5ccf44d;
+  border-radius: 14px;
+  background: #132037fa;
+  color: #c5d8ee;
+  box-shadow: 0 10px 30px #0005;
+  z-index: 3;
+}
+.ling-live2d-settings-panel p {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 10px;
+  font-size: 0.75rem;
+}
+.ling-live2d-settings-panel p span {
+  font-size: 0.6rem;
+  color: #99b6d3;
+}
+.ling-live2d-settings-panel label {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 9px;
+}
+.ling-live2d-settings-panel select {
+  min-width: 0;
+  padding: 5px 6px;
+  border: 1px solid #a5ccf444;
+  border-radius: 6px;
+  color: #dceafa;
+  background: #192b43;
+  font: inherit;
+}
+.ling-live2d-settings-buttons {
+  display: flex;
+  gap: 8px;
+}
+.ling-live2d-settings-buttons button {
+  flex: 1;
+  padding: 5px;
+  border: 1px solid #a5ccf444;
+  border-radius: 6px;
+  background: #223650;
+  color: #dceafa;
+  font: inherit;
+}
+.ling-live2d-settings-panel small {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.57rem;
+  color: #8faac6;
+}
+.ling-live2d-action-status {
+  display: block;
+  font-size: 0.6rem;
+  color: #b5d5f1;
+  line-height: 1.5;
+  margin-top: 5px;
+}
+.ling-live2d-settings select:disabled,
+.ling-live2d-settings button:disabled {
+  opacity: 0.4;
+}
+.ling-showcase .ling-live2d-settings {
+  flex-shrink: 0;
+}

@@ -1,0 +1,189 @@
+{
+  "Version": 3,
+  "FileReferences": {
+    "Moc": "Ling.moc3",
+    "Textures": [
+      "textures/00.png",
+      "textures/01.png"
+    ],
+    "Physics": "Ling.physics3.json",
+    "DisplayInfo": "Ling.cdi3.json",
+    "Expressions": [
+      {
+        "Name": "微笑",
+        "File": "expressions/smile.exp3.json"
+      },
+      {
+        "Name": "难过",
+        "File": "expressions/sad.exp3.json"
+      },
+      {
+        "Name": "生气",
+        "File": "expressions/angry.exp3.json"
+      },
+      {
+        "Name": "惊讶",
+        "File": "expressions/surprised.exp3.json"
+      }
+    ],
+    "Motions": {
+      "IdleSoft": [
+        {
+          "Name": "轻柔呼吸",
+          "File": "motions/web-idle-soft-a.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        },
+        {
+          "Name": "轻微重心移动",
+          "File": "motions/web-idle-soft-b.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        }
+      ],
+      "IdleReading": [
+        {
+          "Name": "安静阅读",
+          "File": "motions/web-idle-reading.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        }
+      ],
+      "IdleFocus": [
+        {
+          "Name": "专注陪伴",
+          "File": "motions/web-idle-focus.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        }
+      ],
+      "IdleRest": [
+        {
+          "Name": "放松小憩",
+          "File": "motions/web-idle-rest.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        }
+      ],
+      "IdleGreet": [
+        {
+          "Name": "轻轻招呼",
+          "File": "motions/web-idle-greet.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        }
+      ],
+      "IdleDisplay": [
+        {
+          "Name": "橱窗展示",
+          "File": "motions/web-idle-display.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        }
+      ],
+      "TapHead": [
+        {
+          "Name": "轻轻点头",
+          "File": "motions/web-nod.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        }
+      ],
+      "TapEarLeft": [
+        {
+          "Name": "向左侧耳",
+          "File": "motions/web-listen-left.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        }
+      ],
+      "TapEarRight": [
+        {
+          "Name": "向右侧耳",
+          "File": "motions/web-listen-right.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        }
+      ],
+      "TapEyeRight": [
+        {
+          "Name": "左眼单眨",
+          "File": "motions/web-wink-left.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        }
+      ],
+      "TapEyeLeft": [
+        {
+          "Name": "右眼单眨",
+          "File": "motions/web-wink-right.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        }
+      ],
+      "FlickLeft": [
+        {
+          "Name": "左耳轻动",
+          "File": "motions/web-flick-left.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        }
+      ],
+      "FlickRight": [
+        {
+          "Name": "右耳轻动",
+          "File": "motions/web-flick-right.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        }
+      ],
+      "Breathe": [
+        {
+          "Name": "舒缓呼吸",
+          "File": "motions/web-breathe.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        }
+      ]
+    }
+  },
+  "Groups": [
+    {
+      "Target": "Parameter",
+      "Name": "EyeBlink",
+      "Ids": [
+        "ParamEyeLOpen",
+        "ParamEyeROpen"
+      ]
+    },
+    {
+      "Target": "Parameter",
+      "Name": "LipSync",
+      "Ids": [
+        "ParamMouthOpenY"
+      ]
+    }
+  ],
+  "HitAreas": [
+    {
+      "Id": "ArtMeshFace",
+      "Name": "Head"
+    },
+    {
+      "Id": "ArtMeshEarsR",
+      "Name": "EarLeft"
+    },
+    {
+      "Id": "ArtMeshEarsL",
+      "Name": "EarRight"
+    },
+    {
+      "Id": "ArtMeshEyewhiteL",
+      "Name": "EyeRight"
+    },
+    {
+      "Id": "ArtMeshEyewhiteR",
+      "Name": "EyeLeft"
+    }
+  ]
+}

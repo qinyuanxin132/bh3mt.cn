@@ -1,0 +1,25 @@
+{
+  "version": 16,
+  "source": "Ling_Live2DViewerEX_v16/Ling_EX_v16/Ling_Desktop.model3.json",
+  "originalSHA256": {
+    "Ling.moc3": "c33b5d102ad1b1cec30b2bf92bacf47f6177daf8047acb0827b319c1c6fae541",
+    "Ling.physics3.json": "2baae22ccf78c0e7f4a1c9a1c8cccd13b7d2991dc83082f11cb6dbfb2bdab9f5",
+    "Ling.cdi3.json": "b5f870f12eae34dfac9a29e975e7e9e295b13f672d8616038b5b8be7a500bf60",
+    "textures/00.png": "34534f83750ec60c75a69dbaade2d6fa3c694b1f4bbbf88e953d50b4c8c3f3a5",
+    "textures/01.png": "30e6977851c60856317211d285b5c81cca600e81b6be7d5a34f4e1bbfbcc74ca",
+    "expressions/angry.exp3.json": "98bacc260d618079f916df94f201c22d8ccde920c029c01fc793ae4dd670e756",
+    "expressions/sad.exp3.json": "e0f88d2ce01fa6f4718051ec6a15c803d70064011cf370cee15e50bf19978c82",
+    "expressions/smile.exp3.json": "59e6869c12dad404623dc587086b79909262b1d027bdcf1a27a58aa8c2d50377",
+    "expressions/surprised.exp3.json": "9b7850b565e3c2edef7534fb62fa364285063c254b76d079328dc8ee747b9097",
+    "motions/breathing.motion3.json": "116b795c10ad9dda517cf987063259d456025bb8bf3788040556a9f358a1c363",
+    "motions/flick_L.motion3.json": "ca0b78778e460eceee0d168ecff281968ff96c75e3719ccdfd938362d00e8af6",
+    "motions/flick_R.motion3.json": "a8489ff7ea688887b8a59955d4159d43e82160635878153f399f3aeedfb47c96",
+    "motions/idle_desktop.motion3.json": "ed4491d26c1845bc9059d5bdf6c878821252d939ebd91cbcbad073b9e722837c",
+    "motions/listen_left.motion3.json": "860acbf3cb477f0d6c80af083554a8701234e5c59b908551c1754f1df9de8c47",
+    "motions/listen_right.motion3.json": "0bba4e97d1e761d4dc09f03a04ad4b50c32c9bacca226169fc9a40530547ba14",
+    "motions/nod_smile.motion3.json": "780d25ca31f8e4039f5766a2218a3deb7aba259222bb6250547515ecabcc3770",
+    "motions/wink_L.motion3.json": "72b916824008cf84ed9b93d6b688dab6a42d9eb474fa318d49894bc93eff0109",
+    "motions/wink_R.motion3.json": "88c7cac1e1a534c334bc465d9ce4cc6dde40e2fba34ae4b5135f57cc6c150444"
+  },
+  "webAdaptation": "Low-amplitude motion variants; original model, textures, expressions and physics retained."
+}

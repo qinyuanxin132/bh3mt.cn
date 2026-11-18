@@ -1,3 +1,4 @@
+import { lingPresets, lingActions, lingLimits } from "../data/ling-live2d";
 const preferenceKey = "bh3mt:ling-live2d:v1";
 let corePromise: Promise<void> | undefined;
 
@@ -59,6 +60,40 @@ export function initLingLive2D() {
   )!;
   const zoomOutput =
     root.querySelector<HTMLOutputElement>(".ling-live2d-zoom")!;
+  const settings = root.querySelector<HTMLDetailsElement>(
+    ".ling-live2d-settings",
+  )!;
+  const settingsPanel = settings.querySelector<HTMLElement>(
+    ".ling-live2d-settings-panel",
+  )!;
+  const alignSettings = () => {
+    if (!settings.open) return;
+    const anchor = settings.getBoundingClientRect();
+    const box = view.getBoundingClientRect();
+    const width = settingsPanel.getBoundingClientRect().width;
+    const left = Math.max(
+      10,
+      Math.min(
+        innerWidth - width - 10,
+        anchor.left + anchor.width / 2 - width / 2,
+      ),
+    );
+    settingsPanel.style.left = `${left - anchor.left}px`;
+    settingsPanel.style.transform = "none";
+    settingsPanel.style.bottom = `${anchor.bottom - box.bottom + 8}px`;
+  };
+  const presetSelect = root.querySelector<HTMLSelectElement>(
+    ".ling-live2d-preset",
+  )!;
+  const actionSelect = root.querySelector<HTMLSelectElement>(
+    ".ling-live2d-action",
+  )!;
+  const actionStatus = root.querySelector<HTMLOutputElement>(
+    ".ling-live2d-action-status",
+  )!;
+  let preset: (typeof lingPresets)[number] = lingPresets[0];
+  let frameDelta = 1 / 30;
+  const lastParameters = new Map<string, number>();
   const abort = new AbortController();
   const signal = abort.signal;
   let app: any;
@@ -77,18 +112,12 @@ export function initLingLive2D() {
   let modelPoint: any;
   let interactionIndex = 0;
   let expressionIndex = -1;
-  let lastInteraction = 0;
+  let lastInteraction = -Infinity;
   let pointerTarget = { x: 0, y: 0 };
   let position: { x: number; y: number } | undefined;
   let dragging:
     { id: number; x: number; y: number; left: number; top: number } | undefined;
-  const motions = [
-    "TapHead",
-    "TapEarLeft",
-    "TapEarRight",
-    "TapEyeLeft",
-    "TapEyeRight",
-  ];
+  const motions = lingActions.map((action) => action.group);
   const expressions = ["微笑", "惊讶", "难过", "生气"];
   const actionButtons = root.querySelectorAll<HTMLButtonElement>(
     '[data-ling-action]:not([data-ling-action="close"])',
@@ -98,7 +127,7 @@ export function initLingLive2D() {
     try {
       localStorage.setItem(
         preferenceKey,
-        JSON.stringify({ open, position, zoom }),
+        JSON.stringify({ open, position, zoom, preset: preset.id }),
       );
     } catch {
       /* Storage may be disabled. */
@@ -113,6 +142,7 @@ export function initLingLive2D() {
     root.style.left = `${position.x}px`;
     root.style.top = `${position.y}px`;
     root.style.bottom = "auto";
+    alignSettings();
   };
   const applyFloatingSize = () => {
     const mobile = innerWidth <= 760;
@@ -121,7 +151,7 @@ export function initLingLive2D() {
     const effective = Math.min(
       zoom,
       (innerWidth - 16) / width,
-      (innerHeight - 100) / height,
+      (innerHeight - 140) / height,
     );
     root.style.width = `${width * effective}px`;
     view.style.height = `${height * effective}px`;
@@ -139,7 +169,7 @@ export function initLingLive2D() {
           Math.min(
             width / model.internalModel.width,
             height / model.internalModel.height,
-          ) * 1.12;
+          ) * (showcasing ? 1 : 1.12);
         model.scale.set(baseScale * (showcasing ? showcaseZoom : 1));
         model.anchor.set(0.5, showcasing ? 0.5 : 1);
         model.position.set(width / 2, showcasing ? height / 2 : height - 2);
@@ -160,6 +190,7 @@ export function initLingLive2D() {
       }
     }
     if (position && !showcasing) setPosition(position.x, position.y);
+    alignSettings();
   };
   const changeZoom = (next: number) => {
     const current = showcasing ? showcaseZoom : zoom;
@@ -304,14 +335,48 @@ export function initLingLive2D() {
     if (open && !paused && !document.hidden && !disposed) app.start();
     else app.stop();
   };
-  const interact = (group?: string) => {
-    if (!model || paused || !open || performance.now() - lastInteraction < 600)
+  const interact = async (group?: string) => {
+    if (!model || paused || !open || performance.now() - lastInteraction < 700)
       return;
     lastInteraction = performance.now();
     const motion = group ?? motions[interactionIndex++ % motions.length];
-    model
-      .motion(motion, 0, 3)
-      .catch((error: unknown) => console.warn("Ling motion failed", error));
+    const label =
+      lingActions.find((action) => action.group === motion)?.label ?? "互动";
+    try {
+      const started = await model.motion(motion, 0, 3);
+      actionStatus.value = started
+        ? `正在${label}，结束后返回待机。`
+        : "动作未就绪，请重试。";
+    } catch (error) {
+      actionStatus.value = "动作未能加载，请重试。";
+      console.warn("Ling motion failed", error);
+    }
+  };
+  const choosePreset = async (id: string, reset = false) => {
+    preset = lingPresets.find((item) => item.id === id) ?? lingPresets[0];
+    presetSelect.value = preset.id;
+    root.dataset.preset = preset.id;
+    persist();
+    if (!model) return;
+    const manager = model.internalModel.motionManager;
+    manager.groups.idle = preset.group;
+    manager.stopAllMotions();
+    if (reset) {
+      manager.expressionManager?.resetExpression();
+      expressionIndex = -1;
+      expressionButton.textContent = "表情";
+    }
+    try {
+      await model.motion(preset.group, 0, 3);
+      actionStatus.value = `${preset.label} · 已记住`;
+      if (paused) {
+        model.update(16);
+        app.renderer.render(app.stage);
+      }
+    } catch (error) {
+      actionStatus.value = "待机未能加载，请重试。";
+      console.warn("Ling idle failed", error);
+    }
   };
   const create = async () => {
     root.dataset.state = "loading";
@@ -339,8 +404,12 @@ export function initLingLive2D() {
       });
       app.ticker.maxFPS = 30;
       const loaded = await Live2DModel.from(
-        `${base}live2d/ling/ling.model3.json`,
-        { autoInteract: false, autoUpdate: false },
+        `${base}live2d/ling-v16/ling.model3.json`,
+        {
+          autoInteract: false,
+          autoUpdate: false,
+          idleMotionGroup: preset.group,
+        },
       );
       if (disposed) {
         loaded.destroy();
@@ -348,27 +417,52 @@ export function initLingLive2D() {
       }
       model = loaded;
       app.stage.addChild(model);
-      // EX's MouseTracking controls are app-specific; reproduce their gentle range on the web.
+      // Clamp and slew-limit the final values after gaze, motions, expressions and physics.
+      const core = model.internalModel.coreModel;
+      const parameters = core._model.parameters;
+      const limits = parameters.ids
+        .map((id: string, index: number) => {
+          const limit =
+            lingLimits[id] ??
+            (/^ParamSwing|^ParamHair|^ParamOuterHair|^ParamFringe/.test(id)
+              ? [-0.3, 0.3, 1.2]
+              : undefined);
+          return limit ? { id, index, limit } : null;
+        })
+        .filter(Boolean);
       model.internalModel.on("beforeModelUpdate", () => {
-        const core = model.internalModel.coreModel;
-        for (const [id, limit] of [
-          ["ParamAngleX", 12],
-          ["ParamEyeBallX", 0.65],
-          ["ParamEyeBallY", 0.45],
-        ] as const) {
-          core.setParameterValueById(
-            id,
-            Math.max(-limit, Math.min(limit, core.getParameterValueById(id))),
+        for (const {
+          id,
+          index,
+          limit: [min, max, rate],
+        } of limits) {
+          const raw = parameters.values[index];
+          let value = Math.max(
+            min,
+            Math.min(
+              max,
+              Number.isFinite(raw) ? raw : parameters.defaultValues[index],
+            ),
           );
+          const last = lastParameters.get(id);
+          if (last !== undefined)
+            value = Math.max(
+              last - rate * frameDelta,
+              Math.min(last + rate * frameDelta, value),
+            );
+          parameters.values[index] = value;
+          lastParameters.set(id, value);
         }
       });
       app.ticker.add(
         () => {
           model.internalModel.focusController.focus(
-            pointerTarget.x,
-            pointerTarget.y,
+            pointerTarget.x * preset.follow,
+            pointerTarget.y * preset.follow,
           );
-          model.update(Math.min(app.ticker.deltaMS, 50));
+          const delta = Math.min(app.ticker.deltaMS, 50);
+          frameDelta = delta / 1000;
+          model.update(delta);
         },
         undefined,
         PIXI.UPDATE_PRIORITY.HIGH,
@@ -377,6 +471,9 @@ export function initLingLive2D() {
       poster.hidden = true;
       notice.hidden = true;
       actionButtons.forEach((button) => (button.disabled = false));
+      presetSelect.disabled = false;
+      actionSelect.disabled = false;
+      root.dataset.preset = preset.id;
       fit();
       model.update(0);
       app.renderer.render(app.stage);
@@ -399,6 +496,8 @@ export function initLingLive2D() {
       notice.hidden = false;
       retry.hidden = false;
       actionButtons.forEach((button) => (button.disabled = true));
+      presetSelect.disabled = true;
+      actionSelect.disabled = true;
     }
   };
   const show = async (remember = true) => {
@@ -488,6 +587,28 @@ export function initLingLive2D() {
           ? restoreFocus
           : showcaseButton
         ).focus({ preventScroll: true });
+    },
+    { signal },
+  );
+  settings.addEventListener("toggle", alignSettings, { signal });
+  presetSelect.addEventListener(
+    "change",
+    () => {
+      void choosePreset(presetSelect.value);
+    },
+    { signal },
+  );
+  root.querySelector('[data-ling-action="play"]')!.addEventListener(
+    "click",
+    () => {
+      void interact(actionSelect.value);
+    },
+    { signal },
+  );
+  root.querySelector('[data-ling-action="reset-preset"]')!.addEventListener(
+    "click",
+    () => {
+      void choosePreset("soft", true);
     },
     { signal },
   );
@@ -698,7 +819,12 @@ export function initLingLive2D() {
   );
   window.addEventListener("pageshow", updateRunning, { signal });
   let saved:
-    | { open?: boolean; position?: { x: number; y: number }; zoom?: number }
+    | {
+        open?: boolean;
+        position?: { x: number; y: number };
+        zoom?: number;
+        preset?: string;
+      }
     | undefined;
   try {
     saved =
@@ -713,6 +839,10 @@ export function initLingLive2D() {
     position = saved!.position;
   if (typeof saved?.zoom === "number" && Number.isFinite(saved.zoom))
     zoom = Math.max(0.65, Math.min(2.4, saved.zoom));
+  preset =
+    lingPresets.find((item) => item.id === saved?.preset) ?? lingPresets[0];
+  presetSelect.value = preset.id;
+  root.dataset.preset = preset.id;
   const automatic =
     matchMedia("(min-width: 1280px) and (hover: hover) and (pointer: fine)")
       .matches &&
