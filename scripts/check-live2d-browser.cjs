@@ -31,11 +31,11 @@ const os = require("node:os");
           (await response.text()) +
           `
  ;(()=>{const C=window.Live2DCubismCore,original=C.Model.fromMoc;
- C.Model.fromMoc=function(...args){const model=original.apply(this,args);const audit=window.__lingAudit={frames:0,badVertices:false,min:{},max:{},delta:{},last:{}};
+ C.Model.fromMoc=function(...args){const model=original.apply(this,args);const audit=window.__lingAudit={frames:0,badVertices:false,min:{},max:{},delta:{},last:{},limbs:{}};
  const update=model.update.bind(model);model.update=function(){
  const p=model.parameters;audit.frames++;
  p.ids.forEach((id,i)=>{const value=p.values[i];audit.min[id]=Math.min(audit.min[id]??value,value);audit.max[id]=Math.max(audit.max[id]??value,value);if(audit.last[id]!==undefined)audit.delta[id]=Math.max(audit.delta[id]??0,Math.abs(value-audit.last[id]));audit.last[id]=value;});
- update();if(audit.frames%30===0)for(const vertices of model.drawables.vertexPositions)for(const value of vertices)if(!Number.isFinite(value))audit.badVertices=true;
+ requestAnimationFrame(()=>{for(const id of ['ArtMeshHandwearL','ArtMeshHandwearR','ArtMeshLegwearL','ArtMeshLegwearR']){const i=model.drawables.ids.indexOf(id);const vertices=model.drawables.vertexPositions[i];if(!audit.limbs[id])audit.limbs[id]={first:Array.from(vertices),movement:0};const item=audit.limbs[id];vertices.forEach((v,j)=>{item.movement=Math.max(item.movement,Math.abs(v-item.first[j]));});}});update();if(audit.frames%30===0)for(const vertices of model.drawables.vertexPositions)for(const value of vertices)if(!Number.isFinite(value))audit.badVertices=true;
  };return model;};})();`,
       });
     });
@@ -51,7 +51,7 @@ const os = require("node:os");
     await settings.locator("summary").click();
     for (const preset of lingPresets) {
       await p.locator(".ling-live2d-preset").selectOption(preset.id);
-      await p.waitForTimeout(1400);
+      await p.waitForTimeout(1000);
       assert.ok(
         (await p.locator(".ling-live2d-action-status").innerText()).includes(
           preset.label,
@@ -85,14 +85,14 @@ const os = require("node:os");
     for (const action of lingActions) {
       await p.locator(".ling-live2d-action").selectOption(action.group);
       await p.locator('[data-ling-action="play"]').click();
-      await p.waitForTimeout(1600);
+      await p.waitForTimeout(1000);
       assert.ok(
         (await p.locator(".ling-live2d-action-status").innerText()).includes(
           action.label,
         ),
       );
     }
-    console.log("8 gentle actions exercised");
+    console.log("11 actions exercised");
     await p.locator(".ling-live2d-preset").selectOption("reading");
     await p.waitForTimeout(1000);
     await p.locator(".ling-live2d-action").selectOption("TapHead");
@@ -125,12 +125,46 @@ const os = require("node:os");
     });
     await p.keyboard.press("Escape");
     await p.waitForTimeout(100);
-    // Finish one complete 36s idle cycle and verify automatic restart after its end.
+    // Observe two timed changes, with no consecutive repeat, on the actual browser ticker.
+    const clip = await p.locator(".ling-live2d").getAttribute("data-idle-clip");
+    await p.waitForFunction(
+      (previous) =>
+        document.querySelector(".ling-live2d").dataset.idleClip !== previous,
+      clip,
+      { timeout: 25000 },
+    );
+    const second = await p
+      .locator(".ling-live2d")
+      .getAttribute("data-idle-clip");
+    await p.waitForFunction(
+      (previous) =>
+        document.querySelector(".ling-live2d").dataset.idleClip !== previous,
+      second,
+      { timeout: 25000 },
+    );
+    console.log("timed random idle changes do not immediately repeat");
+    // Observe rendering and whole-body movement over a full cycle.
     const firstFrames = (await p.evaluate(() => window.__lingAudit)).frames;
-    await p.waitForTimeout(38000);
+    await p.waitForTimeout(6000);
     audit = await p.evaluate(() => window.__lingAudit);
-    assert.ok(audit.frames > firstFrames + 100);
+    assert.ok(audit.frames > firstFrames + 30);
     assert.equal(audit.badVertices, false);
+    console.log(
+      "limb audit",
+      Object.fromEntries(
+        Object.entries(audit.limbs).map(([id, v]) => [id, v.movement]),
+      ),
+    );
+    for (const [id, data] of Object.entries(audit.limbs)) {
+      assert.ok(data.movement > 0.001, `${id} did not move`);
+    }
+    assert.ok(audit.max.ParamWristLY - audit.min.ParamWristLY > 0.3);
+    console.log(
+      "actual hand and leg mesh movement",
+      Object.fromEntries(
+        Object.entries(audit.limbs).map(([id, v]) => [id, v.movement]),
+      ),
+    );
     for (const [id, [min, max, rate]] of Object.entries(lingLimits)) {
       assert.ok(
         audit.min[id] >= min - 1e-6 && audit.max[id] <= max + 1e-6,

@@ -30,8 +30,9 @@ for (const [file, hash] of Object.entries(source.originalSHA256)) {
 const { lingPresets, lingLimits, lingActions } =
   await import("../src/data/ling-live2d.ts");
 assert.equal(lingPresets.length, 6);
-assert.equal(lingActions.length, 8);
-for (const preset of lingPresets) assert.ok(refs.Motions[preset.group]?.length);
+assert.equal(lingActions.length, 11);
+for (const preset of lingPresets)
+  assert.equal(refs.Motions[preset.group]?.length, 3);
 for (const action of lingActions) assert.ok(refs.Motions[action.group]?.length);
 let bytes = 0;
 for (const file of paths) {

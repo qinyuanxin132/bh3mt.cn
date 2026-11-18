@@ -113,6 +113,18 @@ export function initLingLive2D() {
   let interactionIndex = 0;
   let expressionIndex = -1;
   let lastInteraction = -Infinity;
+  let idleRemaining = 9 + Math.random() * 7;
+  let idlePending = false;
+  const lastIdle = new Map<string, number>();
+  const nextIdle = (group: string) => {
+    const previous = lastIdle.get(group);
+    const choices = [0, 1, 2].filter((index) => index !== previous);
+    const index = choices[Math.floor(Math.random() * choices.length)];
+    lastIdle.set(group, index);
+    root.dataset.idleClip = `${group}:${index}`;
+    idleRemaining = 9 + Math.random() * 7;
+    return index;
+  };
   let pointerTarget = { x: 0, y: 0 };
   let position: { x: number; y: number } | undefined;
   let dragging:
@@ -339,6 +351,7 @@ export function initLingLive2D() {
     if (!model || paused || !open || performance.now() - lastInteraction < 700)
       return;
     lastInteraction = performance.now();
+    idleRemaining = 18 + Math.random() * 6;
     const motion = group ?? motions[interactionIndex++ % motions.length];
     const label =
       lingActions.find((action) => action.group === motion)?.label ?? "互动";
@@ -367,7 +380,7 @@ export function initLingLive2D() {
       expressionButton.textContent = "表情";
     }
     try {
-      await model.motion(preset.group, 0, 3);
+      await model.motion(preset.group, nextIdle(preset.group), 3);
       actionStatus.value = `${preset.label} · 已记住`;
       if (paused) {
         model.update(16);
@@ -404,7 +417,7 @@ export function initLingLive2D() {
       });
       app.ticker.maxFPS = 30;
       const loaded = await Live2DModel.from(
-        `${base}live2d/ling-v16/ling.model3.json`,
+        `${base}live2d/ling-v16/ling.model3.json?v=idle2`,
         {
           autoInteract: false,
           autoUpdate: false,
@@ -417,6 +430,15 @@ export function initLingLive2D() {
       }
       model = loaded;
       app.stage.addChild(model);
+      // The SDK's generic head/body breathing obscures authored preset differences.
+      model.internalModel.breath.setParameters([]);
+      const manager = model.internalModel.motionManager;
+      const randomMotion = manager.startRandomMotion.bind(manager);
+      manager.startRandomMotion = (group: string, priority: number) => {
+        if (lingPresets.some((item) => item.group === group))
+          return manager.startMotion(group, nextIdle(group), priority);
+        return randomMotion(group, priority);
+      };
       // Clamp and slew-limit the final values after gaze, motions, expressions and physics.
       const core = model.internalModel.coreModel;
       const parameters = core._model.parameters;
@@ -454,6 +476,60 @@ export function initLingLive2D() {
           lastParameters.set(id, value);
         }
       });
+      // v16 has no leg parameters: add a tiny hip-anchored web-only sway.
+      // Restore untouched Core vertices before each update to prevent accumulation.
+      const drawables = core._model.drawables;
+      const legChains = [
+        ["ArtMeshLegwearL", "ArtMeshFootwearL", "ArtMeshBottomwearL"],
+        [
+          "ArtMeshLegwearR",
+          "ArtMeshFootwearR",
+          "ArtMeshBottomwearR",
+          "ArtMeshTopwearR3",
+        ],
+      ].map((ids, side) => {
+        const meshes = ids.map((id) => {
+          const index = drawables.ids.indexOf(id);
+          return {
+            index,
+            original: new Float32Array(drawables.vertexPositions[index]),
+          };
+        });
+        return { meshes, side };
+      });
+      let legTime = 0;
+      let legStrength = 0.7;
+      const updateModel = model.internalModel.update.bind(model.internalModel);
+      model.internalModel.update = (dt: number, now: number) => {
+        for (const chain of legChains)
+          for (const mesh of chain.meshes)
+            drawables.vertexPositions[mesh.index].set(mesh.original);
+        updateModel(dt, now);
+        legTime += frameDelta;
+        const targetStrength =
+          preset.id === "rest" ? 0.45 : preset.id === "display" ? 1 : 0.7;
+        legStrength +=
+          (targetStrength - legStrength) * Math.min(1, frameDelta * 2);
+        for (const { meshes, side } of legChains) {
+          const leg = drawables.vertexPositions[meshes[0].index];
+          let hipY = -Infinity;
+          for (let i = 1; i < leg.length; i += 2) hipY = Math.max(hipY, leg[i]);
+          const sway =
+            Math.sin((legTime * Math.PI) / 6 + side * Math.PI) *
+            0.018 *
+            legStrength;
+          for (const mesh of meshes) {
+            const vertices = drawables.vertexPositions[mesh.index];
+            mesh.original.set(vertices);
+            for (let i = 0; i < vertices.length; i += 2) {
+              const distance = Math.max(0, hipY - vertices[i + 1]);
+              vertices[i] += distance * sway;
+            }
+            // Cubism vertex-position-changed bit: upload the modified mesh this frame.
+            drawables.dynamicFlags[mesh.index] |= 0x20;
+          }
+        }
+      };
       app.ticker.add(
         () => {
           model.internalModel.focusController.focus(
@@ -463,6 +539,19 @@ export function initLingLive2D() {
           const delta = Math.min(app.ticker.deltaMS, 50);
           frameDelta = delta / 1000;
           model.update(delta);
+          idleRemaining -= frameDelta;
+          if (idleRemaining <= 0 && !idlePending) {
+            idlePending = true;
+            const group = preset.group;
+            void model
+              .motion(group, nextIdle(group), 3)
+              .catch((error: unknown) =>
+                console.warn("Ling idle rotation failed", error),
+              )
+              .finally(() => {
+                idlePending = false;
+              });
+          }
         },
         undefined,
         PIXI.UPDATE_PRIORITY.HIGH,

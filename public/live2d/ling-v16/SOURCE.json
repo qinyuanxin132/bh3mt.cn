@@ -21,5 +21,5 @@
     "motions/wink_L.motion3.json": "72b916824008cf84ed9b93d6b688dab6a42d9eb474fa318d49894bc93eff0109",
     "motions/wink_R.motion3.json": "88c7cac1e1a534c334bc465d9ce4cc6dde40e2fba34ae4b5135f57cc6c150444"
   },
-  "webAdaptation": "Low-amplitude motion variants; original model, textures, expressions and physics retained."
+  "webAdaptation": "18 varied body-and-arm idle clips and 11 bounded actions; original model, textures, expressions and physics retained."
 }

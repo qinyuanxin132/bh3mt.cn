@@ -31,7 +31,7 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
         <label>待机预设<select class="ling-live2d-preset" aria-label="待机预设" disabled>{lingPresets.map(preset => <option value={preset.id}>{preset.label}</option>)}</select></label>
         <label>指定动作<select class="ling-live2d-action" aria-label="指定动作" disabled>{lingActions.map(action => <option value={action.group}>{action.label}</option>)}</select></label>
         <div class="ling-live2d-settings-buttons"><button data-ling-action="play" type="button" disabled>播放动作</button><button data-ling-action="reset-preset" type="button" disabled>恢复轻柔</button></div>
-        <small>低幅度待机 · 缓慢过渡 · 预设自动记住</small>
+        <small>每 9–16 秒随机换动作 · 缓慢过渡 · 自动记住</small>
         <output class="ling-live2d-action-status" role="status" aria-live="polite"></output>
       </div>
     </details>

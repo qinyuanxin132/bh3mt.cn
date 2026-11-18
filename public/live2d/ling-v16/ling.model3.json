@@ -29,54 +29,120 @@
     "Motions": {
       "IdleSoft": [
         {
-          "Name": "轻柔呼吸",
-          "File": "motions/web-idle-soft-a.motion3.json",
+          "Name": "轻柔陪伴 · 1",
+          "File": "motions/web-idle-soft-0.motion3.json",
           "FadeInTime": 1.2,
           "FadeOutTime": 1.2
         },
         {
-          "Name": "轻微重心移动",
-          "File": "motions/web-idle-soft-b.motion3.json",
+          "Name": "轻柔陪伴 · 2",
+          "File": "motions/web-idle-soft-1.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        },
+        {
+          "Name": "轻柔陪伴 · 3",
+          "File": "motions/web-idle-soft-2.motion3.json",
           "FadeInTime": 1.2,
           "FadeOutTime": 1.2
         }
       ],
       "IdleReading": [
         {
-          "Name": "安静阅读",
-          "File": "motions/web-idle-reading.motion3.json",
+          "Name": "安静阅读 · 1",
+          "File": "motions/web-idle-reading-0.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        },
+        {
+          "Name": "安静阅读 · 2",
+          "File": "motions/web-idle-reading-1.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        },
+        {
+          "Name": "安静阅读 · 3",
+          "File": "motions/web-idle-reading-2.motion3.json",
           "FadeInTime": 1.2,
           "FadeOutTime": 1.2
         }
       ],
       "IdleFocus": [
         {
-          "Name": "专注陪伴",
-          "File": "motions/web-idle-focus.motion3.json",
+          "Name": "专注写码 · 1",
+          "File": "motions/web-idle-focus-0.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        },
+        {
+          "Name": "专注写码 · 2",
+          "File": "motions/web-idle-focus-1.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        },
+        {
+          "Name": "专注写码 · 3",
+          "File": "motions/web-idle-focus-2.motion3.json",
           "FadeInTime": 1.2,
           "FadeOutTime": 1.2
         }
       ],
       "IdleRest": [
         {
-          "Name": "放松小憩",
-          "File": "motions/web-idle-rest.motion3.json",
+          "Name": "放松小憩 · 1",
+          "File": "motions/web-idle-rest-0.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        },
+        {
+          "Name": "放松小憩 · 2",
+          "File": "motions/web-idle-rest-1.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        },
+        {
+          "Name": "放松小憩 · 3",
+          "File": "motions/web-idle-rest-2.motion3.json",
           "FadeInTime": 1.2,
           "FadeOutTime": 1.2
         }
       ],
       "IdleGreet": [
         {
-          "Name": "轻轻招呼",
-          "File": "motions/web-idle-greet.motion3.json",
+          "Name": "轻轻招呼 · 1",
+          "File": "motions/web-idle-greet-0.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        },
+        {
+          "Name": "轻轻招呼 · 2",
+          "File": "motions/web-idle-greet-1.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        },
+        {
+          "Name": "轻轻招呼 · 3",
+          "File": "motions/web-idle-greet-2.motion3.json",
           "FadeInTime": 1.2,
           "FadeOutTime": 1.2
         }
       ],
       "IdleDisplay": [
         {
-          "Name": "橱窗展示",
-          "File": "motions/web-idle-display.motion3.json",
+          "Name": "橱窗展示 · 1",
+          "File": "motions/web-idle-display-0.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        },
+        {
+          "Name": "橱窗展示 · 2",
+          "File": "motions/web-idle-display-1.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        },
+        {
+          "Name": "橱窗展示 · 3",
+          "File": "motions/web-idle-display-2.motion3.json",
           "FadeInTime": 1.2,
           "FadeOutTime": 1.2
         }
@@ -141,6 +207,30 @@
         {
           "Name": "舒缓呼吸",
           "File": "motions/web-breathe.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        }
+      ],
+      "Wave": [
+        {
+          "Name": "抬手招呼",
+          "File": "motions/web-wave.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        }
+      ],
+      "Stretch": [
+        {
+          "Name": "双臂舒展",
+          "File": "motions/web-stretch.motion3.json",
+          "FadeInTime": 1.2,
+          "FadeOutTime": 1.2
+        }
+      ],
+      "WeightShift": [
+        {
+          "Name": "左右换重心",
+          "File": "motions/web-weight.motion3.json",
           "FadeInTime": 1.2,
           "FadeOutTime": 1.2
         }
