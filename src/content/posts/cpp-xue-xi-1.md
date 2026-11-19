@@ -1566,4 +1566,3 @@ p->speak();
 p 是 Animal*。
 
 对于这里的非虚成员函数，C++ 根据指针的静态类型选择 Animal::speak()
-

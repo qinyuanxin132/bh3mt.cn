@@ -32,5 +32,36 @@ tags: ["C++"]
 ...
 ```
 
-首先我们需要先设定好这个世界的勇者与史莱姆
+首先我们需要先设定好这个世界的勇者与史莱姆，统一的模板的话先写一个基础的类
 
+```c++
+class base_player{
+    public:
+        std::string name;
+        int max_hp;
+        int hp;
+        int level;
+        bool live;
+        int down_hp(int a)
+        {
+            if(a >= hp){
+                live = 0;
+                return 0;
+            }
+            hp -= a;
+            return 1;
+        }
+        int up_hp(int a)
+        {
+            if((a+hp)>=max_hp){
+                hp = max_hp
+                return 1;
+            }
+            hp += a;
+            {
+                return 1;
+            }
+        }
+
+};
+```
