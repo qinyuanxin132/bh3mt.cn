@@ -1,0 +1,290 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import '../styles/skills.css';
+import { loadReLearningData } from '../data/re-learning';
+
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const data = loadReLearningData();
+
+const statusLabel: Record<string, string> = {
+  mastered: '已掌握',
+  learning: '学习中',
+  locked: '未解锁',
+};
+---
+
+<SiteLayout
+  title="逆向能力树 · BH3MT 无风"
+  description="CTF Reverse 个人能力树、真实掌握度诊断、阶段路线与刷题进度看板。"
+>
+  <div class="shell skills-page">
+    <header class="skills-hero">
+      <div class="skills-hero-top">
+        <div>
+          <span class="eyebrow">skill tree / ctf reverse</span>
+          <h1>逆向工程能力树</h1>
+          <p class="skills-hero-lead">
+            写过笔记只是点亮微光，独立实战验收才算真正掌握。页面直接由仓库内
+            <code>docs/re-learning/</code> 实时构建，记录每一次从「学过」到「吃透」的跃迁。
+          </p>
+        </div>
+      </div>
+
+      <div class="skills-meta-pills">
+        <span class="skills-pill">当前定位：<strong>{data.currentLevel}</strong></span>
+        <span class="skills-pill">主线阶段：<strong>{data.currentStageSummary}</strong></span>
+        {data.updatedAt && <span class="skills-pill">最后校准：<strong>{data.updatedAt}</strong></span>}
+      </div>
+
+      <div class="skills-stats">
+        <div class="stat-card" data-tone="mastered">
+          <div class="stat-card-head">
+            <span>已掌握 · MASTERED</span>
+            <span class="stat-dot mastered" aria-hidden="true"></span>
+          </div>
+          <div class="stat-value">{data.totals.mastered} <small class="muted">/ {data.totals.total}</small></div>
+        </div>
+        <div class="stat-card" data-tone="learning">
+          <div class="stat-card-head">
+            <span>学习中（已接触未验收）</span>
+            <span class="stat-dot learning" aria-hidden="true"></span>
+          </div>
+          <div class="stat-value">{data.totals.learning}</div>
+        </div>
+        <div class="stat-card" data-tone="locked">
+          <div class="stat-card-head">
+            <span>未解锁 · LOCKED</span>
+            <span class="stat-dot locked" aria-hidden="true"></span>
+          </div>
+          <div class="stat-value">{data.totals.locked}</div>
+        </div>
+      </div>
+
+      <div class="skills-progress-wrap" aria-label="总体能力进度">
+        <div class="skills-progress-labels">
+          <span>已接触覆盖度：{data.totals.touchedPercent}%（含学习中）</span>
+          <span>独立掌握率：{data.totals.masteredPercent}%</span>
+        </div>
+        <div class="skills-progress-bar">
+          <div class="skills-progress-touched" style={`width: ${data.totals.touchedPercent}%`}></div>
+          <div class="skills-progress-mastered" style={`width: ${data.totals.masteredPercent}%`}></div>
+        </div>
+      </div>
+    </header>
+
+    <section aria-labelledby="tree-heading">
+      <div class="skills-section-head">
+        <div>
+          <span class="eyebrow">constellation map / 01</span>
+          <h2 id="tree-heading">技能分支图谱</h2>
+        </div>
+        <div class="skills-filter-bar" role="group" aria-label="按掌握状态筛选">
+          <button class="skills-filter-btn is-active" type="button" data-filter="all">
+            全部 ({data.totals.total})
+          </button>
+          <button class="skills-filter-btn" type="button" data-filter="mastered">
+            已掌握 ({data.totals.mastered})
+          </button>
+          <button class="skills-filter-btn" type="button" data-filter="learning">
+            学习中 ({data.totals.learning})
+          </button>
+          <button class="skills-filter-btn" type="button" data-filter="locked">
+            未解锁 ({data.totals.locked})
+          </button>
+        </div>
+      </div>
+
+      <div class="skill-tree-grid" id="skill-tree-grid">
+        {data.branches.map((branch) => (
+          <article
+            class:list={['branch-card', { 'is-focus': branch.code === 'B' || branch.code === 'C' }]}
+            data-branch={branch.code}
+          >
+            <div class="branch-head">
+              <div>
+                <span class="branch-code">MODULE {branch.code} · {branch.tier}</span>
+                <h3 class="branch-title">{branch.title}</h3>
+                <p class="branch-sub">{branch.subtitle}</p>
+              </div>
+              <div class="branch-ratio">
+                {branch.masteredCount}/{branch.nodes.length}
+                <small>已接触 {branch.masteredCount + branch.learningCount}</small>
+              </div>
+            </div>
+
+            <ul class="skill-node-list">
+              {branch.nodes.map((node) => (
+                <li class="skill-node" data-status={node.status}>
+                  <div class="skill-node-main">
+                    <span class="skill-node-title">{node.title}</span>
+                  </div>
+                  <div class="skill-node-actions">
+                    {node.relatedPost && (
+                      <a
+                        class="node-post-link"
+                        href={`${base}posts/${node.relatedPost.slug}/`}
+                        title={`查看笔记：${node.relatedPost.title}`}
+                      >
+                        笔记 ↗
+                      </a>
+                    )}
+                    <span class:list={['node-badge', node.status]}>{statusLabel[node.status]}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="skills-dual-grid" aria-label="刷题进度与能力诊断">
+      <div class="skills-panel">
+        <div class="skills-section-head">
+          <div>
+            <span class="eyebrow">active queue / 02</span>
+            <h2>当前实战题队列</h2>
+          </div>
+        </div>
+        <table class="queue-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>题目</th>
+              <th>训练点</th>
+              <th>状态</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.queue.map((item) => (
+              <tr>
+                <td><code>{item.id}</code></td>
+                <td>
+                  <strong>{item.name}</strong>
+                  {item.note && <div class="muted" style="font-size:0.78rem;">{item.note}</div>}
+                </td>
+                <td class="muted">{item.focus}</td>
+                <td>
+                  <span class:list={['queue-status', item.statusKind]}>{item.statusText}</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="skills-panel">
+        <div class="skills-section-head">
+          <div>
+            <span class="eyebrow">diagnosis / 03</span>
+            <h2>摸底能力诊断</h2>
+          </div>
+        </div>
+        <div class="radar-list">
+          {data.radar.map((item) => (
+            <div class="radar-item">
+              <div class="radar-item-top">
+                <strong>{item.dimension}</strong>
+                <span class:list={['radar-tag', item.tone]}>{item.level}</span>
+              </div>
+              <p>{item.detail}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="roadmap-heading">
+      <div class="skills-section-head">
+        <div>
+          <span class="eyebrow">roadmap / 04</span>
+          <h2 id="roadmap-heading">四阶段执行路线</h2>
+        </div>
+      </div>
+      <div class="stages-grid">
+        {data.stages.map((stage) => (
+          <article class:list={['stage-card', { 'is-current': stage.isCurrent }]}>
+            <div class="stage-meta">
+              <span class="stage-badge">STAGE 0{stage.index} · {stage.duration}</span>
+              {stage.isCurrent && <span class="stage-now">进行中</span>}
+            </div>
+            <h3>{stage.title}</h3>
+            {stage.goal && <p class="stage-goal">{stage.goal}</p>}
+            {stage.tasks.length > 0 && (
+              <ul class="stage-list">
+                {stage.tasks.map((task) => <li>{task}</li>)}
+              </ul>
+            )}
+            {stage.acceptance.length > 0 && (
+              <div class="stage-accept">
+                <strong>验收标准</strong>
+                {stage.acceptance.map((acc) => <div>· {acc}</div>)}
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="skills-dual-grid" aria-label="踩坑备忘录与学习日志">
+      <div class="skills-panel">
+        <div class="skills-section-head">
+          <div>
+            <span class="eyebrow">pitfalls / 05</span>
+            <h2>高频踩坑备忘录</h2>
+          </div>
+        </div>
+        <div class="pitfalls-grid">
+          {data.pitfalls.map((item) => (
+            <div class="pitfall-card">
+              <strong>{item.title}</strong>
+              <p>{item.detail}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="skills-panel">
+        <div class="skills-section-head">
+          <div>
+            <span class="eyebrow">journal / 06</span>
+            <h2>最近训练日志</h2>
+          </div>
+        </div>
+        <div class="log-list">
+          {data.logs.map((log) => (
+            <article class="log-card">
+              <h3>{log.heading}</h3>
+              <ul>
+                {log.highlights.slice(0, 6).map((hl) => <li>{hl}</li>)}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const filterButtons = document.querySelectorAll<HTMLButtonElement>('.skills-filter-btn');
+    const branches = document.querySelectorAll<HTMLElement>('.branch-card');
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter ?? 'all';
+        filterButtons.forEach((b) => b.classList.toggle('is-active', b === btn));
+
+        branches.forEach((branch) => {
+          const nodes = branch.querySelectorAll<HTMLElement>('.skill-node');
+          let visibleCount = 0;
+          nodes.forEach((node) => {
+            const matched = filter === 'all' || node.dataset.status === filter;
+            node.hidden = !matched;
+            if (matched) visibleCount += 1;
+          });
+          branch.hidden = visibleCount === 0;
+        });
+      });
+    });
+  </script>
+</SiteLayout>

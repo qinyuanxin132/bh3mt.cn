@@ -1,6 +1,6 @@
 ---
 title: "C++ 入门学习 #2 实战"
-slug: "cpp-xue-xi-1"
+slug: "cpp-xue-xi-2"
 date: 2026-11-18
 updated: 2026-11-18
 published: true
