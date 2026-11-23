@@ -3,7 +3,7 @@ title: "Reverse 01-10 wp"
 slug: "rev01-rev10-wp"
 date: 2026-11-23
 updated: 2026-11-23
-published: true
+published: false
 categories: ["CTF"]
 tags: ["CTF", "Reverse"]
 ---

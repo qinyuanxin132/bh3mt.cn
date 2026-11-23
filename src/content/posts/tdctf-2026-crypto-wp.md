@@ -3,7 +3,7 @@ title: "TDCTF 2026 Crypto wp"
 slug: "tdctf-2026-crypto-wp"
 date: 2026-11-23
 updated: 2026-11-23
-published: true
+published: false
 categories: ["TDCTF_2026"]
 tags: ["TDCTF_2026", "Crypto"]
 ---
