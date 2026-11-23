@@ -26,3 +26,12 @@
 
 ### 3. 下一步计划
 - 立刻进入阶段 1，从 `02 Plain sight` 开始逐题刷完剩余 5 道 Crackme，并强制结合 `pwndbg` 动手练习。
+
+---
+
+## 2026-11-20｜连破 5 道 Crackme，挺进综合题 `ComputeTheKey`
+
+- 独立完成 `02 Plain sight`、`03 PieIsMyFav`、`04 simple XOR crackme`、`05 jumpjumpjump` 共 4 题（累计 5/6）。
+- **亮点**：第 2 题独立看懂了 C++ 的 `std::cin` 与 `std::operator==`；第 4 题遇到 `__m128i` 16 字节 SIMD 常量时，自己反应出小端序字节排列并写了带 `& 0xff` 的 Python 脚本一次验证通过。
+- **当前卡点**：第 6 题 `ComputeTheKey` 的 `sub_11C3` 代码较长且有 `sub_1312(main, ...)`，产生畏难情绪；准备通过“拆解核心 `sub_11A9` + `pwndbg` 动态抓取密钥”带练突破。
+

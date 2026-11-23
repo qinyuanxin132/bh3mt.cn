@@ -22,7 +22,7 @@ APK文件其实就是一个包含了Dalvik可执行文件（DEX文件）、资�
 
 arch linux
 
-```
+```bash
 # 使用 yay
 yay -S android-apktool
 
@@ -34,7 +34,7 @@ paru -S android-apktool
 
 b
 
-```
+```bash
 # 反编译 APK
 apktool d app.apk -o app_out
 
