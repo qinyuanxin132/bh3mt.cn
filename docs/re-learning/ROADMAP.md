@@ -15,9 +15,9 @@
 - [~] PE 文件结构（DOS/NT 头、区段表、RVA/FOA、导入表 IAT）
 
 ### 模块 B：动态调试与运行时分析（当前核心补强项）
-- [~] GDB + pwndbg 基础（断点、单步、查寄存器/栈/内存）
-- [ ] PIE 程序动态定位与偏移下断点（`start` / `piebase` / `$rebase()`）
-- [ ] 运行时修改寄存器/内存绕过校验、从内存 dump 解密数据或密钥表
+- [x] GDB + pwndbg 基础（断点、单步、查寄存器/栈/内存）
+- [x] PIE 程序动态定位与偏移下断点（`entry` / `start` / `piebase` / `$rebase()`）
+- [~] 运行时修改寄存器/内存绕过校验、从内存 dump 解密数据或密钥表
 - [ ] 条件断点、硬件观察点（`watch`）与调用栈回溯（`bt`）
 - [ ] Windows 动态调试（x64dbg / IDA 远程调试）基础
 
@@ -41,7 +41,7 @@
 - [~] 标准 UPX 查壳与脱壳（`upx -d`）
 - [ ] 魔改 UPX 修复（特征字节/区段名被破坏）与动态找 OEP 手动脱壳
 - [~] 花指令识别与去花（从带提示进阶到无提示识别永恒跳转 + 手动/IDAPython Patch）
-- [ ] Linux / Windows 常见反调试识别与绕过（`ptrace`、`TracerPid`、`IsDebuggerPresent`、时间差检测）
+- [~] Linux / Windows 常见反调试识别与绕过（`ptrace`、`TracerPid`、`IsDebuggerPresent`、时间差检测）
 - [ ] SMC（代码自修改）与动态 Dump
 - [ ] OLLVM 常见混淆（控制流平坦化 / 虚假控制流）初识与应对思路
 

@@ -35,3 +35,20 @@
 - **亮点**：第 2 题独立看懂了 C++ 的 `std::cin` 与 `std::operator==`；第 4 题遇到 `__m128i` 16 字节 SIMD 常量时，自己反应出小端序字节排列并写了带 `& 0xff` 的 Python 脚本一次验证通过。
 - **当前卡点**：第 6 题 `ComputeTheKey` 的 `sub_11C3` 代码较长且有 `sub_1312(main, ...)`，产生畏难情绪；准备通过“拆解核心 `sub_11A9` + `pwndbg` 动态抓取密钥”带练突破。
 
+---
+
+## 2026-11-23 ~ 2026-11-24｜GDB 动调从 0 到 0.1 突破，首批能力树节点点亮！
+
+- 独立打通 `ctf-debug-lab` 全部 4 关并沉淀为博客文章 [GDB学习0-->0.1](../../src/content/posts/gdb-0-1-stady-1.md)：
+  - Level 1：在 `strcmp@plt` 下断点，用 `x/s $rsi` 偷看明文 Flag。
+  - Level 2：用 `set $rax = 0` 绕过 `ptrace` 反调试，并用 `set $eax = 1` 与 `set $rip = 0x4012fc` 两种方式通关。
+  - Level 3（PIE + Stripped）：实战掌握 `entry` → `piebase` → `b *$rebase(偏移)` 黄金三连。
+  - Level 4（Mini Boss）：独立组合 `ptrace` 绕过 + `set $rip = $rebase(0x13e2)` 跳过 Admin PIN 校验 + 校验点 `x/s $rsi` 拿 Flag。
+- **能力树跃迁**：
+  - 模块 B「GDB + pwndbg 基础」：`[~]` → `[x]`
+  - 模块 B「PIE 程序动态定位与偏移下断点」：`[ ]` → `[x]`
+  - 模块 B「运行时修改寄存器/内存绕过校验」：`[ ]` → `[~]`
+  - 模块 E「Linux / Windows 常见反调试识别与绕过」：`[ ]` → `[~]`
+- **小细节备忘**：看寄存器本身数值用 `p/x $rax` 或 `i r rax`，`x/s $rax` 是把寄存器当指针解引用读字符串。
+
+

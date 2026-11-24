@@ -1,25 +1,25 @@
 # 当前学习进度看板（PROGRESS）
 
-> 最后更新：2026-11-20  
-> 当前所在阶段：**阶段 1（夯实基础算法逆向 + 补强 `pwndbg` 动态调试与汇编追踪）**
+> 最后更新：2026-11-24  
+> 当前所在阶段：**阶段 1 收官（动态调试核心短板已打通，准备进入阶段 2）**
 
 ---
 
 ## 一、当前主线焦点（防跑偏锚点）
 
-1. **主线任务**：从零攻克 **`pwndbg` 4 关新手道场**（`/home/qinyuanxin132/.gemini/antigravity/scratch/pwndbg-dojo`），把动态调试从“完全不会”练到能独立处理 PIE、改寄存器、抓内存密钥、绕过 `ptrace`。
-2. **前置战果**：Crackmes.one 前 5 题已全部独立完成，第 6 题 `ComputeTheKey` 已看 WP，等打通道场后回来秒杀复现。
+1. **刚完成的突破**：独立通关 `ctf-debug-lab` 4 关（含 Mini Boss：PIE + Stripped + `ptrace` 反调试 + 跳过 PIN + 抓 Flag），写出完整笔记 `gdb-0-1-stady-1.md`，**能力树首批 2 颗 `[x]` 星点已点亮**！
+2. **阶段 1 最后收尾**：用刚练熟的 `entry` + `b *$rebase()` + `x/Nbx` 顺手复现 `06 ComputeTheKey`（或直接做 1 道内存数组 dump 实战），即可正式毕业进入 **阶段 2（经典加密盲解 + Z3 进阶 + C++ 逆向映射）**。
 
 ---
 
-## 二、`pwndbg` 新手道场进度
+## 二、`pwndbg` 动调实战通关记录
 
-| 关卡 | 文件名 | 核心思路 | 新学命令 | 状态 |
+| 关卡 | 文件名 | 核心思路 | 实战命令 | 状态 |
 |---|---|---|---|---|
-| Level 1 | `lv1_watch` | 在 `strcmp` 刹车偷看明文 | `start` / `b` / `c` / `x/s` | ✅ 已通关 |
-| Level 2 | `lv2_patch_reg` | 单步跟踪 + 改寄存器绕过检查 | `ni` / `si` / `set $eax=...` | 🔄 进行中 |
-| Level 3 | `lv3_pie_key` | PIE 去符号偏移下断点 + 抓内存表 | `starti` / `$rebase()` / `x/16bx` | ⏳ 待做 |
-| Level 4 | `lv4_antidebug` | 绕过 `ptrace` 反调试 + 改控制流 | `catch syscall` / `set $rax=0` | ⏳ 待做 |
+| Level 1 | `ctf-debug-lab/level1` | 在 `strcmp` 刹车偷看明文 | `disas` / `b *addr` / `x/s $rsi` | ✅ 已通关 |
+| Level 2 | `ctf-debug-lab/level2` | 绕过 `ptrace` + 改寄存器/劫持 `$rip` | `set $rax=0` / `set $eax=1` / `set $rip=...` | ✅ 已通关 |
+| Level 3 | `ctf-debug-lab/level3` | PIE + 去符号偏移下断点偷看明文 | `entry` / `piebase` / `b *$rebase(...)` | ✅ 已通关 |
+| Level 4 | `ctf-debug-lab/level4` (Mini Boss) | PIE + 去符号 + `ptrace` + 跳 PIN 校验 + 抓 Flag | 多断点连招 + `set $rip=$rebase(...)` | ✅ 已通关 |
 
 ---
 
