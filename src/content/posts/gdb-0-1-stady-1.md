@@ -444,3 +444,118 @@ pwndbg> x/s $rsi
 - **前 6 个参数依次存放于**：`RDI` → `RSI` → `RDX` → `RCX` → `R8` → `R9`
 - **第 7 个及以后参数**：通过栈传递
 - **函数返回值**：存放在 `RAX`（32 位为 `EAX`）
+
+## Setp 4
+
+尝试dbg运行下试试
+
+`[!] Nice try, debugger detected!`
+
+打开IDA找到了
+
+```asm
+.text:0000000000001335                 call    _ptrace
+.text:000000000000133A                 test    rax, rax
+```
+
+下断点：
+
+`entry` 先把程序启动并停在入口，让系统把 PIE 基址加载出来；
+
+`b *$rebase(0x133A)` 下断点
+
+```dbg
+pwndbg> x/s $rax
+0xffffffffffffffff:
+```
+
+rax寄存器果然是-1
+
+我们改成0
+
+```dbg
+pwndbg> set $rax = 0x0
+pwndbg> x/s $rax
+0x0:  <error: Cannot access memory at address 0x0>
+pwndbg> c
+Continuing.
+=== Level 4: Mini Boss (PIE + Stripped + Anti-Debug) ===
+Step 1 - Enter Admin PIN: 
+```
+
+也是把反调试过了
+
+继续看反编译
+
+```c++
+__int64 __fastcall sub_128E(const char *a1, __int64 a2)
+{
+  int i; // [rsp+1Ch] [rbp-4h]
+
+  if ( (unsigned int)strlen(a1) != 31 )
+    return 0;
+  for ( i = 0; i < 31; ++i )
+  {
+    if ( a1[i] != *(_BYTE *)(i + a2) )
+      return 0;
+  }
+  return 1;
+}
+```
+
+sub_128E是纯比较
+
+`.text:000000000000149E                 call    sub_128E`
+
+在这下断点，去寄存器拿flag
+
+不行，前面还有一个效验pin的，我们尝试跳过去
+
+打断点
+
+`printf("Step 1 - Enter Admin PIN: ");`
+
+`.text:000000000000137D                 call    _printf`
+
+`b *$rebase(0x137D)`
+
+我们不进pin，知己跳到pin成功后的分支
+
+`.text:00000000000013EC                 call    _puts`
+
+```dbg
+pwndbg> set $rip = $rebase(0x13e2)
+pwndbg> c
+Continuing.
+[+] PIN accepted! Unlocking vault...
+Step 2 - Enter Flag: 
+```
+
+还要在效验flag前下断点来拿寄存器的数据
+
+`b *$rebase(0x149E)`
+
+整理顺序
+
+entry
+
+b *$rebase(0x133A)
+
+b *$rebase(0x149E)
+
+b *$rebase(0x137D)
+
+set $rax = 0x0
+
+c
+
+set $rip = $rebase(0x13e2)
+
+终于到效验函数前了
+
+直接拿寄存器
+
+```gdb
+pwndbg> x/s $rsi
+0x555555559420:"flag{b0ss_cl3ar3d_y0u_kn0w_gdb}"
+```
