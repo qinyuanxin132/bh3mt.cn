@@ -4,8 +4,8 @@ slug: "ez_flower"
 date: 2026-10-09
 updated: 2026-10-09
 published: true
-categories: ["0xGame"]
-tags: ["0xGame"]
+categories: ["CTF Writeup"]
+tags: ["0xGame 2026", "Reverse", "花指令"]
 ---
 
 # 0xGame 2026 Re ez_flower wp

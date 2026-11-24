@@ -4,8 +4,8 @@ slug: "xi-dian-ctf-2026-web-gui-tu"
 date: 2026-09-20
 updated: 2026-09-20
 published: true
-categories: ["西电CTF_2026"]
-tags: []
+categories: ["CTF Writeup"]
+tags: ["西电CTF 2026", "Web"]
 ---
 
 # 西电CTF 2026 web 归途

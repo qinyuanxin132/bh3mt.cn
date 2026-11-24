@@ -4,8 +4,8 @@ slug: "hui-bian-yu-yan-xue-xi-1"
 date: 2026-10-10
 updated: 2026-10-11
 published: true
-categories: ["汇编语言学习"]
-tags: ["汇编语言学习"]
+categories: ["逆向工程"]
+tags: ["汇编", "x86-64"]
 ---
 
 # 汇编语言学习

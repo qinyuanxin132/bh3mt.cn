@@ -4,8 +4,8 @@ slug: "0xgame-2026-re-ez_upx-wp"
 date: 2026-09-29
 updated: 2026-10-17
 published: true
-categories: ["0xGame"]
-tags: ["0xGame"]
+categories: ["CTF Writeup"]
+tags: ["0xGame 2026", "Reverse", "UPX"]
 ---
 
 # 0xGame 2026 Re ez_upx wp

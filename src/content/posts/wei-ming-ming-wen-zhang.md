@@ -4,8 +4,8 @@ slug: "wei-ming-ming-wen-zhang"
 date: 2026-09-20
 updated: 2026-09-20
 published: true
-categories: ["西电CTF_2026"]
-tags: ["西电CTF_2026"]
+categories: ["CTF Writeup"]
+tags: ["西电CTF 2026"]
 ---
 
 # 西电CTF_2026 查分系统_revenge

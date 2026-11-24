@@ -4,8 +4,8 @@ slug: "0xgame-2026-re-ai-yun-duo-norevenge-wp"
 date: 2026-10-08
 updated: 2026-10-08
 published: true
-categories: ["0xGame"]
-tags: ["0xGame"]
+categories: ["CTF Writeup"]
+tags: ["0xGame 2026", "Reverse"]
 ---
 
 # 0xGame 2026 Re 欸？云朵のrevenge wp

@@ -4,8 +4,8 @@ slug: "gao-shu-bi-ji"
 date: 2026-10-27
 updated: 2026-10-27
 published: false
-categories: [高数笔记]
-tags: [高数笔记]
+categories: ["随笔与杂记"]
+tags: ["高数"]
 ---
 
 # 高数笔记

@@ -4,7 +4,7 @@ slug: "cpp-xue-xi-1"
 date: 2026-11-15
 updated: 2026-11-16
 published: true
-categories: ["C++学习笔记"]
+categories: ["编程与硬件"]
 tags: ["C++"]
 ---
 
@@ -295,7 +295,7 @@ player p1是新建了一个对象（实例） (类似于结构体)，名字是p1
 
 我们并没有手动传入 &p1，但是 damage() 仍然知道应该修改 p1。因为 C++ 会隐式地把当前对象的信息传给成员函数，这个对象指针就是 this。
 
-![alt text](image-16.png)
+![alt text](../attachments/upload/image-16.png)
 
 表达式|含义
 ---|---
@@ -316,7 +316,7 @@ p1.hp
 
 \[\boxed{p\texttt{->}hp = (*p).hp}\]
 
-![alt text](image-17.png)
+![alt text](../attachments/upload/image-17.png)
 
 ### 什么时候需要显式写 this
 
@@ -391,7 +391,7 @@ Player(int n){
 
 并且**创建对象会自动调用**
 
-![alt text](image-18.png)
+![alt text](../attachments/upload/image-18.png)
 
 ## 析构函数
 
@@ -696,7 +696,7 @@ static 这是属于类的静态成员，不属于某个对象独有
 
 #### static 内存管理
 
-![alt text](image-19.png)
+![alt text](../attachments/upload/image-19.png)
 
 count 不会因为有三个 Player 对象就分配三份
 
@@ -1170,7 +1170,7 @@ class Player    定义一个名为 Player 的类
 public  采用公有继承方式
 Character   被继承的类，也叫基类
 
-![alt text](image-20.png)
+![alt text](../attachments/upload/image-20.png)
 
 也就是说，Player 不仅拥有自己定义的 level，还包含继承而来的 Character 基类部分。
 
@@ -1341,7 +1341,7 @@ d1.hp = 50;
 
 ```
 
-![alt text](image-21.png)
+![alt text](../attachments/upload/image-21.png)
 
 ## 三种继承方式
 
@@ -1532,7 +1532,7 @@ int main() {
 
 它并没有把 Dog 对象变成 Animal 对象，也没有删除 Dog 自己的部分。
 
-![alt text](image-22.png)
+![alt text](../attachments/upload/image-22.png)
 
 > 改变指针类型，不等于改变它所指向的实际对象。
 

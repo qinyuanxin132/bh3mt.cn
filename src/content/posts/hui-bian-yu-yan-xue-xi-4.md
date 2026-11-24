@@ -4,8 +4,8 @@ slug: "hui-bian-yu-yan-xue-xi-4"
 date: 2026-11-10
 updated: 2026-11-10
 published: true
-categories: ["汇编语言学习"]
-tags: ["汇编语言学习", "CTF", "Reverse", "x86-64", "GDB", "pwndbg"]
+categories: ["逆向工程"]
+tags: ["汇编", "x86-64", "GDB", "pwndbg"]
 ---
 
 Reverse Stage 02 · 未知 ELF 逆向

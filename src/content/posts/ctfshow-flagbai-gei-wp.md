@@ -4,8 +4,8 @@ slug: "ctfshow-flagbai-gei-wp"
 date: 2026-10-12
 updated: 2026-10-12
 published: true
-categories: ["ctfshow wp"]
-tags: ["ctfshow wp"]
+categories: ["CTF Writeup"]
+tags: ["CTFshow", "Reverse"]
 ---
 
 # ctfshow flag白给 wp

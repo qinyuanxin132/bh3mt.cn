@@ -4,8 +4,8 @@ slug: "xi-dian-ctf-2026-assembly"
 date: 2026-09-23
 updated: 2026-09-23
 published: true
-categories: []
-tags: []
+categories: ["CTF Writeup"]
+tags: ["西电CTF 2026", "Reverse", "汇编"]
 ---
 
 # 西电CTF 2026 Assembly

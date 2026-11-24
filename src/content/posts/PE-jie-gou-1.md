@@ -4,8 +4,8 @@ slug: "PE-jie-gou-1"
 date: 2026-10-24
 updated: 2026-10-28
 published: true
-categories: ["PE结构学习"]
-tags: ["PE结构学习"]
+categories: ["逆向工程"]
+tags: ["PE"]
 ---
 > 发布于 2026-10-24 11:09:25
 > 最后更新时间 2026-10-28 16:09:25

@@ -4,8 +4,8 @@ slug: "tdctf-2026-pwn-men-jin-kou-ling-wp"
 date: 2026-11-23
 updated: 2026-11-23
 published: false
-categories: ["TDCTF_2026"]
-tags: ["TDCTF_2026", "Pwn"]
+categories: ["CTF Writeup"]
+tags: ["TDCTF 2026", "Pwn"]
 ---
 
 # TDCTF 2026 Pwn 门禁口令 wp

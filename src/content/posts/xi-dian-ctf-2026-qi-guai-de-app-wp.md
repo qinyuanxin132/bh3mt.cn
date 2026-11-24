@@ -4,8 +4,8 @@ slug: "xi-dian-ctf-2026-qi-guai-de-app-wp"
 date: 2026-10-18
 updated: 2026-10-18
 published: true
-categories: ["西电CTF_2026"]
-tags: ["西电CTF_2026"]
+categories: ["CTF Writeup"]
+tags: ["西电CTF 2026", "Reverse", "Android"]
 ---
 
 # 西电CTF 2026 奇怪的APP wp

@@ -4,8 +4,8 @@ slug: "xi-dian-ctf-2026-bbxor"
 date: 2026-10-17
 updated: 2026-10-17
 published: true
-categories: ["西电CTF_2026"]
-tags: ["西电CTF_2026"]
+categories: ["CTF Writeup"]
+tags: ["西电CTF 2026", "Reverse", "XOR"]
 ---
 
 # 西电CTF 2026  bbxor

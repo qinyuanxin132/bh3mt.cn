@@ -4,8 +4,8 @@ slug: "elf-wen-jian-jie-gou-ru-men"
 date: 2026-11-12
 updated: 2026-11-12
 published: true
-categories: ["ELF 文件结构"]
-tags: ["ELF", "Linux", "逆向工程"]
+categories: ["逆向工程"]
+tags: ["ELF", "Linux"]
 ---
 
 # ELF 文件结构入门
@@ -199,7 +199,7 @@ ELF 文件（逻辑示意，非固定物理顺序）
 readelf -h 程序名
 ```
 
-![ELF 文件头示意](image-14.png)
+![ELF 文件头示意](../attachments/upload/image-14.png)
 
 **结构体：`Elf64_Ehdr`，共 64 字节。**
 

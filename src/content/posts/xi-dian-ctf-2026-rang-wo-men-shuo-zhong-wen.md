@@ -4,8 +4,8 @@ slug: "xi-dian-ctf-2026-rang-wo-men-shuo-zhong-wen"
 date: 2026-10-22
 updated: 2026-10-22
 published: true
-categories: []
-tags: []
+categories: ["CTF Writeup"]
+tags: ["西电CTF 2026", "Reverse"]
 ---
 
 # 西电CTF 2026 让我们说中文 wp

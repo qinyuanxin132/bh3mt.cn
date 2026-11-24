@@ -4,8 +4,8 @@ slug: "xi-dian-ctf-2026-moecatchthefrogs"
 date: 2026-09-22
 updated: 2026-09-22
 published: true
-categories: ["西电CTF_2026"]
-tags: ["西电CTF_2026"]
+categories: ["CTF Writeup"]
+tags: ["西电CTF 2026", "Reverse"]
 ---
 
 # 西电CTF 2026 MoeCatchTheFrogs

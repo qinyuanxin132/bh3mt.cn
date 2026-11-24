@@ -4,8 +4,8 @@ slug: "ctfshow-re3-wp"
 date: 2026-10-09
 updated: 2026-10-10
 published: true
-categories: ["ctfshow wp"]
-tags: ["ctfshow wp"]
+categories: ["CTF Writeup"]
+tags: ["CTFshow", "Reverse"]
 ---
 
 # ctfshow re3 wp

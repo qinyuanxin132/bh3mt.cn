@@ -4,7 +4,7 @@ slug: "ni-xiang-xue-xi-shou-ji"
 date: 2026-10-09
 updated: 2026-10-09
 published: true
-categories: ["逆向入门"]
+categories: ["逆向工程"]
 tags: ["逆向入门"]
 ---
 

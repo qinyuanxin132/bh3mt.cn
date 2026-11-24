@@ -4,8 +4,8 @@ slug: "snapper-kuai-zhao-chang-yong-ming-ling"
 date: 2026-06-22
 updated: 2026-06-22
 published: true
-categories: []
-tags: []
+categories: ["Linux 与工具"]
+tags: ["Linux", "Snapper"]
 ---
 
 # snapper（快照）常用命令

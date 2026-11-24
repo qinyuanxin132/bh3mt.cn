@@ -4,8 +4,8 @@ slug: "ELF-Patch-shi-zhan-1"
 date: 2026-11-13
 updated: 2026-11-13
 published: true
-categories: ["ELF 文件结构"]
-tags: ["ELF", "Linux", "逆向工程"]
+categories: ["逆向工程"]
+tags: ["ELF", "Linux", "Patch"]
 ---
 
 # ELF Patch实战 #1

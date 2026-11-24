@@ -4,8 +4,8 @@ slug: "ctfshow-qian-tui-wp"
 date: 2026-10-12
 updated: 2026-10-12
 published: true
-categories: ["ctfshow wp"]
-tags: ["ctfshow wp"]
+categories: ["CTF Writeup"]
+tags: ["CTFshow", "Reverse"]
 ---
 
 # ctfshow 签退 wp

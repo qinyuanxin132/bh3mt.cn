@@ -4,8 +4,8 @@ slug: "cyu-yan-xue-xi-bi-ji-5-zhi-zhen"
 date: 2026-09-28
 updated: 2026-10-07
 published: true
-categories: ["C语言学习笔记"]
-tags: ["C语言学习笔记"]
+categories: ["编程与硬件"]
+tags: ["C", "指针"]
 ---
 
 # C语言学习笔记 #5 指针！！！

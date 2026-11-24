@@ -4,8 +4,8 @@ slug: "wei-ming-ming-wen-zhang-DtiW6aCQ"
 date: 2026-10-18
 updated: 2026-10-18
 published: true
-categories: ["西电CTF_2026"]
-tags: ["西电CTF_2026"]
+categories: ["CTF Writeup"]
+tags: ["西电CTF 2026", "Reverse"]
 ---
 
 # Ultra Potato Xplosion

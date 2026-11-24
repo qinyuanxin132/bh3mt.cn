@@ -4,8 +4,8 @@ slug: "z3-ru-men-1"
 date: 2026-11-11
 updated: 2026-11-11
 published: true
-categories: [""]
-tags: ["z3"]
+categories: ["逆向工程"]
+tags: ["Z3"]
 ---
 
 # Z3约束求解入门
@@ -594,4 +594,4 @@ checking license key...
 Press Enter to exit...
 ```
 
-![alt text](image-12.png)
+![alt text](../attachments/upload/image-12.png)

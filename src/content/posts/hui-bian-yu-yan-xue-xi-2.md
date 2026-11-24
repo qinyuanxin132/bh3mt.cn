@@ -4,8 +4,8 @@ slug: "hui-bian-yu-yan-xue-xi-2"
 date: 2026-11-05
 updated: 2026-11-06
 published: true
-categories: ["汇编语言学习"]
-tags: ["汇编语言学习", "CTF", "Reverse", "x86-64", "GDB", "pwndbg"]
+categories: ["逆向工程"]
+tags: ["汇编", "x86-64", "GDB", "pwndbg"]
 ---
 
 # 汇编语言学习 2

@@ -4,8 +4,8 @@ slug: "CTF-shua-ti-ri-zhi-dwadw"
 date: 2026-11-15
 updated: 2026-11-20
 published: true
-categories: [""]
-tags: [""]
+categories: ["CTF Writeup"]
+tags: ["Reverse", "Crackmes"]
 ---
 
 ## 《CTF Reverse 刷题日志｜从基础校验到算法逆向》
@@ -86,7 +86,7 @@ Correct!
 
 ## 第二题
 
-![alt text](image-15.png)
+![alt text](../attachments/upload/image-15.png)
 
 ```bash
  /home/qinyuanxin132/Downloads/6513567328b5870bef263329/plain_sight

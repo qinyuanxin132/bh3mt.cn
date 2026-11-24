@@ -4,8 +4,8 @@ slug: "gdb-0-1-stady-1"
 date: 2026-11-23
 updated: 2026-11-23
 published: true
-categories: ["GDB基础学习"]
-tags: ["pwndbg", "gdb"]
+categories: ["逆向工程"]
+tags: ["GDB", "pwndbg"]
 ---
 
 ## GDB学习0-->1
@@ -341,7 +341,7 @@ __int64 __fastcall sub_11F5(const char *a1, __int64 a2)
 
 找到函数的偏移地址
 
-![alt text](image-23.png)
+![alt text](../attachments/upload/image-23.png)
 
 启动 GDB：
 

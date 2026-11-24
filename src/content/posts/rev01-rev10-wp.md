@@ -4,8 +4,8 @@ slug: "rev01-rev10-wp"
 date: 2026-11-23
 updated: 2026-11-23
 published: false
-categories: ["CTF"]
-tags: ["CTF", "Reverse"]
+categories: ["CTF Writeup"]
+tags: ["Reverse"]
 ---
 
 # Reverse 01-10 wp

@@ -4,8 +4,8 @@ slug: "xi-dian-ctf-tell-me-no-lies-wp-zvXUlKQH"
 date: 2026-10-19
 updated: 2026-10-19
 published: true
-categories: []
-tags: []
+categories: ["CTF Writeup"]
+tags: ["西电CTF 2026", "Reverse"]
 ---
 
 # 西电 CTF  Tell Me No Lies wp

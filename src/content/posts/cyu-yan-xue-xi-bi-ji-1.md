@@ -4,8 +4,8 @@ slug: "cyu-yan-xue-xi-bi-ji-1"
 date: 2026-09-24
 updated: 2026-09-28
 published: true
-categories: ["C语言学习笔记"]
-tags: ["C语言学习笔记"]
+categories: ["编程与硬件"]
+tags: ["C"]
 ---
 
 # C语言学习笔记 #2

@@ -4,8 +4,8 @@ slug: "cong-jia-mi-tui-jie-mi-tong-yong-yuan-li"
 date: 2026-10-19
 updated: 2026-10-19
 published: true
-categories: ["默认分类"]
-tags: ["西电CTF_2026"]
+categories: ["逆向工程"]
+tags: ["加解密", "西电CTF 2026"]
 ---
 
 # 从加密推解密-通用原理

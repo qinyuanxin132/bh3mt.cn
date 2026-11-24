@@ -4,8 +4,8 @@ slug: "ctf2-xin-nian-kuai-le-wp"
 date: 2026-10-13
 updated: 2026-10-13
 published: true
-categories: ["ctf2"]
-tags: ["ctf2"]
+categories: ["CTF Writeup"]
+tags: ["CTF²", "Reverse"]
 ---
 
 # CTF² 新年快乐 wp

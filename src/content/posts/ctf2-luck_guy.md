@@ -4,8 +4,8 @@ slug: "ctf2-luck_guy"
 date: 2026-10-14
 updated: 2026-10-14
 published: true
-categories: ["ctf2"]
-tags: ["ctf2"]
+categories: ["CTF Writeup"]
+tags: ["CTF²", "Reverse"]
 ---
 
 # CTF² luck_guy wp

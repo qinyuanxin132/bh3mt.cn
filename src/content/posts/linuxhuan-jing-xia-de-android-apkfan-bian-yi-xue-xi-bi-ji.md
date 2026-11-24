@@ -4,8 +4,8 @@ slug: "linuxhuan-jing-xia-de-android-apkfan-bian-yi-xue-xi-bi-ji"
 date: 2026-10-18
 updated: 2026-10-18
 published: true
-categories: ["默认分类"]
-tags: ["Android学习"]
+categories: ["逆向工程"]
+tags: ["Android", "Linux"]
 ---
 
 # Linux环境下的Android APK反编译 学习笔记

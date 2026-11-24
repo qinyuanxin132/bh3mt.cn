@@ -4,7 +4,7 @@ slug: "cpp-xue-xi-2"
 date: 2026-11-18
 updated: 2026-11-18
 published: true
-categories: ["C++学习笔记"]
+categories: ["编程与硬件"]
 tags: ["C++"]
 ---
 

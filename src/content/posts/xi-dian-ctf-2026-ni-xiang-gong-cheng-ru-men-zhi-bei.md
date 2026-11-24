@@ -4,8 +4,8 @@ slug: "xi-dian-ctf-2026-ni-xiang-gong-cheng-ru-men-zhi-bei"
 date: 2026-09-23
 updated: 2026-09-23
 published: true
-categories: ["西电CTF_2026"]
-tags: ["西电CTF_2026"]
+categories: ["CTF Writeup"]
+tags: ["西电CTF 2026", "Reverse"]
 ---
 
 # 西电CTF 2026 逆向工程入门指北

@@ -4,8 +4,8 @@ slug: "z3_solver"
 date: 2026-10-08
 updated: 2026-10-08
 published: true
-categories: ["0xGame"]
-tags: ["0xGame"]
+categories: ["CTF Writeup"]
+tags: ["0xGame 2026", "Reverse", "Z3"]
 ---
 
 # 0xGame 2026 Re z3_solver wp

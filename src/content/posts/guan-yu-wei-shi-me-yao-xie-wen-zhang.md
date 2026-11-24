@@ -4,8 +4,8 @@ slug: "guan-yu-wei-shi-me-yao-xie-wen-zhang"
 date: 2026-06-22
 updated: 2026-06-22
 published: true
-categories: []
-tags: []
+categories: ["随笔与杂记"]
+tags: ["随笔"]
 ---
 
 # 关于为什么要写“文章”

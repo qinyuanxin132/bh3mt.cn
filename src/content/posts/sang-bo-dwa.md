@@ -4,8 +4,8 @@ slug: "sang-bo-dwa"
 date: 2026-06-22
 updated: 2026-06-22
 published: true
-categories: []
-tags: []
+categories: ["CTF Writeup"]
+tags: ["Reverse"]
 ---
 
 # 桑博的回执只能看一次 wp

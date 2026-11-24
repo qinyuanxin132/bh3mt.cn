@@ -4,8 +4,8 @@ slug: "ctf2-reverse1-wp"
 date: 2026-10-13
 updated: 2026-10-13
 published: true
-categories: ["ctf2"]
-tags: ["ctf2"]
+categories: ["CTF Writeup"]
+tags: ["CTF²", "Reverse"]
 ---
 
 # CTF² reverse1 wp

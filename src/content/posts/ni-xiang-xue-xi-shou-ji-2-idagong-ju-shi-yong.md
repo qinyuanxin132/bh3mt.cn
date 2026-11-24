@@ -4,8 +4,8 @@ slug: "ni-xiang-xue-xi-shou-ji-2-idagong-ju-shi-yong"
 date: 2026-10-09
 updated: 2026-10-09
 published: true
-categories: ["逆向入门"]
-tags: ["逆向入门"]
+categories: ["逆向工程"]
+tags: ["逆向入门", "IDA"]
 ---
 
 # 逆向学习手记 #2 IDA工具使用

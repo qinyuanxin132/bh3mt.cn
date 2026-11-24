@@ -4,8 +4,8 @@ slug: "xi-dian-ctf-2026-fanchai"
 date: 2026-11-10
 updated: 2026-11-10
 published: true
-categories: ["西电CTF_2026"]
-tags: ["西电CTF_2026"]
+categories: ["CTF Writeup"]
+tags: ["西电CTF 2026", "Reverse", "TEA"]
 ---
 
 # 西电CTF 2026 请 fanchai 喝茶
@@ -16,7 +16,7 @@ tags: ["西电CTF_2026"]
 
 die:
 
-![alt text](image-10.png)
+![alt text](../attachments/upload/image-10.png)
 
 直接IDA打开
 
@@ -437,6 +437,6 @@ print(result4)
 按照原始内存顺序 v26 → v27 → v28 → v29 拼接
 moectf{Tre4t_f4ncha1_W1tH_xxtea_Wh4t_A_g00d_Id3a_HahaHAh4hAH4ha}
 
-![alt text](image-11.png)
+![alt text](../attachments/upload/image-11.png)
 
 [python脚本](../fujian/jiemi7.py)

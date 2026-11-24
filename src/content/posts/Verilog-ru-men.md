@@ -4,8 +4,8 @@ slug: "Verilog-ru-men"
 date: 2026-10-27
 updated: 2026-10-27
 published: true
-categories: ["Verilog"]
-tags: ["Verilog "]
+categories: ["编程与硬件"]
+tags: ["Verilog"]
 ---
 > 发布于 2026-10-27 11:09:25
 
@@ -38,7 +38,7 @@ endbedroom
 
 我们使用Verilog来描述如何使用其他模块来构成每个模块
 
-![alt text](image.png)
+![alt text](../attachments/upload/image.png)
 
 在verilog中描述模块的第一步是用module和end module语句标记模块描述的开始和结束
 
@@ -53,7 +53,7 @@ endmodule //george
 
 ### 0.2模块如何使用称为端口的装置连接到外部装置
 
-![alt text](image-1.png)
+![alt text](../attachments/upload/image-1.png)
 
 首先给端口命个名
 
@@ -75,7 +75,7 @@ verilog内置了OR,AND,NOT的原语
 
 module_name name(port1,port2,...)
 
-![alt text](image-2.png)
+![alt text](../attachments/upload/image-2.png)
 
 对于或门
 
@@ -89,7 +89,7 @@ or o1(output,in1,in2);
 
 ### 0.3连入电路
 
-![alt text](image-3.png)
+![alt text](../attachments/upload/image-3.png)
 
 看OR，它的两个输入分别连接的模块的输入x和y  
 输出端连接到AND的输入端  
@@ -109,7 +109,7 @@ AND:
 
 `and a1(o,or_wire,not_wire);`
 
-![alt text](image-4.png)
+![alt text](../attachments/upload/image-4.png)
 
 ### 0.4 常见误解
 
@@ -125,7 +125,7 @@ AND:
 
 2.verilog会将模块中所有具有相同线名的模块端口连接起来
 
-![alt text](image-5.png)
+![alt text](../attachments/upload/image-5.png)
 
 ---
 ---

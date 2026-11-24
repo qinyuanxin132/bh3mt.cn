@@ -4,8 +4,8 @@ slug: "xi-dian-ctf-2026-fan-fang-xiang-de-rc4-wp"
 date: 2026-10-17
 updated: 2026-10-17
 published: true
-categories: ["西电CTF_2026"]
-tags: ["西电CTF_2026"]
+categories: ["CTF Writeup"]
+tags: ["西电CTF 2026", "Reverse", "RC4"]
 ---
 
 # 西电CTF 2026 反方向的 RC4 wp

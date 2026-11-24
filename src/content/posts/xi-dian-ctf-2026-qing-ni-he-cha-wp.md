@@ -4,8 +4,8 @@ slug: "xi-dian-ctf-2026-qing-ni-he-cha-wp"
 date: 2026-10-19
 updated: 2026-10-19
 published: true
-categories: []
-tags: []
+categories: ["CTF Writeup"]
+tags: ["西电CTF 2026", "Reverse", "TEA"]
 ---
 
 # 西电CTF 2026 请你喝茶 wp

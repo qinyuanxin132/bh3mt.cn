@@ -4,8 +4,8 @@ slug: "PE-jie-gou-2"
 date: 2026-10-29
 updated: 2026-10-29
 published: true
-categories: ["PE结构学习"]
-tags: ["PE结构学习"]
+categories: ["逆向工程"]
+tags: ["PE"]
 ---
 > 发布于 2026-10-29 18:47:25
 > 
@@ -61,7 +61,7 @@ typedef struct _IMAGE_DOS_HEADER {
 
 点击新建
 
-![alt text](image-6.png)
+![alt text](../attachments/upload/image-6.png)
 
 插入了一个64字节的文件
 
@@ -69,7 +69,7 @@ typedef struct _IMAGE_DOS_HEADER {
 WORD e_magic;  可执行文件的标识
 WORD e_lfanew;  存PE头的偏移
 
-![alt text](image-7.png)
+![alt text](../attachments/upload/image-7.png)
 
 ### 2.构造PE标识符
 
@@ -77,7 +77,7 @@ PE标识符占4字节 因此插入数据大小4
 
 PE标识符对应的16进制数据是`50 45 00 00`
 
-![alt text](image-8.png)
+![alt text](../attachments/upload/image-8.png)
 
 ### 3.构造IMAGE_FILE_HEADER结构体
 
@@ -107,7 +107,7 @@ IMAGE_FILE_HEADER关键字取值：
 填充数据时，SizeOfOptionalHeader字段值的大小与32位平台的IMAGE_Optional_Header结构体大小相同
 NumberOfSections表示PE文件中节的数量
 
-![alt text](image-9.png)
+![alt text](../attachments/upload/image-9.png)
 
 ### 4.构造IMAGE_OPTIONAL_HEADER结构体
 

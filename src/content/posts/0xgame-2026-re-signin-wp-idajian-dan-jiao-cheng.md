@@ -4,8 +4,8 @@ slug: "0xgame-2026-re-signin-wp-idajian-dan-jiao-cheng"
 date: 2026-09-29
 updated: 2026-10-08
 published: true
-categories: ["0xGame"]
-tags: ["0xGame"]
+categories: ["CTF Writeup"]
+tags: ["0xGame 2026", "Reverse", "IDA"]
 ---
 
 # 0xGame 2026 Re signin wp&IDA简单教程

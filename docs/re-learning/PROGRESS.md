@@ -1,29 +1,35 @@
 # 当前学习进度看板（PROGRESS）
 
 > 最后更新：2026-11-24  
-> 当前所在阶段：**阶段 1 收官（动态调试核心短板已打通，准备进入阶段 2）**
+> 当前所在阶段：**阶段 2（高频加密盲解 + Z3 `BitVec` 进阶 + C++ 逆向映射）**
 
 ---
 
 ## 一、当前主线焦点（防跑偏锚点）
 
-1. **刚完成的突破**：独立通关 `ctf-debug-lab` 4 关（含 Mini Boss：PIE + Stripped + `ptrace` 反调试 + 跳过 PIN + 抓 Flag），写出完整笔记 `gdb-0-1-stady-1.md`，**能力树首批 2 颗 `[x]` 星点已点亮**！
-2. **阶段 1 最后收尾**：用刚练熟的 `entry` + `b *$rebase()` + `x/Nbx` 顺手复现 `06 ComputeTheKey`（或直接做 1 道内存数组 dump 实战），即可正式毕业进入 **阶段 2（经典加密盲解 + Z3 进阶 + C++ 逆向映射）**。
+1. **阶段 1 正式毕业 🎉**：纯手读 59 行多寄存器 Win64 汇编独立解出 `MYCTF 字节锁链`（`flag{Asm_1s_n0t_th4t_h4rd}`），加上前一天通关 `ctf-debug-lab` 4 关，**能力树已点亮 6 颗 `[x]` 星点**！
+2. **阶段 2 新主线（预计 2~3 周）**：
+   - **经典加密盲解**：无提示独立解出 换表 Base64、魔改 RC4、魔改 TEA/XTEA 各 1~2 题；
+   - **Z3 进阶**：补齐 `ULT/UGT`、`Concat/Extract` 与可见字符集约束；
+   - **C++ 逆向映射**：用自己写的 C++（`class`/`std::string`/`std::vector`/虚表）对照 IDA 伪代码；
+   - **顺带补完动调细节**：实战一次 `x/Nbx` 内存数组 dump（如回手抓 `crackme_th` 的 `fd c0 de`）。
 
 ---
 
-## 二、`pwndbg` 动调实战通关记录
+## 二、阶段 2 实战任务队列
 
-| 关卡 | 文件名 | 核心思路 | 实战命令 | 状态 |
+| 编号 | 训练专题 | 目标能力点 | 状态 | 备注 |
 |---|---|---|---|---|
-| Level 1 | `ctf-debug-lab/level1` | 在 `strcmp` 刹车偷看明文 | `disas` / `b *addr` / `x/s $rsi` | ✅ 已通关 |
-| Level 2 | `ctf-debug-lab/level2` | 绕过 `ptrace` + 改寄存器/劫持 `$rip` | `set $rax=0` / `set $eax=1` / `set $rip=...` | ✅ 已通关 |
-| Level 3 | `ctf-debug-lab/level3` | PIE + 去符号偏移下断点偷看明文 | `entry` / `piebase` / `b *$rebase(...)` | ✅ 已通关 |
-| Level 4 | `ctf-debug-lab/level4` (Mini Boss) | PIE + 去符号 + `ptrace` + 跳 PIN 校验 + 抓 Flag | 多断点连招 + `set $rip=$rebase(...)` | ✅ 已通关 |
+| S2-01 | `MYCTF 字节锁链`（阶段 1 毕业考） | 无 F5 多寄存器汇编 + ROL3 + 链式状态 | ✅ 已完成 | 独立解出 `flag{Asm_1s_n0t_th4t_h4rd}` |
+| S2-02 | `换表 Base64` 盲解实战 | 识别 64 字节自定义码表与魔改填充 | ⏳ 待做 | 阶段 2 首战 |
+| S2-03 | `魔改 RC4` 盲解实战 | 识别 KSA/PRGA 256 字节 S 盒与魔改点 | ⏳ 待做 | 不看 WP 独立写解密 |
+| S2-04 | `魔改 TEA / XTEA` 盲解实战 | 识别 `0x9E3779B9` 魔数、32 轮与 `& 0xffffffff` | ⏳ 待做 | 练 32 位 ARX 逆推 |
+| S2-05 | `Z3 BitVec` 综合约束题 | `LShR` + `ULT/UGT` + `Extract/Concat` | ⏳ 待做 | 练工程化 Z3 建模 |
+| S2-06 | `C++ 逆向映射` 实验 | `this` 指针、`std::string`、`std::vector`、虚表 | ⏳ 待做 | 结合 `cpp-xue-xi-2.md` 实战 |
 
 ---
 
-## 三、Crackmes.one 实战题队列
+## 三、已完成历史队列（阶段 1 归档）
 
 来源：`src/content/posts/CTF-shua-ti-ri-zhi-dwadw.md`（Crackmes.one Level 1 → Level 2）
 

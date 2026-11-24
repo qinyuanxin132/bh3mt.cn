@@ -4,8 +4,8 @@ slug: "jiu-shi-dai-de-xin-hao"
 date: 2026-10-08
 updated: 2026-10-08
 published: true
-categories: ["0xGame"]
-tags: ["0xGame"]
+categories: ["CTF Writeup"]
+tags: ["0xGame 2026", "Reverse"]
 ---
 
 # 0xGame 2026 Re 旧时代的信号 wp

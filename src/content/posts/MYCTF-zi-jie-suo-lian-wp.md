@@ -4,8 +4,8 @@ slug: "MYCTF-zi-jie-suo-lian-wp"
 date: 2026-11-24
 updated: 2026-11-24
 published: true
-categories: ["myctf"]
-tags: ["myctf", "myctf"]
+categories: ["CTF Writeup"]
+tags: ["MYCTF", "Reverse", "汇编"]
 ---
 
 ## myctf 字节锁链 wp

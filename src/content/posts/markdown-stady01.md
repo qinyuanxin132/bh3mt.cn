@@ -4,7 +4,7 @@ slug: "markdown-stady01"
 date: 2026-10-21
 updated: 2026-10-21
 published: true
-categories: ["Markdown"]
+categories: ["Linux 与工具"]
 tags: ["Markdown"]
 ---
 
