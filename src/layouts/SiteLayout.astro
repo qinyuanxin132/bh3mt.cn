@@ -4,7 +4,7 @@ import LingLive2D from '../components/LingLive2D.astro';
 interface Props { title?: string; description?: string; }
 const { title = 'BH3MT 无风 · 月下手记', description = '与泠一起，记录逆向、CTF、Linux 与编程学习。' } = Astro.props;
 const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
-const links = [{href:base, label:'手记', en:'NOTES'}, {href:`${base}categories/`, label:'分类', en:'ARCHIVE'}, {href:`${base}skills/`, label:'能力树', en:'SKILL TREE'}, {href:`${base}ling/`, label:'泠', en:'CHARACTER'}, {href:`${base}lab/`, label:'实验室', en:'CODE LAB'}, {href:`${base}about/`, label:'关于', en:'ABOUT'}];
+const links = [{href:base, label:'手记', en:'NOTES'}, {href:`${base}categories/`, label:'分类', en:'ARCHIVE'}, {href:`${base}skills/`, label:'能力树', en:'SKILL TREE'}, {href:`${base}ling/`, label:'泠', en:'CHARACTER'}, {href:`${base}lab/`, label:'实验室', en:'CODE LAB'}, {href:`${base}tools/`, label:'工具箱', en:'TOOLBOX'}, {href:`${base}about/`, label:'关于', en:'ABOUT'}];
 ---
 <!doctype html>
 <html lang="zh-CN">

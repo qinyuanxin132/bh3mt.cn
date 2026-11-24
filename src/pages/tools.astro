@@ -1,0 +1,346 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import '../styles/tools.css';
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+---
+<SiteLayout
+  title="月下工具箱 · BH3MT 无风"
+  description="纯浏览器运行的解码、格式转换与解压缩工具箱：支持换表 Base64、Base32/58、Hex、URL、Unicode、凯撒/XOR、JWT、进制字节序、JSON、哈希摘要、Gzip/Zlib 与 ZIP 解压打包。"
+>
+  <div class="shell toolbox-page">
+    <header class="toolbox-hero">
+      <div>
+        <span class="eyebrow">MOONLIT TOOLBOX / 02</span>
+        <h1>月下工具箱<span>解码、转换与解压缩，随手可得。</span></h1>
+        <p>
+          面向 CTF 逆向与日常开发的纯前端工具台。支持换表 Base64、进制与大小端序、XOR / 凯撒、哈希摘要、Gzip / Zlib 流与 ZIP 浏览器内解压打包。
+        </p>
+        <div class="toolbox-badges">
+          <span>✦ 100% 本地浏览器运行</span>
+          <span>数据不上传服务器</span>
+          <span>零外部 API 依赖</span>
+        </div>
+      </div>
+      <a class="toolbox-ling" href={`${base}ling/`} aria-label="认识泠">
+        <img src={`${base}images/ling/ling-reading.webp`} width="640" height="800" alt="在一旁陪伴的泠" />
+        <span>先把线索拆开看看。<small>LING / TOOLBOX</small></span>
+      </a>
+    </header>
+
+    <div class="toolbox-tabs" role="tablist" aria-label="工具分类">
+      <button class="toolbox-tab is-active" type="button" role="tab" aria-selected="true" data-tool-tab="codec">
+        <span>编码与解码</span><small>CODEC</small>
+      </button>
+      <button class="toolbox-tab" type="button" role="tab" aria-selected="false" data-tool-tab="convert">
+        <span>格式转换与摘要</span><small>CONVERT &amp; HASH</small>
+      </button>
+      <button class="toolbox-tab" type="button" role="tab" aria-selected="false" data-tool-tab="compress">
+        <span>压缩与解压缩</span><small>GZIP / ZLIB / ZIP</small>
+      </button>
+    </div>
+
+    <!-- ==================== TAB 1: CODEC ==================== -->
+    <section data-tool-panel="codec" aria-label="编码与解码">
+      <div class="tool-card">
+        <div class="tool-card-head">
+          <h2>编解码工作台 <small>BASE64 / BASE32 / BASE58 / HEX / URL / XOR / JWT</small></h2>
+          <div class="tool-group">
+            <label for="codec-alg">算法</label>
+            <select id="codec-alg">
+              <option value="base64">Base64（标准）</option>
+              <option value="base64-url">Base64（URL-Safe）</option>
+              <option value="base64-custom">Base64（自定义换表）</option>
+              <option value="base32">Base32</option>
+              <option value="base58">Base58（Bitcoin）</option>
+              <option value="hex">Hex / Base16</option>
+              <option value="url">URL 编解码</option>
+              <option value="url-full">URL 全字符 %XX 编码</option>
+              <option value="unicode">Unicode (\uXXXX / \xXX)</option>
+              <option value="html">HTML 实体</option>
+              <option value="caesar">凯撒移位 / ROT13</option>
+              <option value="xor">XOR 循环异或</option>
+              <option value="jwt">JWT 令牌解码</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="tool-card-body">
+          <div id="codec-b64-custom-wrap" class="tool-extra-bar" hidden>
+            <label for="codec-b64-table">64 字符码表</label>
+            <input
+              id="codec-b64-table"
+              type="text"
+              value="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+              spellcheck="false"
+            />
+            <label for="codec-b64-pad">填充符</label>
+            <input id="codec-b64-pad" type="text" value="=" style="flex: 0 0 56px; text-align: center;" maxlength="1" />
+          </div>
+
+          <div id="codec-caesar-wrap" class="tool-extra-bar" hidden>
+            <label for="codec-caesar-shift">移位偏移（1~25）</label>
+            <input id="codec-caesar-shift" type="number" value="13" min="1" max="25" style="flex: 0 0 84px;" />
+            <button id="codec-caesar-brute" type="button">爆破全部 25 组</button>
+          </div>
+
+          <div id="codec-xor-wrap" class="tool-extra-bar" hidden>
+            <label for="codec-xor-key">XOR 密钥</label>
+            <input id="codec-xor-key" type="text" placeholder="输入密钥，例如 0x5A 或 key" spellcheck="false" />
+            <select id="codec-xor-key-mode" aria-label="XOR 密钥格式">
+              <option value="utf8">UTF-8 文本</option>
+              <option value="hex">Hex 字节</option>
+            </select>
+          </div>
+
+          <div class="tool-toolbar">
+            <div class="tool-group">
+              <button id="codec-encode" class="primary-btn" type="button">编码 / 加密 →</button>
+              <button id="codec-decode" class="primary-btn" type="button">← 解码 / 解密</button>
+              <button id="codec-swap" type="button" title="将输出放回输入框">⇄ 交换</button>
+            </div>
+            <div class="tool-group">
+              <button id="codec-copy" type="button">复制结果</button>
+              <button id="codec-clear" type="button">清空</button>
+            </div>
+          </div>
+
+          <div class="split-io">
+            <div class="io-col">
+              <div class="io-col-head">
+                <label for="codec-input">输入内容</label>
+                <select id="codec-in-mode" aria-label="输入解释格式">
+                  <option value="utf8">按 UTF-8 文本</option>
+                  <option value="hex">按 Hex 字节</option>
+                </select>
+              </div>
+              <textarea id="codec-input" placeholder="粘贴待编码或待解码的内容…" spellcheck="false"></textarea>
+            </div>
+
+            <div class="io-col">
+              <div class="io-col-head">
+                <label for="codec-output">输出结果</label>
+                <select id="codec-out-mode" aria-label="输出显示格式">
+                  <option value="utf8">显示为 UTF-8 文本</option>
+                  <option value="hex">显示为 Hex 字节</option>
+                </select>
+              </div>
+              <textarea id="codec-output" placeholder="转换结果会显示在这里…" readonly spellcheck="false"></textarea>
+            </div>
+          </div>
+
+          <div id="codec-status" class="tool-status" role="status" aria-live="polite">就绪 · 选好算法后点击编码或解码。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 2: CONVERT & HASH ==================== -->
+    <section data-tool-panel="convert" aria-label="格式转换与摘要" hidden>
+      <div class="tool-card">
+        <div class="tool-card-head">
+          <h2>进制、大小端序与字节数组转换 <small>BIGINT / ENDIANNESS / REVERSE</small></h2>
+          <div class="tool-group">
+            <label for="conv-num-base">输入解释</label>
+            <select id="conv-num-base">
+              <option value="auto">自动识别（0x / 0b / 0o / 十进制 / ASCII）</option>
+              <option value="hex">十六进制 (Hex)</option>
+              <option value="dec">十进制 (Dec)</option>
+              <option value="bin">二进制 (Bin)</option>
+              <option value="oct">八进制 (Oct)</option>
+              <option value="ascii">ASCII 文本</option>
+            </select>
+          </div>
+        </div>
+        <div class="tool-card-body">
+          <input
+            id="conv-num-input"
+            type="text"
+            value="0x67616c66"
+            placeholder="例如：0x67616c66、123456、0b101010 或 flag"
+            style="width: 100%;"
+            spellcheck="false"
+          />
+          <div id="conv-num-error" class="tool-status" data-state="error"></div>
+          <div class="kv-list">
+            <div class="kv-row"><span class="kv-label">DEC</span><code id="out-dec" class="kv-value">—</code><button type="button" class="mini-copy" data-copy-target="out-dec">复制</button></div>
+            <div class="kv-row"><span class="kv-label">HEX</span><code id="out-hex" class="kv-value">—</code><button type="button" class="mini-copy" data-copy-target="out-hex">复制</button></div>
+            <div class="kv-row"><span class="kv-label">BIN</span><code id="out-bin" class="kv-value">—</code><button type="button" class="mini-copy" data-copy-target="out-bin">复制</button></div>
+            <div class="kv-row"><span class="kv-label">OCT</span><code id="out-oct" class="kv-value">—</code><button type="button" class="mini-copy" data-copy-target="out-oct">复制</button></div>
+            <div class="kv-row"><span class="kv-label">大端字节</span><code id="out-be-hex" class="kv-value">—</code><button type="button" class="mini-copy" data-copy-target="out-be-hex">复制</button></div>
+            <div class="kv-row"><span class="kv-label">小端字节</span><code id="out-le-hex" class="kv-value">—</code><button type="button" class="mini-copy" data-copy-target="out-le-hex">复制</button></div>
+            <div class="kv-row"><span class="kv-label">ASCII (BE)</span><code id="out-ascii-be" class="kv-value">—</code><button type="button" class="mini-copy" data-copy-target="out-ascii-be">复制</button></div>
+            <div class="kv-row"><span class="kv-label">ASCII (LE)</span><code id="out-ascii-le" class="kv-value">—</code><button type="button" class="mini-copy" data-copy-target="out-ascii-le">复制</button></div>
+            <div class="kv-row"><span class="kv-label">uint32 / int32</span><code id="out-u32" class="kv-value">—</code><button type="button" class="mini-copy" data-copy-target="out-u32">复制</button></div>
+            <div class="kv-row"><span class="kv-label">signed int32</span><code id="out-i32" class="kv-value">—</code><button type="button" class="mini-copy" data-copy-target="out-i32">复制</button></div>
+            <div class="kv-row"><span class="kv-label">C 数组</span><code id="out-c-array" class="kv-value">—</code><button type="button" class="mini-copy" data-copy-target="out-c-array">复制</button></div>
+            <div class="kv-row"><span class="kv-label">Python bytes</span><code id="out-py-bytes" class="kv-value">—</code><button type="button" class="mini-copy" data-copy-target="out-py-bytes">复制</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="convert-grid">
+        <div class="tool-card">
+          <div class="tool-card-head">
+            <h2>JSON 格式化与转义 <small>JSON</small></h2>
+          </div>
+          <div class="tool-card-body">
+            <div class="tool-toolbar">
+              <div class="tool-group">
+                <button id="json-pretty" class="primary-btn" type="button">美化</button>
+                <button id="json-minify" type="button">压缩</button>
+                <button id="json-sort" type="button">Key 排序</button>
+                <button id="json-escape" type="button">转义</button>
+                <button id="json-unescape" type="button">反转义</button>
+              </div>
+              <button id="json-copy" type="button">复制</button>
+            </div>
+            <textarea id="json-input" placeholder='{"hello": "world", "tools": ["codec", "zip"]}' spellcheck="false"></textarea>
+            <div id="json-status" class="tool-status" role="status">输入 JSON 后点击上方按钮处理。</div>
+          </div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-card-head">
+            <h2>时间戳转换 <small>UNIX TIMESTAMP</small></h2>
+            <button id="ts-now" type="button">填入当前时间</button>
+          </div>
+          <div class="tool-card-body">
+            <input
+              id="ts-input"
+              type="text"
+              placeholder="输入秒/毫秒时间戳，或 2026-11-24T05:00:00Z"
+              style="width: 100%;"
+              spellcheck="false"
+            />
+            <div class="kv-list">
+              <div class="kv-row"><span class="kv-label">本地时间</span><code id="ts-local" class="kv-value">—</code><button type="button" class="mini-copy" data-copy-target="ts-local">复制</button></div>
+              <div class="kv-row"><span class="kv-label">ISO / UTC</span><code id="ts-utc" class="kv-value">—</code><button type="button" class="mini-copy" data-copy-target="ts-utc">复制</button></div>
+              <div class="kv-row"><span class="kv-label">秒 (10位)</span><code id="ts-sec" class="kv-value">—</code><button type="button" class="mini-copy" data-copy-target="ts-sec">复制</button></div>
+              <div class="kv-row"><span class="kv-label">毫秒 (13位)</span><code id="ts-ms" class="kv-value">—</code><button type="button" class="mini-copy" data-copy-target="ts-ms">复制</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-card-head">
+          <h2>哈希摘要计算 <small>CRC32 / MD5 / SHA-1 / SHA-256 / SHA-512</small></h2>
+          <label class="file-label">
+            选择本地文件计算哈希
+            <input id="hash-file" type="file" />
+          </label>
+        </div>
+        <div class="tool-card-body">
+          <textarea id="hash-input" style="min-height: 96px;" placeholder="输入文本实时计算摘要，或点击右上角选择任意本地文件…" spellcheck="false"></textarea>
+          <div id="hash-source" class="tool-status"></div>
+          <div id="hash-results" class="kv-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: COMPRESS & ZIP ==================== -->
+    <section data-tool-panel="compress" aria-label="压缩与解压缩" hidden>
+      <div class="tool-card">
+        <div class="tool-card-head">
+          <h2>Gzip / Zlib / Deflate-Raw 流式压缩与解压 <small>COMPRESSION STREAM</small></h2>
+          <div class="tool-group">
+            <label for="comp-format">算法</label>
+            <select id="comp-format">
+              <option value="gzip">Gzip (1F 8B)</option>
+              <option value="deflate">Zlib / Deflate (78 9C)</option>
+              <option value="deflate-raw">Deflate-Raw（无头尾）</option>
+            </select>
+            <label class="file-label">
+              载入本地文件
+              <input id="comp-file" type="file" />
+            </label>
+          </div>
+        </div>
+        <div class="tool-card-body">
+          <div class="tool-toolbar">
+            <div class="tool-group">
+              <button id="comp-compress" class="primary-btn" type="button">压缩 →</button>
+              <button id="comp-decompress" class="primary-btn" type="button">← 解压缩</button>
+              <span id="comp-magic" class="magic-pill">等待输入…</span>
+            </div>
+            <div class="tool-group">
+              <button id="comp-copy" type="button">复制文本结果</button>
+              <button id="comp-download" type="button" disabled>下载二进制 ↗</button>
+            </div>
+          </div>
+
+          <div class="split-io">
+            <div class="io-col">
+              <div class="io-col-head">
+                <label for="comp-input">输入数据（或从右上角载入文件）</label>
+                <select id="comp-in-mode" aria-label="压缩输入格式">
+                  <option value="utf8">UTF-8 文本</option>
+                  <option value="base64">Base64</option>
+                  <option value="hex">Hex 字节</option>
+                </select>
+              </div>
+              <textarea id="comp-input" placeholder="输入原文（压缩）或粘贴 Gzip / Zlib 的 Base64 / Hex（解压）…" spellcheck="false"></textarea>
+            </div>
+            <div class="io-col">
+              <div class="io-col-head">
+                <label for="comp-output">输出结果</label>
+                <select id="comp-out-mode" aria-label="压缩输出格式">
+                  <option value="base64">Base64</option>
+                  <option value="hex">Hex 字节</option>
+                  <option value="utf8">UTF-8 文本</option>
+                </select>
+              </div>
+              <textarea id="comp-output" placeholder="压缩或解压结果会显示在这里…" readonly spellcheck="false"></textarea>
+            </div>
+          </div>
+          <div id="comp-status" class="tool-status" role="status" aria-live="polite">基于浏览器原生 CompressionStream，不上传任何文件。</div>
+        </div>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-card-head">
+          <h2>ZIP 归档浏览器与打包器 <small>BROWSER ZIP</small></h2>
+          <div class="tool-group">
+            <label class="file-label">
+              打开 .zip 解压 / 浏览
+              <input id="zip-open-file" type="file" accept=".zip,application/zip" />
+            </label>
+            <label class="file-label">
+              选择多个文件打包 ZIP
+              <input id="zip-pack-files" type="file" multiple />
+            </label>
+            <button id="zip-pack-btn" class="primary-btn" type="button" disabled>打包并下载 .zip</button>
+          </div>
+        </div>
+        <div class="tool-card-body">
+          <div id="zip-status" class="tool-status" role="status">选择任意 .zip 文件即可在浏览器内查看目录、CRC32、预览文本/Hex 或提取单文件。</div>
+          <div id="zip-pack-status" class="tool-status"></div>
+
+          <div class="zip-table-wrap">
+            <table class="zip-table">
+              <thead>
+                <tr>
+                  <th>路径 / 文件名</th>
+                  <th>方式</th>
+                  <th>压缩后 → 原始大小</th>
+                  <th>CRC32</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="zip-entries-body">
+                <tr><td colspan="5" class="muted">尚未打开 ZIP 文件</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="zip-preview-wrap" class="zip-preview" hidden>
+            <strong id="zip-preview-title">预览</strong>
+            <pre id="zip-preview-content"></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</SiteLayout>
+<script>
+  import '../scripts/tools';
+</script>
