@@ -14,11 +14,11 @@
 - [~] ELF 文件结构（节区、段、符号表、动态链接 PLT/GOT）与手动 Patch
 - [~] PE 文件结构（DOS/NT 头、区段表、RVA/FOA、导入表 IAT）
 
-### 模块 B：动态调试与运行时分析（当前核心补强项）
+### 模块 B：动态调试与运行时分析（Linux 动调已毕业 ✅）
 - [x] GDB + pwndbg 基础（断点、单步、查寄存器/栈/内存）
 - [x] PIE 程序动态定位与偏移下断点（`entry` / `start` / `piebase` / `$rebase()`）
-- [~] 运行时修改寄存器/内存绕过校验、从内存 dump 解密数据或密钥表
-- [ ] 条件断点、硬件观察点（`watch`）与调用栈回溯（`bt`）
+- [x] 运行时修改寄存器/内存绕过校验、从内存 dump 解密数据或密钥表（`set` / `dump binary memory`）
+- [x] 条件断点（`b ... if`）、硬件观察点（`watch`）、全内存搜索（`search`）与调用栈回溯（`bt`）
 - [ ] Windows 动态调试（x64dbg / IDA 远程调试）基础
 
 ### 模块 C：算法与密码学逆向
@@ -30,7 +30,7 @@
 - [ ] 简单数学/矩阵/状态机/DFS 迷宫类逆向
 
 ### 模块 D：多语言二进制逆向
-- [~] C 语言去符号 ELF/PE 逆向
+- [x] C 语言去符号 ELF/PE 逆向
 - [ ] C++ 逆向基础（`this` 指针、`std::string`、`std::vector`、类继承与虚表 vtable）
 - [~] Python 逆向（PyInstaller 解包、`.pyc` 魔数/反编译、手读 `dis` 字节码）
 - [~] Android 逆向入门（APK 结构、`apktool`/JADX 看 Java/Kotlin）
@@ -42,7 +42,7 @@
 - [ ] 魔改 UPX 修复（特征字节/区段名被破坏）与动态找 OEP 手动脱壳
 - [~] 花指令识别与去花（从带提示进阶到无提示识别永恒跳转 + 手动/IDAPython Patch）
 - [~] Linux / Windows 常见反调试识别与绕过（`ptrace`、`TracerPid`、`IsDebuggerPresent`、时间差检测）
-- [ ] SMC（代码自修改）与动态 Dump
+- [x] SMC（代码自修改）与动态 Dump（`mprotect` + `dump binary memory` + IDA 二次反编译）
 - [ ] OLLVM 常见混淆（控制流平坦化 / 虚假控制流）初识与应对思路
 
 ### 模块 F：高阶专项（长期拓展）

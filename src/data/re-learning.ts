@@ -85,8 +85,8 @@ const DOCS_DIR = path.resolve(process.cwd(), 'docs/re-learning');
 
 const BRANCH_META: Record<string, { subtitle: string; tier: string }> = {
   A: { subtitle: 'Assembly & Binary Format', tier: 'TIER 01 · 根基' },
-  B: { subtitle: 'Dynamic Debugging', tier: 'TIER 02 · 当前重点' },
-  C: { subtitle: 'Algorithms & Crypto', tier: 'TIER 02 · 核心主线' },
+  B: { subtitle: 'Dynamic Debugging', tier: 'TIER 02 · Linux 动调已毕业' },
+  C: { subtitle: 'Algorithms & Crypto', tier: 'TIER 02 · 当前主线' },
   D: { subtitle: 'Multi-Language RE', tier: 'TIER 03 · 拓展' },
   E: { subtitle: 'Packers & Anti-Analysis', tier: 'TIER 03 · 对抗' },
   F: { subtitle: 'Advanced Research', tier: 'TIER 04 · 进阶' },
@@ -101,7 +101,9 @@ const RELATED_POST_RULES: Array<{ keyword: string; title: string; slug: string }
   { keyword: 'GDB + pwndbg 基础', title: 'GDB学习0-->0.1', slug: 'gdb-0-1-stady-1' },
   { keyword: 'PIE 程序动态定位', title: 'GDB学习0-->0.1', slug: 'gdb-0-1-stady-1' },
   { keyword: '运行时修改寄存器', title: 'GDB学习0-->0.1', slug: 'gdb-0-1-stady-1' },
+  { keyword: '条件断点', title: 'GDB学习0-->0.1', slug: 'gdb-0-1-stady-1' },
   { keyword: 'Linux / Windows 常见反调试', title: 'GDB学习0-->0.1', slug: 'gdb-0-1-stady-1' },
+  { keyword: 'SMC（代码自修改）', title: 'GDB学习0-->0.1', slug: 'gdb-0-1-stady-1' },
   { keyword: '位运算与字节变换', title: 'myctf 字节锁链 wp', slug: 'MYCTF-zi-jie-suo-lian-wp' },
   { keyword: '流密码与分组密码', title: '从加密推解密-通用原理', slug: 'cong-jia-mi-tui-jie-mi-tong-yong-yuan-li' },
   { keyword: '约束求解 Z3', title: 'Z3 约束求解入门', slug: 'z3-ru-men-1' },

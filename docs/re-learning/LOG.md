@@ -67,5 +67,20 @@
   - 模块 C「位运算与字节变换与 Python 位宽处理」：`[~]` → `[x]`
 - **路线推进**：阶段 1 正式毕业 ✅，主线切换至 **阶段 2（经典加密盲解 + Z3 进阶 + C++ 逆向映射）**。
 
+---
+
+## 2026-11-25｜动调专题 S-RANK 结业大考通关，累计点亮 10 颗 `[x]`！
+
+- 接续打穿 `ctf-debug-lab` Level 5 ~ Level 7 及最终综合结业大考，完善 [GDB学习0-->0.1](../../src/content/posts/gdb-0-1-stady-1.md)：
+  - Level 5：使用 `watch *(int*)$rebase(0x4094)` 抓出 `.init_array` 隐藏初始化现行，并结合 `search "flag{"` 定位栈明文。
+  - Level 6：使用条件断点 `b *$rebase(0x13AD) if ...` 在 300 轮变换中精准断在明文轮次。
+  - Level 7 & 结业大考：零提示独立打穿 **PIE + 去符号 + `ptrace` 反调试 + `.init_array` 隐藏密钥 + SMC（`mprotect` 自解密） + `dump binary memory` + IDA 二次反编译 + Python 逆推**，成功拿到 `flag{gdb_gr4du4t3_s_r4nk_2026}`。
+- **能力树跃迁（6 颗 → 10 颗 `[x]`）**：
+  - 模块 B「运行时修改寄存器/内存绕过校验与内存 dump」：`[~]` → `[x]`
+  - 模块 B「条件断点、硬件观察点（`watch`）、全内存搜索与调用栈回溯」：`[ ]` → `[x]`
+  - 模块 D「C 语言去符号 ELF/PE 逆向」：`[~]` → `[x]`
+  - 模块 E「SMC（代码自修改）与动态 Dump」：`[ ]` → `[x]`
+
+
 
 

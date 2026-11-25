@@ -1,22 +1,22 @@
 # 学习者能力画像与诊断（PROFILE）
 
-> 最后更新：2026-11-24  
-> 当前定位：**CTF Reverse 扎实入门 → 中级起步（Level 2，阶段 1 毕业）**  
+> 最后更新：2026-11-25  
+> 当前定位：**CTF Reverse 中级起步（Level 2+，Linux 动调专题 S-RANK 毕业）**  
 > 实验环境：Arch Linux x86-64 / GCC 16 / GDB + pwndbg / IDA Pro / DIE / Python (venv + z3-solver)
 
 ---
 
-## 一、能力维度总评（截至 2026-11-24 · 含纯汇编独立解题验收）
+## 一、能力维度总评（截至 2026-11-25 · 动调综合大考 S-RANK 毕业）
 
 | 能力维度 | 真实掌握度 | 当前状态与表现 |
 |---|---|---|
+| **GDB / pwndbg 动态调试** | 🟢 已稳（重大突破） | 零提示打穿 Level 1~7 + 结业大考，熟练串联 `entry` / `$rebase()` / `set $rax` / `set $rip` / `watch` 抓 `.init_array` / 条件断点 `b ... if` / `search` / `dump binary memory` 破 SMC |
 | **算法逆推思维** | 🟢 已稳 | 独立完成 ROL/ROR、XOR、索引加法、CBC 链式状态逆推，Python `& 0xff` 位宽截断已成肌肉记忆 |
-| **x86-64 汇编阅读** | 🟢 已稳（重大突破） | 脱离 IDA F5，纯手读 59 行含 8 个协作寄存器的 Win64 汇编独立还原逻辑并解出 `MYCTF 字节锁链` |
-| **GDB / pwndbg 动态调试** | 🟢 已有感觉 | 已独立打通 Level 1~4（Mini Boss），熟练掌握 `entry` / `piebase` / `b *$rebase()`、`x/s $rsi`、`set $rax=0`、`set $rip=$rebase(...)`；待补内存字节数组 dump（`x/Nbx`）与 `watch`/硬件断点 |
+| **x86-64 汇编阅读** | 🟢 已稳 | 脱离 IDA F5，纯手读 59 行含 8 个协作寄存器的 Win64 汇编独立还原逻辑并解出 `MYCTF 字节锁链` |
+| **对抗与混淆（壳/花指令/反调试）** | 🟡 快速进阶 | 已实战掌握 Linux `ptrace` 绕过、`.init_array` 隐蔽初始化定位、SMC 动态 Dump 与二次反编译；待补魔改 UPX 修复与无提示去花指令 |
 | **Z3 约束求解** | 🟡 入门偏上 | 知道选 `BitVec` 与 `LShR`；待补齐无符号比较（`ULT/UGT`）、位拼接（`Concat/Extract`）与多解约束 |
-| **经典加密盲解（Base64/RC4/TEA）** | 🟡 待独立验收 | 懂原理、看过 WP，但尚未经过“无提示独立盲解真题”的验收（阶段 2 核心主线） |
-| **C++ 逆向与工具链** | 🟡 稳步推进 | C/指针基础扎实，C++ 刚入门，待建立 C++ 源码（`std::string`/`std::vector`/虚表）与 IDA 伪代码的映射 |
-| **对抗与混淆（壳/花指令/反调试）** | 🟡 初探门径 | 已实战绕过 Linux `ptrace` 反调试；魔改 UPX、无提示去花、SMC 为阶段 3 主线 |
+| **经典加密盲解（Base64/RC4/TEA）** | 🟡 待独立验收 | 懂原理、看过 WP，但尚未经过“无提示独立盲解真题”的验收（当前阶段 2 核心主线） |
+| **C++ 逆向与多平台** | 🟡 稳步推进 | C 去符号 ELF 已稳，C++ 刚入门，待建立 C++（`std::string`/`std::vector`/虚表）与 IDA 伪代码的映射；Windows 动调待解锁 |
 
 ---
 
