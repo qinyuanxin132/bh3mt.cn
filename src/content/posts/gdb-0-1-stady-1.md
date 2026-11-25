@@ -559,3 +559,349 @@ set $rip = $rebase(0x13e2)
 pwndbg> x/s $rsi
 0x555555559420:"flag{b0ss_cl3ar3d_y0u_kn0w_gdb}"
 ```
+
+## Setp 5
+
+### watch
+
+在真实 CTF 题里，经常遇到这种诡异情况： 你在 IDA 里打开 main()，发现逻辑极其简单： if (hash(你的输入) == 某个全局变量) puts("Correct!"); 但你点进那个全局变量一看，里面居然是 0，而且整个 main() 里根本没地方给它赋值！ 不仅如此，你在 main() 里下断点搜内存，也完全找不到明文 Flag（因为程序早就把它擦掉了）。
+
+幕后真相：Linux ELF 程序在执行 main() 之前，会先自动执行 .init_array 段里的初始化函数（C 语言里的 `__attribute__`((constructor))）。很多 CTF 题会把反调试、改密钥、算哈希偷偷藏在这里！
+
+如果靠人肉找，很容易漏掉；但用 硬件写入断点 watch，只要有代码敢改写那个全局变量，CPU 会在修改的那一瞬间立刻暂停，当场抓现行！
+
+### IDA
+
+```c++
+__int64 __fastcall main(int a1, char **a2, char **a3)
+{
+  _QWORD v4[10]; // [rsp+0h] [rbp-50h] BYREF
+
+  v4[9] = __readfsqword(0x28u);
+  memset(v4, 0, 64);
+  puts("=== Level 5: Who modified target_hash? ===");
+  printf("Enter flag: ");
+  fflush(stdout);
+  if ( (unsigned int)__isoc23_scanf("%63s", v4) != 1 )
+    return 1;
+  if ( (unsigned int)((__int64 (__fastcall *)(_QWORD *))sub_1189)(v4) == dword_4094 )
+    puts("[*] Correct! Watchpoint master!");
+  else
+    puts("[-] Wrong flag!");
+  return 0;
+}
+```
+
+可以看到效验逻辑在`if ( (unsigned int)((__int64 (__fastcall *)(_QWORD *))sub_1189)(v4) == dword_4094 )`
+
+但是打开dword_4094，发现是空的，在bss段
+
+`.bss:0000000000004094 dword_4094      dd ?                    ; DATA XREF: sub_11CD+76↑w`
+
+记下这个全局变量的偏移地址
+
+注意指的是数据的地址：
+
+b（普通断点）盯的是「代码」（.text）：CPU 执行到这条指令时停下 → 用 0x1334。
+
+watch（写入断点）盯的是「数据」（.bss / .data / 栈 / 堆）：这个变量里的数值被修改时停下 → 用变量自己的地址 0x4094。
+
+`.bss:0000000000004094 dword_4094      dd ?                    ; DATA XREF: sub_11CD+76↑w`
+
+### dbg
+
+`entry` 把基地址先加载
+
+`watch *(int*)$rebase(0x4094)`
+
+watch *(int*)地址 表示“监控这个地址开始的 4 字节整数，只要它的值发生任何变化，立刻中断！
+
+`c` 继续
+
+停下后我们在rdi寄存器中发现了flag
+
+`02:0010│ rdi   0x7fffffffe3a0 ◂— 'flag{w4tchp01nt_c4ught_1n1t_4rr4y}'`
+
+当然，如果找不到可以使用全内存搜索
+
+`search "flag{"`
+
+```dbg
+pwndbg> search "flag{"
+Searching for byte: b'flag{'
+[stack]         0x7fffffffe3a0 'flag{w4tchp01nt_c4ught_1n1t_4rr4y}'
+```
+
+## Setp 6
+
+- 每一轮都会对一个缓冲区 buf 做一次异或变换，然后计算它的哈希值和你输入的哈希比对；
+- 在这 300 轮里，只有神秘的某一轮，buf 会短暂变成明文 flag{...}，紧接着下一轮又会被彻底打乱成乱码！
+- 代码里没有任何提示告诉你到底是第几轮。
+
+### ida
+
+```c++
+__int64 __fastcall main(int a1, char **a2, char **a3)
+{
+  int v4; // [rsp+4h] [rbp-9Ch]
+  int i; // [rsp+8h] [rbp-98h]
+  int v6; // [rsp+Ch] [rbp-94h]
+  _QWORD v7[8]; // [rsp+10h] [rbp-90h] BYREF
+  _QWORD dest[10]; // [rsp+50h] [rbp-50h] BYREF
+
+  dest[9] = __readfsqword(0x28u);
+  memset(v7, 0, sizeof(v7));
+  memset(dest, 0, 64);
+  memcpy(dest, &unk_4040, 0x1Du);
+  puts("=== Level 6: 300 Rounds Mystery ===");
+  printf("Enter flag: ");
+  fflush(stdout);
+  if ( (unsigned int)__isoc23_scanf("%63s", v7) != 1 )
+    return 1;
+  v6 = sub_1189(v7);
+  v4 = 0;
+  for ( i = 0; i <= 299; ++i )
+  {
+    sub_11CD((unsigned int)i, dest);
+    if ( v6 == (unsigned int)sub_1189(dest) )
+      v4 = 1;
+  }
+  if ( v4 )
+    puts("[*] Correct! Conditional breakpoint nailed it!");
+  else
+    puts("[-] Wrong flag!");
+  return 0;
+}
+```
+
+根据题目提示，应该是在三百次效验中有一次用来效验的数组是`flag`开头，然后和输入的对上
+
+语法 `b *地址 if 条件`
+
+`if ( v6 == (unsigned int)sub_1189(dest) )`
+
+对照 Linux x64 传参规则
+
+第 1 个参数 (unsigned int)dest（32 位整数） → 一定在 $edi 里
+
+`b *$rebase(偏移) if *(char*)$rdi == 'f' && *((char*)$rdi+1) == 'l' && *((char*)$rdi+2) == 'a'`
+
+or
+
+`b *$rebase(偏移) if *(int*)$rdi == 0x67616c66`
+
+找到函数的偏移
+
+`.text:00000000000013AD                 call    sub_1189`
+
+实操：
+
+`entry`
+
+`b *$rebase(0x13AD) if *(char*)$rdi == 'f' && *((char*)$rdi+1) == 'l' && *((char*)$rdi+2) == 'a'`
+
+`c`
+
+在RDI指针中找到了flag
+
+`*RDI  0x7fffffffe2f0 ◂— 'flag{c0nd1t10n4l_bp_1s_m4g1c}'`
+
+## Setp 7
+
+破解“IDA 看不懂的加密代码（SMC）
+
+### 什么是 SMC（Self-Modifying Code）
+
+出题人把核心校验函数的机器码提前加密了，所以在磁盘文件里它是一堆乱码。程序运行起来后，先调用 mprotect 把那块代码段改成可读可写可执行（RWX，权限值 7），自己用循环把机器码在内存里解密还原，再去调用它！
+
+静态分析的痛点：你现在用 IDA 打开 level7，会发现 main 里有 mprotect + 异或循环 + 调用一个无名函数（偏移 0x1348）；你点进 0x1348，里面全是乱码，根本按不了 F5！
+
+### 打开IDA
+
+```c++
+__int64 __fastcall main(int a1, char **a2, char **a3)
+{
+  unsigned __int64 i; // [rsp+0h] [rbp-80h]
+  _QWORD v5[10]; // [rsp+30h] [rbp-50h] BYREF
+
+  v5[9] = __readfsqword(0x28u);
+  memset(v5, 0, 64);
+  puts("=== Level 7 v2: Real SMC Practice ===");
+  printf("Input flag: ");
+  fflush(stdout);
+  if ( (unsigned int)__isoc23_scanf("%63s", v5) != 1 )
+    return 1;
+  if ( mprotect(
+         (void *)((unsigned __int64)&loc_1348 & 0xFFFFFFFFFFFFF000LL),
+         (unsigned __int64)&byte_1453[-((unsigned __int64)&loc_1348 & 0xFFFFFFFFFFFFF000LL) + 4095]
+       & 0xFFFFFFFFFFFFF000LL,
+         7) )
+  {
+    perror("mprotect");
+    return 1;
+  }
+  else
+  {
+    for ( i = 0; i < byte_1453 - (char *)&loc_1348; ++i )
+      *((_BYTE *)&loc_1348 + i) ^= 0x55u;
+    if ( (unsigned int)((__int64 (__fastcall *)(_QWORD *))loc_1348)(v5) )
+      puts("[*] Correct! You truly understand SMC!");
+    else
+      puts("[-] Wrong!");
+    return 0;
+  }
+}
+```
+
+注意到这行`for ( i = 0; i < byte_1453 - (char *)&loc_1348; ++i )`
+
+### SMC加密特征
+
+只要是 SMC，程序自己必须写一个循环去把加密代码还原。你在 main 的 F5 伪代码里一定能看到类似这样的一段：
+
+```c
+for ( i = 0; i < 终点 - 起点; ++i )
+  *(起点 + i) ^= 0x55;
+```
+
+### 动调
+
+`entry`
+
+我们在for循环结束后（即if那）打断点
+
+`.text:0000000000001304                 call    loc_1348`
+
+`b *$rebase(0x1304)`
+
+`c`
+
+### 保存
+
+| 部分 | 含义 |
+| --- | --- |
+| `dump` | GDB 的导出命令，把调试进程里的内容保存到本地文件 |
+| `binary` | 按纯原始二进制字节保存（内存里是什么字节，文件里就原封不动写什么，方便直接丢给 IDA 或 Python） |
+| `memory` | 表示要导出的是一段连续的内存区间 |
+| `dec.bin` | 保存的文件名（会生成在当前目录下，名字随便取） |
+| `$rebase(0x1348)` | 起始地址：PIE 程序自动算成 `基址 + 0x1348`（比如 `0x555555555348`） |
+| `$rebase(0x1453)` | 结束地址：PIE 程序自动算成 `基址 + 0x1453`（导出范围是 `[起点, 终点)`，共 `0x10b` = 267 字节） |
+
+`dump binary memory <文件名> <起始地址> <结束地址>`
+
+`dump binary memory dec.bin $rebase(0x1348) $rebase(0x1453)`
+
+### ida打开
+
+```c++
+__int64 __fastcall sub_0(__int64 a1)
+{
+  __int64 result; // rax
+  char v2; // [rsp+1Bh] [rbp-35h]
+  int i; // [rsp+1Ch] [rbp-34h]
+  _BYTE v4[25]; // [rsp+20h] [rbp-30h] BYREF
+  _BYTE v5[2]; // [rsp+39h] [rbp-17h] BYREF
+  unsigned __int64 v6; // [rsp+48h] [rbp-8h]
+
+  v6 = __readfsqword(0x28u);
+  qmemcpy(v4, "JTGI]_", 6);
+  v4[6] = 24;
+  v4[7] = 91;
+  v4[8] = -127;
+  v4[9] = 92;
+  v4[10] = 86;
+  v4[11] = 91;
+  v4[12] = 84;
+  v4[13] = 95;
+  v4[14] = -127;
+  v4[15] = 73;
+  v4[16] = 24;
+  v4[17] = 92;
+  v4[18] = -127;
+  v4[19] = 85;
+  v4[20] = 83;
+  v4[21] = 69;
+  v4[22] = -127;
+  v4[23] = 82;
+  v4[24] = 24;
+  qmemcpy(v5, "Yc", sizeof(v5));
+  for ( i = 0; i <= 26; ++i )
+  {
+    v2 = *(_BYTE *)(i + a1);
+    if ( !v2 )
+    {
+      result = 0;
+      goto LABEL_9;
+    }
+    if ( (unsigned __int8)((v2 ^ 0x23) + 5) != (unsigned __int8)v4[i] )
+    {
+      result = 0;
+      goto LABEL_9;
+    }
+  }
+  result = *(_BYTE *)(a1 + 27) == 0;
+LABEL_9:
+  if ( v6 != __readfsqword(0x28u) )
+    return MEMORY[0xFFFFFFFFFFFFFCF8]();
+  return result;
+}
+```
+
+`(unsigned __int8)((v2 ^ 0x23) + 5) != (unsigned __int8)v4[i]`
+
+求v2
+
+v2 = (((v4[i] & 0xff) - 5)&0xff) ^ 0x23
+
+```asm
+-0000000000000035     _BYTE var_35;
+-0000000000000034     _DWORD var_34;
+-0000000000000030     _BYTE var_30;
+-000000000000002F     _BYTE var_2F;
+-000000000000002E     _BYTE var_2E;
+-000000000000002D     _BYTE var_2D;
+-000000000000002C     _BYTE var_2C;
+-000000000000002B     _BYTE var_2B;
+-000000000000002A     _BYTE var_2A;
+-0000000000000029     _BYTE var_29;
+-0000000000000028     _BYTE var_28;
+-0000000000000027     _BYTE var_27;
+-0000000000000026     _BYTE var_26;
+-0000000000000025     _BYTE var_25;
+-0000000000000024     _BYTE var_24;
+-0000000000000023     _BYTE var_23;
+-0000000000000022     _BYTE var_22;
+-0000000000000021     _BYTE var_21;
+-0000000000000020     _BYTE var_20;
+-000000000000001F     _BYTE var_1F;
+-000000000000001E     _BYTE var_1E;
+-000000000000001D     _BYTE var_1D;
+-000000000000001C     _BYTE var_1C;
+-000000000000001B     _BYTE var_1B;
+-000000000000001A     _BYTE var_1A;
+-0000000000000019     _BYTE var_19;
+-0000000000000018     _BYTE var_18;
+-0000000000000017     _BYTE var_17;
+-0000000000000016     _BYTE var_16;
+```
+
+注意到，v4数组和v5是连续的
+
+所以 v4[25] V4[26] 分别是 'Y' 'c'
+
+`qmemcpy(v4, "JTGI]_", 6);`
+
+```python
+enc = list(b"JTGI]_") + [
+    24, 91, -127, 92, 86, 91, 84, 95, -127,
+    73, 24, 92, -127, 85, 83, 69, -127, 82, 24
+] + list(b"Yc")
+
+flag = "".join(chr((((x & 0xFF) - 5) & 0xFF) ^ 0x23) for x in enc)
+print(flag)
+```
+
+得到flag
+
+`flag{y0u_truly_g0t_smc_n0w}`
+
