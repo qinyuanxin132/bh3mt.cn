@@ -950,3 +950,181 @@ print(flag)
    同一个 `$rdi` 在不同 `call` 之前装的是不同函数的第 1 个参数，永远看对应 `call` 前面的传参或 F5 里的函数形参列表，不要把上一行的变量名张冠李戴。
 6. **遇到 SMC / 混淆，别轻信 F5**
    当 IDA 反编译出现莫名其妙的函数调用或数组被拆成相邻变量（如 `v4[25]` + `v5[2]` + `qmemcpy`）时，随时按 **`Tab`** 对照汇编和栈偏移，必要时用 GDB 动调 `dump` 还原真相。
+
+## 结业大考
+
+考点覆盖：PIE + 去符号表 + 反调试 + .init_array 隐藏变量 + SMC 自修改代码 + 内存 dump + IDA 二次反编译 + 逆向写脚本。
+
+### 尝试打开IDA看main
+
+```c++
+__int64 __fastcall main(int a1, char **a2, char **a3)
+{
+  unsigned __int64 i; // [rsp+0h] [rbp-80h]
+  _QWORD v5[10]; // [rsp+30h] [rbp-50h] BYREF
+
+  v5[9] = __readfsqword(0x28u);
+  if ( ptrace(PTRACE_TRACEME, 0, 1, 0) >= 0 )
+  {
+    memset(v5, 0, 64);
+    puts("==========================================");
+    puts("   CTF Reverse Dynamic Debugging Exam");
+    puts("==========================================");
+    printf("Submit your flag: ");
+    fflush(stdout);
+    if ( (unsigned int)__isoc23_scanf("%63s", v5) == 1 )
+    {
+      if ( mprotect(
+             (void *)((unsigned __int64)byte_13CB & 0xFFFFFFFFFFFFF000LL),
+             (unsigned __int64)&byte_14E9[-((unsigned __int64)byte_13CB & 0xFFFFFFFFFFFFF000LL) + 4095]
+           & 0xFFFFFFFFFFFFF000LL,
+             7) )
+      {
+        perror("mprotect");
+        return 1;
+      }
+      else
+      {
+        for ( i = 0; i < byte_14E9 - byte_13CB; ++i )
+          byte_13CB[i] ^= byte_4059;
+        if ( (*(unsigned int (__fastcall **)(_QWORD *))byte_13CB)(v5) )
+          puts("[S-RANK] Final Exam Passed! Welcome to CTF Reverse!");
+        else
+          puts("[FAIL] Wrong flag! Keep debugging!");
+        return 0;
+      }
+    }
+    else
+    {
+      return 1;
+    }
+  }
+  else        for ( i = 0; i < byte_14E9 - byte_13CB; ++i )
+          byte_13CB[i] ^= byte_4059;
+  {
+    puts("[!] Exam Rule: Anti-Debug triggered!");
+    return 1;
+  }
+}
+```
+
+### 1.反调试
+
+```asm
+.text:00000000000011E7                 call    _ptrace
+.text:00000000000011EC                 test    rax, rax
+```
+
+`entry`
+
+`b *$rebase(0x11EC)`
+
+`c`
+
+`set $rax = 0`
+
+`c`
+
+### 2.SMC
+
+```c++
+        for ( i = 0; i < byte_14E9 - byte_13CB; ++i )
+          byte_13CB[i] ^= byte_4059;
+```
+
+这段就是smc了，我们把断点打在for循环结束后
+
+`.text:0000000000001387                 call    near ptr byte_13CB`
+
+`b *$rebase(0x1387)`
+
+`dump binary memory /home/qinyuanxin132/Downloads/aaadec.bin $rebase(0x13CB) $rebase(0x14E9)`
+
+打开ida看反编译
+
+```c++
+__int64 __fastcall sub_0(__int64 a1)
+{
+  __int64 result; // rax
+  char v2; // [rsp+1Bh] [rbp-35h]
+  int i; // [rsp+1Ch] [rbp-34h]
+  _BYTE v4[40]; // [rsp+20h] [rbp-30h] BYREF
+  unsigned __int64 v5; // [rsp+48h] [rbp-8h]
+
+  v5 = __readfsqword(0x28u);
+  qmemcpy(v4, "\\U]J", 4);
+  v4[4] = -67;
+  v4[5] = 76;
+  v4[6] = 76;
+  v4[7] = 77;
+  v4[8] = 77;
+  v4[9] = -72;
+  v4[10] = -86;
+  v4[11] = 111;
+  v4[12] = -78;
+  v4[13] = -90;
+  v4[14] = 100;
+  v4[15] = -101;
+  v4[16] = 89;
+  v4[17] = -88;
+  v4[18] = -109;
+  v4[19] = -94;
+  v4[20] = -108;
+  v4[21] = 73;
+  v4[22] = -118;
+  v4[23] = -118;
+  v4[24] = -99;
+  v4[25] = 71;
+  v4[26] = 68;
+  v4[27] = -71;
+  v4[28] = -80;
+  v4[29] = -18;
+  for ( i = 0; i <= 29; ++i )
+  {
+    v2 = *(_BYTE *)(i + a1);
+    if ( !v2 )
+    {
+      result = 0;
+      goto LABEL_9;
+    }
+    if ( ((unsigned __int8)(v2 + 3 * i) ^ 0x3A) != (unsigned __int8)v4[i] )
+    {
+      result = 0;
+      goto LABEL_9;
+    }
+  }
+  result = *(_BYTE *)(a1 + 30) == 0;
+LABEL_9:
+  if ( v5 != __readfsqword(0x28u) )
+    return MEMORY[0xFFFFFFFFFFFFFC75]();
+  return result;
+}
+```
+
+依旧找v2
+
+`(v2 + 3 * i) ^ 0x3A) != (unsigned __int8)v4[i]`
+
+v2[i] = ((v4[i])&0xff)^0x3A - (3 * i)
+
+写python脚本
+
+```python
+enc = list(b"\\U]J") + [
+    -67, 76, 76, 77, 77, -72, -86, 111, -78,
+    -90,100,-101,89,-88,-109,-94,-108,73,-118,-118,-99,71,68,-71,-80,-18
+]
+
+v2 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
+for i in range(29,-1,-1):
+    v2[i] = (((enc[i] & 0xff) ^ 0x3A) - 3 * i) & 0xff
+# flag = "".join(chr((((x & 0xFF) - 5) & 0xFF) ^ 0x23) for x in enc)
+# print(flag)
+flag = "".join(chr(x) for x in v2)
+print(flag)
+```
+
+`flag{gdb_gr4du4t3_s_r4nk_2026}`
+
+## 完结撒花
