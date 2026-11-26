@@ -12,6 +12,7 @@
     "astro": "astro",
     "predev": "node scripts/prepare-code-lab.mjs",
     "prebuild": "node scripts/prepare-code-lab.mjs",
+    "organize:images": "node scripts/organize-post-images.mjs",
     "check:lab": "node scripts/check-code-lab.cjs"
   },
   "dependencies": {

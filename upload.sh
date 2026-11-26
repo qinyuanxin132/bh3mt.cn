@@ -25,6 +25,9 @@ fi
 echo "博客目录：$(pwd)"
 echo "远程仓库：$remote_url"
 echo
+echo "正在检查并整理文章目录中的截图……"
+node scripts/organize-post-images.mjs
+echo
 echo "正在整理整个文件夹的修改……"
 git add -A
 
