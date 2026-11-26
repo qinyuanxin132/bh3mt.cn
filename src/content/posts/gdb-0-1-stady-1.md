@@ -14,7 +14,13 @@ tags: ["GDB", "pwndbg"]
 
 ## 初次尝试
 
-[text](../fujian/level1)
+> 📦 **配套练习题打包下载（Level 1 ~ 7 + 结业大考，共 13KB）**：[gdb-debug-lab.tar.gz](/downloads/gdb-debug-lab.tar.gz)
+>
+> 下载后在 Linux（x86-64，glibc >= 2.38）终端解压即可全套复现：
+>
+> ```bash
+> mkdir gdb-lab && tar -xzf gdb-debug-lab.tar.gz -C gdb-lab && cd gdb-lab && chmod +x *
+> ```
 
 进入目录并打开gdb
 
