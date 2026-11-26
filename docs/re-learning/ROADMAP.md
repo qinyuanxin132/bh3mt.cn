@@ -40,7 +40,7 @@
 ### 模块 E：壳、混淆与反调试对抗
 - [~] 标准 UPX 查壳与脱壳（`upx -d`）
 - [ ] 魔改 UPX 修复（特征字节/区段名被破坏）与动态找 OEP 手动脱壳
-- [~] 花指令识别与去花（从带提示进阶到无提示识别永恒跳转 + 手动/IDAPython Patch）
+- [x] 花指令识别与去花（无提示识别互补永恒跳转 / 假 `call` 改返回地址与平栈 / 重叠指令 / 不透明谓词 + 手动 IDA 与 Python 批量自动化 Patch）
 - [~] Linux / Windows 常见反调试识别与绕过（`ptrace`、`TracerPid`、`IsDebuggerPresent`、时间差检测）
 - [x] SMC（代码自修改）与动态 Dump（`mprotect` + `dump binary memory` + IDA 二次反编译）
 - [ ] OLLVM 常见混淆（控制流平坦化 / 虚假控制流）初识与应对思路

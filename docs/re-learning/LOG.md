@@ -81,6 +81,20 @@
   - 模块 D「C 语言去符号 ELF/PE 逆向」：`[~]` → `[x]`
   - 模块 E「SMC（代码自修改）与动态 Dump」：`[ ]` → `[x]`
 
+---
+
+## 2026-11-26｜花指令「无提示去花」专题 S-RANK 毕业，累计点亮 11 颗 `[x]`！
+
+- 在本地实战靶场 `junk-code-lab` 独立打穿全部 5 关（去符号 Linux x86-64 ELF，含 PIE 结业大考）：
+  - **Level 1**（互补条件永恒跳转 `jz/jnz`、`jb/jae` + `0xE8`/`0xE9`）：掌握 IDA `U → Patch 0x90 → C → P → F5` 标准手法，解出 `flag{e8_jnz_jz_nop_it_all}`。
+  - **Level 2**（假 `call $+5` + `add [rsp], N; ret` 与假 `call` + `add rsp, 8`）：掌握返回地址落点加法、栈平衡成对消除铁律、删除残缺函数重建 `P` 修复 `sp-analysis failed`，解出 `flag{f4k3_c4ll_r3t_st4ck_f1x}`。
+  - **Level 3**（`jmp loc+1` 重叠指令 + 不透明谓词 + 套娃组合）：掌握无需背机器码的“`U` 拆跳转 → `+1` 目标按 `C` 让 IDA 自己翻译”通解，解出 `flag{0v3rl4p_jmp_4nd_0p4qu3}`。
+  - **Level 4**（15 处跨函数重复花指令）：编写 Python 增量特征匹配脚本批量替换等长 `0x90` 生成 `_patched` ELF，0.01 秒全图自动去花并直接 F5，解出 `flag{pyth0n_b4tch_d3junk_pr0}`。
+  - **Final Exam**（PIE + 去符号 + 6 种混合花指令 + `ROL2` + 魔数 `i % 5` + CBC 链式校验）：独立使用 Python 多字节特征增量去花把全部核心函数洗净出 F5，解出 `flag{d3junk_m4st3r_s_r4nk_2026}`，S-RANK 毕业！
+- **能力树跃迁（10 颗 → 11 颗 `[x]`）**：
+  - 模块 E「花指令识别与去花」：`[~]` → `[x]`
+- **实用技巧沉淀**：IDA 开启操作码字节数显示、`Shift+E` 一键导出数组、自动化去花永远用整块多字节特征并先 `count()` 防误杀、GCC 魔数 `0xCCCCCCCCCCCCCCCD` 识别为 `i % 5`。
+
 
 
 

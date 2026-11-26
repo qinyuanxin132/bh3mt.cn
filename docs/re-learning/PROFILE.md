@@ -1,19 +1,19 @@
 # 学习者能力画像与诊断（PROFILE）
 
-> 最后更新：2026-11-25  
-> 当前定位：**CTF Reverse 中级起步（Level 2+，Linux 动调专题 S-RANK 毕业）**  
+> 最后更新：2026-11-26  
+> 当前定位：**CTF Reverse 中级进阶（Level 2+，Linux 动调 & 无提示去花双专题 S-RANK 毕业）**  
 > 实验环境：Arch Linux x86-64 / GCC 16 / GDB + pwndbg / IDA Pro / DIE / Python (venv + z3-solver)
 
 ---
 
-## 一、能力维度总评（截至 2026-11-25 · 动调综合大考 S-RANK 毕业）
+## 一、能力维度总评（截至 2026-11-26 · 无提示去花专题 S-RANK 毕业）
 
 | 能力维度 | 真实掌握度 | 当前状态与表现 |
 |---|---|---|
 | **GDB / pwndbg 动态调试** | 🟢 已稳（重大突破） | 零提示打穿 Level 1~7 + 结业大考，熟练串联 `entry` / `$rebase()` / `set $rax` / `set $rip` / `watch` 抓 `.init_array` / 条件断点 `b ... if` / `search` / `dump binary memory` 破 SMC |
 | **算法逆推思维** | 🟢 已稳 | 独立完成 ROL/ROR、XOR、索引加法、CBC 链式状态逆推，Python `& 0xff` 位宽截断已成肌肉记忆 |
 | **x86-64 汇编阅读** | 🟢 已稳 | 脱离 IDA F5，纯手读 59 行含 8 个协作寄存器的 Win64 汇编独立还原逻辑并解出 `MYCTF 字节锁链` |
-| **对抗与混淆（壳/花指令/反调试）** | 🟡 快速进阶 | 已实战掌握 Linux `ptrace` 绕过、`.init_array` 隐蔽初始化定位、SMC 动态 Dump 与二次反编译；待补魔改 UPX 修复与无提示去花指令 |
+| **对抗与混淆（壳/花指令/反调试）** | 🟢 扎实进阶 | 已实战掌握 Linux `ptrace` 绕过、`.init_array` 隐蔽初始化定位、SMC 动态 Dump 与二次反编译，以及**无提示手工/Python 批量去花**（互补跳转、假 `call` + `sp-analysis failed` 修复、重叠指令、不透明谓词）；待补魔改 UPX 修复 |
 | **Z3 约束求解** | 🟡 入门偏上 | 知道选 `BitVec` 与 `LShR`；待补齐无符号比较（`ULT/UGT`）、位拼接（`Concat/Extract`）与多解约束 |
 | **经典加密盲解（Base64/RC4/TEA）** | 🟡 待独立验收 | 懂原理、看过 WP，但尚未经过“无提示独立盲解真题”的验收（当前阶段 2 核心主线） |
 | **C++ 逆向与多平台** | 🟡 稳步推进 | C 去符号 ELF 已稳，C++ 刚入门，待建立 C++（`std::string`/`std::vector`/虚表）与 IDA 伪代码的映射；Windows 动调待解锁 |
@@ -48,3 +48,5 @@
 7. **反编译赋值回看汇编位宽**：看到 `byte_xxxx = func()` 时确认汇编是 `mov ..., al`（只改 1 字节）还是整块覆盖，避免漏掉后面紧邻的静态数据。
 8. **代码自校验（Anti-Tamper）避开 `0xCC`**：如果程序对 `main` 自身机器码算哈希，不要在 `main` 内部下普通软件断点（`b` 会写入 `0xCC` 改坏哈希）；改在被校验范围外的函数（如加密函数入口）下断点，或使用硬件断点 `hb`。
 9. **分清 GDB 的 `p` 和 `x`**：`x/s $rax` 是把 `$rax` 当成内存地址去读取字符串；只想看寄存器本身的值（比如确认 `ptrace` 返回 `-1` 还是 `0`）应该用 `p/x $rax` 或 `i r rax`。
+10. **去花指令“栈平衡成对消除”铁律**：假 `call` 配 `add rsp, 8`、假 `call $+5` 配 `add [rsp], N; ret`、`push reg` 配 `pop reg` 必须成对 NOP，否则触发 `sp-analysis failed` 或运行时崩栈；修完截断函数后记得 **删除函数 → `P` 重建 → `F5`**。
+11. **自动化批量去花防误杀**：永远提取**整块多字节特征**（不要单字节替换 `0xE8`/`0xE9`/`0xEB`），替换前先 `data.count(pat)` 检查命中次数；IDA 导出密文数组善用 **`Shift+E`**。
